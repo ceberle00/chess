@@ -4,4 +4,6 @@ Notes for my CS 240 class
 
 5/2: mainly just going over basic coding parts, classes vs functions, differences between java and c++, preferably make different classes for each piece
 
-    
+5/6: 
+- all code in java written in a class
+- 

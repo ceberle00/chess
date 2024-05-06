@@ -1,5 +1,5 @@
 package chess;
-
+//this should be done? Hopefully
 /**
  * Represents a single square position on a chess board
  * <p>
@@ -7,12 +7,11 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessPosition {
-    private int row1 = 0;
-    private int col2 = 0;
-    public ChessPosition(int row, int col) 
-    {
-        row1 = row;
-        col2 = col;
+    private int row = 0;
+    private int col = 0;
+    public ChessPosition(int row, int col) {
+        this.row = row;
+        this.col = col;
     }
 
     /**
@@ -20,7 +19,7 @@ public class ChessPosition {
      * 1 codes for the bottom row
      */
     public int getRow() {
-        return row1;
+        return this.row;
         //throw new RuntimeException("Not implemented");
     }
 
@@ -29,7 +28,7 @@ public class ChessPosition {
      * 1 codes for the left row
      */
     public int getColumn() {
-        return col2;
+        return this.col;
         //throw new RuntimeException("Not implemented");
     }
 }

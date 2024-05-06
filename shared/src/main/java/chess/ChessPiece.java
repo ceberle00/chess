@@ -11,12 +11,13 @@ import chess.ChessGame.TeamColor;
  * signature of the existing methods.
  */
 public class ChessPiece {
+
     private PieceType pieceType;
     private TeamColor color;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
-        pieceType = type;
-        color = pieceColor;
+        this.pieceType = type;
+        this.color = pieceColor;
     }
 
     /**
@@ -35,7 +36,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        return color;
+        return this.color;
         //throw new RuntimeException("Not implemented");
     }
 
@@ -43,7 +44,7 @@ public class ChessPiece {
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        return pieceType;
+        return this.pieceType;
         //throw new RuntimeException("Not implemented");
     }
 
@@ -55,6 +56,9 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        if (this.pieceType == PieceType.PAWN) {
+            //
+        }
         throw new RuntimeException("Not implemented");
     }
 }
