@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -9,6 +10,29 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ChessGame)) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return Objects.equals(this, chessGame);
+    }
+
+    //maybe will need to change once variables added
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            "}";
+    }
 
     public ChessGame() {
 

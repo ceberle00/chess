@@ -3,6 +3,7 @@ package chess;
 import java.util.Collection;
 
 import chess.ChessGame.TeamColor;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -12,6 +13,31 @@ import chess.ChessGame.TeamColor;
  */
 public class ChessPiece {
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ChessPiece)) {
+            return false;
+        }
+        ChessPiece chessPiece = (ChessPiece) o;
+        return Objects.equals(pieceType, chessPiece.pieceType) && Objects.equals(color, chessPiece.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceType, color);
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+            " pieceType='" + getPieceType() + "'" +
+            ", color='" + getTeamColor() + "'" +
+            "}";
+    }
+
     private PieceType pieceType;
     private TeamColor color;
 
@@ -19,7 +45,7 @@ public class ChessPiece {
         this.pieceType = type;
         this.color = pieceColor;
     }
-
+    
     /**
      * The various different chess piece options
      */
@@ -55,9 +81,16 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
+    
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if (this.pieceType == PieceType.PAWN) {
+        if (board.getPiece(myPosition) == null) {
+            throw new RuntimeException("No piece in this position");
+        }
+        int column = myPosition.getColumn();
+        int rows = myPosition.getRow();
+        if (this.pieceType == PieceType.BISHOP) {
             //
+
         }
         throw new RuntimeException("Not implemented");
     }

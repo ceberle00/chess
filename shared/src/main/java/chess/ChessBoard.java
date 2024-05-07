@@ -1,4 +1,5 @@
 package chess;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -7,6 +8,46 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
+
+    public ChessBoard(ChessPiece[][] board) {
+        this.board = board;
+    }
+
+    public ChessPiece[][] getBoard() {
+        return this.board;
+    }
+
+    public void setBoard(ChessPiece[][] board) {
+        this.board = board;
+    }
+
+    public ChessBoard board(ChessPiece[][] board) {
+        setBoard(board);
+        return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ChessBoard)) {
+            return false;
+        }
+        ChessBoard chessBoard = (ChessBoard) o;
+        return Objects.equals(board, chessBoard.board);
+    }
+
+    /*@Override
+    public int hashCode() {
+        return super.hashCode()(board);
+    }*/
+
+    @Override
+    public String toString() {
+        return "{" +
+            " board='" + getBoard() + "'" +
+            "}";
+    }
 
     private ChessPiece [][] board = new ChessPiece[8][8];
     public ChessBoard() {
@@ -20,10 +61,10 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        if (position.getRow() < 0 || position.getRow() > 8) {
+        if (position.getRow() < 1 || position.getRow() > 8) {
             throw new RuntimeException("Invalid position");
         }
-        if (position.getColumn() < 0 || position.getColumn() > 8) {
+        if (position.getColumn() < 1 || position.getColumn() > 8) {
             throw new RuntimeException("Invalid position");
         }
         board[position.getRow()][position.getColumn()] = piece;
@@ -48,7 +89,8 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     //create a bunch of pieces and stuff
-    public void resetBoard() {
+    public void resetBoard() 
+    {
         throw new RuntimeException("Not implemented");
     }
 }
