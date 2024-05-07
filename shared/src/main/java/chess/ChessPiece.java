@@ -851,6 +851,7 @@ public class ChessPiece {
                 }
             } 
             for (int i = column-1; i > 0; i--) {
+
                 ChessPosition pos = new ChessPosition(rows, i);
                 //if there isn't a 
                 if (board.getPiece(pos) == null)
