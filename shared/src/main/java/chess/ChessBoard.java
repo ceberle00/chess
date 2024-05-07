@@ -67,8 +67,8 @@ public class ChessBoard {
         if (position.getColumn() < 1 || position.getColumn() > 8) {
             throw new RuntimeException("Invalid position");
         }
-        board[position.getRow()][position.getColumn()] = piece;
-        //throw new RuntimeException("Not implemented");
+        board[position.getRow()-1][position.getColumn()-1] = piece;
+        //throw new RuntimeException();
     }
 
     /**
@@ -80,7 +80,7 @@ public class ChessBoard {
      */
     //later fix to have errors if position isn't valid
     public ChessPiece getPiece(ChessPosition position) {
-        return board[position.getRow()][position.getColumn()];
+        return board[position.getRow()-1][position.getColumn()-1]; //added minus one 
         //throw new RuntimeException("Not implemented");
     }
 

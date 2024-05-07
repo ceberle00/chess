@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Collection;
+import java.util.ArrayList;
 
 import chess.ChessGame.TeamColor;
 import java.util.Objects;
@@ -81,17 +82,113 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
+    //need to check for pieces color, if enemy then can grab it, else blocked
     
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        Collection<ChessMove> moves = new ArrayList<>();
         if (board.getPiece(myPosition) == null) {
             throw new RuntimeException("No piece in this position");
         }
         int column = myPosition.getColumn();
         int rows = myPosition.getRow();
         if (this.pieceType == PieceType.BISHOP) {
+            // need 4 seperate cases, diagonal in 4 different ways
             //
-
+            for (int i = column+1, j = rows+1; i<9 && j<9; i++,j++ )  //maybe try less then 8
+            {
+                ChessPosition pos = new ChessPosition(j, i);
+                //if there isn't a 
+                if (board.getPiece(pos) == null)
+                {
+                    //create new move
+                    ChessMove move = new ChessMove(myPosition, pos, null); //maybe switch piecetype to null?
+                    moves.add(move);
+                }
+                else {
+                    ChessPiece pieceBlocked = board.getPiece(pos);
+                    ChessPiece currPiece = board.getPiece(myPosition);
+                    if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
+                        break;
+                    }
+                    else {
+                        ChessMove move = new ChessMove(myPosition, pos, null); //checking this
+                        moves.add(move);
+                        break;
+                    }
+                    //add the move, then break?
+                    //for now not adding move
+                }
+            }
+            for (int i = column+1, j = rows-1; i<9 && j>0; i++,j-- ) 
+            {
+                ChessPosition pos = new ChessPosition(j, i);
+                //if there isn't a 
+                if (board.getPiece(pos) == null)
+                {
+                    //create new move
+                    ChessMove move = new ChessMove(myPosition, pos, null); //maybe switch piecetype to null?
+                    moves.add(move);
+                }
+                else {
+                    ChessPiece pieceBlocked = board.getPiece(pos);
+                    ChessPiece currPiece = board.getPiece(myPosition);
+                    if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
+                        break;
+                    }
+                    else {
+                        ChessMove move = new ChessMove(myPosition, pos, null); //checking this
+                        moves.add(move);
+                        break;
+                    }
+                }
+            }
+            for (int i = column-1, j = rows+1; i>0 && j<9;i--,j++ ) 
+            {
+                ChessPosition pos = new ChessPosition(j, i);
+                //if there isn't a 
+                if (board.getPiece(pos) == null)
+                {
+                    //create new move
+                    ChessMove move = new ChessMove(myPosition, pos, null); //maybe switch piecetype to null?
+                    moves.add(move);
+                }
+                else {
+                    ChessPiece pieceBlocked = board.getPiece(pos);
+                    ChessPiece currPiece = board.getPiece(myPosition);
+                    if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
+                        break;
+                    }
+                    else {
+                        ChessMove move = new ChessMove(myPosition, pos, null); //checking this
+                        moves.add(move);
+                        break;
+                    }
+                }
+            }
+            for (int i = column-1, j = rows-1; i>0 && j>0; i--,j-- ) 
+            {
+                ChessPosition pos = new ChessPosition(j, i);
+                //if there isn't a 
+                if (board.getPiece(pos) == null)
+                {
+                    //create new move
+                    ChessMove move = new ChessMove(myPosition, pos, null); //maybe switch piecetype to null?
+                    moves.add(move);
+                }
+                else {
+                    ChessPiece pieceBlocked = board.getPiece(pos);
+                    ChessPiece currPiece = board.getPiece(myPosition);
+                    if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
+                        break;
+                    }
+                    else {
+                        ChessMove move = new ChessMove(myPosition, pos, null); //checking this
+                        moves.add(move);
+                        break;
+                    }
+                }
+            }
         }
-        throw new RuntimeException("Not implemented");
+        return moves;
     }
 }

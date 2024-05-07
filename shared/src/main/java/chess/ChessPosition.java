@@ -9,8 +9,6 @@ import java.util.Objects;
  */
 public class ChessPosition {
 
-    public ChessPosition() {
-    }
 
     @Override
     public boolean equals(Object o) {
