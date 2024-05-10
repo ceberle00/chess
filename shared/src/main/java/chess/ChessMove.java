@@ -37,6 +37,7 @@ public class ChessMove {
     private ChessPosition start = new ChessPosition(0, 0);
     private ChessPosition end = new ChessPosition(0, 0);
     private ChessPiece.PieceType type;
+    
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotionPiece) {
         this.start = startPosition;
         this.end = endPosition;     
