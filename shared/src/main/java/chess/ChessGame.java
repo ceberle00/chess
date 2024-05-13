@@ -2,8 +2,9 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Objects;
-
+import java.util.*; 
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -36,7 +37,18 @@ public class ChessGame {
     }
     private TeamColor turn = TeamColor.WHITE;
     private ChessBoard board;
+    private Map<ChessPiece, ChessPosition> blackKing = new HashMap<>();
+    private Map<ChessPiece, ChessPosition> whiteKing = new HashMap<>();
     public ChessGame() {
+        this.board.resetBoard();
+        //set kings for easy access
+        ChessPosition white = new ChessPosition(1, 4); //should be the default board, unless otherwise specificed
+        ChessPosition black = new ChessPosition(7, 4);
+        ChessPiece wh = this.board.getPiece(white);
+        ChessPiece bl = this.board.getPiece(black);
+        blackKing.put(bl, black);
+        whiteKing.put(wh, white);
+
 
     }
 
@@ -76,6 +88,9 @@ public class ChessGame {
         Collection<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
         moves = piece.pieceMoves(board, startPosition);
+        int row = startPosition.getRow();
+        int column = startPosition.getColumn();
+        
         //just checking for one piece tho?
         //maybe check start position to see if king is nearby//moving will affect it?
         //iterate through moves, check each one to see if it leaves the king open?
@@ -95,6 +110,7 @@ public class ChessGame {
         Collection<ChessMove> moves = validMoves(starPosition);
         moves.size();
         //check if that move is in moves? maybe?
+        //not sure how the different objects will work with "contains"
         if (moves.contains(move)) {
             ChessPiece piece = board.getPiece(move.getStartPosition());
             this.board.addPiece(starPosition, null);
@@ -112,7 +128,10 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-    public boolean isInCheck(TeamColor teamColor) {
+    public boolean isInCheck(TeamColor teamColor) 
+    {
+        //iterate through board??
+        //check for team's king, then see if it could be attacked? How to find king?
         throw new RuntimeException("Not implemented");
     }
 
@@ -145,7 +164,7 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) 
     {
-        board.resetBoard();
+        this.board = board;
     }
 
     /**
