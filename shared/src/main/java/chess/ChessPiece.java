@@ -15,6 +15,7 @@ import java.util.Objects;
 public class ChessPiece {
 
 
+
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -39,6 +40,7 @@ public class ChessPiece {
             "}";
     }
 
+    private ChessPosition pos;
     private PieceType pieceType;
     private TeamColor color;
 
@@ -46,7 +48,12 @@ public class ChessPiece {
         this.pieceType = type;
         this.color = pieceColor;
     }
-    
+    public void setPosition(ChessPosition position) {
+        this.pos = position;
+    }
+    public ChessPosition getChessPosition() {
+        return this.pos;
+    }
     /**
      * The various different chess piece options
      */

@@ -1,10 +1,8 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Objects;
-import java.util.*; 
+import java.util.*;
+
+import chess.ChessPiece.PieceType; 
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -108,7 +106,6 @@ public class ChessGame {
     {
         ChessPosition starPosition = move.getStartPosition();
         Collection<ChessMove> moves = validMoves(starPosition);
-        moves.size();
         //check if that move is in moves? maybe?
         //not sure how the different objects will work with "contains"
         if (moves.contains(move)) {
@@ -131,8 +128,29 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) 
     {
         //iterate through board??
+        ChessPiece piece = findPiece(PieceType.KING, teamColor);
+        //should have position now
+        ChessPosition pos = piece.getChessPosition();
+        //from position, check if any pieces are in range
+        int row = pos.getRow();
+        int col = pos.getColumn();
+        
         //check for team's king, then see if it could be attacked? How to find king?
         throw new RuntimeException("Not implemented");
+    }
+
+    public ChessPiece findPiece(PieceType type, TeamColor color) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPosition pos = new ChessPosition(i, j);
+                ChessPiece piece = this.board.getPiece(pos);
+                if (piece != null && piece.getPieceType() == type && piece.getTeamColor() == color) {
+                    piece.setPosition(pos);
+                    return piece; // Found the piece
+                }
+            }
+        }
+        return null; // Piece not found
     }
 
     /**
@@ -154,6 +172,7 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) 
     {
+
         throw new RuntimeException("Not implemented");
     }
 
@@ -165,6 +184,10 @@ public class ChessGame {
     public void setBoard(ChessBoard board) 
     {
         this.board = board;
+        //iterate through board, find kings, set them 
+        this.blackKing.clear();
+        this.whiteKing.clear();
+
     }
 
     /**
