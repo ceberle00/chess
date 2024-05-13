@@ -76,7 +76,10 @@ public class ChessGame {
         Collection<ChessMove> moves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
         moves = piece.pieceMoves(board, startPosition);
-        return moves;
+        //just checking for one piece tho?
+        //maybe check start position to see if king is nearby//moving will affect it?
+        //iterate through moves, check each one to see if it leaves the king open?
+        return moves; //check if any moves leave king open
     }
 
     /**
@@ -85,8 +88,22 @@ public class ChessGame {
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
-    public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+    //maybe do the check here?
+    public void makeMove(ChessMove move) throws InvalidMoveException 
+    {
+        ChessPosition starPosition = move.getStartPosition();
+        Collection<ChessMove> moves = validMoves(starPosition);
+        moves.size();
+        //check if that move is in moves? maybe?
+        if (moves.contains(move)) {
+            ChessPiece piece = board.getPiece(move.getStartPosition());
+            this.board.addPiece(starPosition, null);
+            this.board.addPiece(move.getEndPosition(), piece);
+            //not sure if this will work lol
+        }
+        else {
+            throw new InvalidMoveException();
+        }
     }
 
     /**
@@ -116,7 +133,8 @@ public class ChessGame {
      * @param teamColor which team to check for stalemate
      * @return True if the specified team is in stalemate, otherwise false
      */
-    public boolean isInStalemate(TeamColor teamColor) {
+    public boolean isInStalemate(TeamColor teamColor) 
+    {
         throw new RuntimeException("Not implemented");
     }
 
