@@ -7,6 +7,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
+//add something for castling? Maybe?
 public class ChessMove {
 
     @Override
@@ -37,6 +38,9 @@ public class ChessMove {
     private ChessPosition start = new ChessPosition(0, 0);
     private ChessPosition end = new ChessPosition(0, 0);
     private ChessPiece.PieceType type;
+    private ChessPosition castleStart; //may need two? 
+    private ChessPosition castleEnd;
+    private boolean isCastle = false;
     
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition, ChessPiece.PieceType promotionPiece) {
         this.start = startPosition;
@@ -44,6 +48,20 @@ public class ChessMove {
         this.type = promotionPiece;  
     }
 
+    public void setCastle(ChessPosition pos, ChessPosition end) {
+        this.castleStart = pos;
+        this.castleEnd = end;
+        this.isCastle = true;
+    }
+    public ChessPosition getCastleStart() {
+        return this.castleStart;
+    }
+    public ChessPosition getCastleEnd() {
+        return this.castleEnd;
+    }
+    public boolean getIsCastle() {
+        return this.isCastle;
+    }
     /**
      * @return ChessPosition of starting location
      */

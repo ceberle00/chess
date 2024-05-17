@@ -33,8 +33,10 @@ public class ChessGame {
         return "{" +
             "}";
     }
+    private boolean isCastle = false; //using this maybe?
     private TeamColor turn = TeamColor.WHITE;
     private ChessBoard board;
+    private ChessMove castleMove;
     private Map<ChessPiece, ChessPosition> blackKing = new HashMap<>();
     private Map<ChessPiece, ChessPosition> whiteKing = new HashMap<>();
     public ChessGame() {
@@ -108,23 +110,32 @@ public class ChessGame {
             else {
                 kingPos = king.getChessPosition();
             }
-            if (!(isCheck(end, kingPos, startPosition)))
+            if (move.getIsCastle()) 
             {
-                validMoves.add(move);
+ 
+                this.isCastle = true;
+                this.castleMove = move;
+                if (!(isCheck(end, kingPos, startPosition)) && this.board.getPiece(startPosition).getMoved() == false && this.board.getPiece(move.getCastleStart()).getMoved() == false) 
+                {
+                    validMoves.add(move);
+                }
             }
             else {
-                //do nothing
+                if (!(isCheck(end, kingPos, startPosition)))
+                {
+                validMoves.add(move);
+                }
             }
+            this.isCastle = false;
         }
        //maybe check start position to see if king is nearby//moving will affect it?
         //iterate through moves, check each one to see if it leaves the king open?
         return validMoves; //check if any moves leave king open
     }
 
+    //add things to handle castling
     private boolean isCheck(ChessPosition endPosition, ChessPosition kingPosition, ChessPosition start) 
     {
-        //kingPosition WRONG
-        //will be wrong when the piece is king
         if (kingPosition == null) 
         {
             return false;
@@ -134,12 +145,28 @@ public class ChessGame {
         }
         ChessBoard boardCopy = this.board.clone();
         //resetting 
-        if (start != null) {
+        if (this.isCastle) 
+        {
+            boardCopy.addPiece(this.castleMove.getCastleEnd(), this.board.getPiece(this.castleMove.getCastleStart()));
+            boardCopy.addPiece(this.castleMove.getCastleStart(), null);
             boardCopy.addPiece(endPosition, board.getPiece(start));
             boardCopy.addPiece(start, null);
+            if (kingPosition == endPosition) {
+                //do nothing
+            }
+            else 
+            {
+                kingPosition = this.castleMove.getCastleEnd();
+            }
         }
         else {
-            boardCopy.addPiece(endPosition, board.getPiece(endPosition));
+            if (start != null) {
+                boardCopy.addPiece(endPosition, board.getPiece(start));
+                boardCopy.addPiece(start, null);
+            }
+            else {
+                boardCopy.addPiece(endPosition, board.getPiece(endPosition));
+            }
         }
         //should be right? Check with copying
         //weird thing with two diff colors????
@@ -199,9 +226,103 @@ public class ChessGame {
             if (piece.getTeamColor() == TeamColor.BLACK) {
                 next = TeamColor.WHITE;
             }
-            this.board.addPiece(starPosition, null);
-            this.board.addPiece(move.getEndPosition(), piece);
+            if (move.getIsCastle()) 
+            {
+                ChessPiece piece2 = this.board.getPiece(move.getCastleStart());
+                this.board.addPiece(move.getCastleEnd(), piece2);
+                this.board.addPiece(move.getCastleStart(), null);
+                this.board.addPiece(move.getEndPosition(), piece);
+                this.board.addPiece(move.getCastleStart(), null);
+                this.board.getPiece(move.getCastleEnd()).setMoved(true);
+                this.board.getPiece(move.getEndPosition()).setMoved(true);
+            }
+            else {
+                if (piece.getPieceType() == PieceType.KING ) 
+                {
+                    if (piece.getTeamColor() == TeamColor.BLACK) 
+                    {
+                        ChessPosition posRook1 = new ChessPosition(8, 1);
+                        ChessPosition posRook2 = new ChessPosition(8, 8);
+                        if (move.getEndPosition().equals(new ChessPosition(8, 3)) && board.getPiece(posRook1) != null && board.getPiece(posRook1).getMoved() == false) {
+                            if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) 
+                            {
+                                //maybe also check for middle I guess, although if it's in moves it should be fine
+                                ChessPosition newRook = new ChessPosition(8, 4);
+                                this.board.addPiece(move.getEndPosition(), piece);
+                                this.board.addPiece(starPosition, null);
+                                this.board.addPiece(newRook, board.getPiece(posRook1));
+                                this.board.addPiece(posRook1, null);
+                                this.board.getPiece(newRook).setMoved(true);
+                                this.board.getPiece(move.getEndPosition()).setMoved(true);
+                            }
+                        }
+                        else if (move.getEndPosition().equals(new ChessPosition(8, 7)) && board.getPiece(posRook2) != null && board.getPiece(posRook2).getMoved() == false) {
+                            if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) 
+                            {
+                                //maybe also check for middle I guess, although if it's in moves it should be fine
+                                ChessPosition newRook = new ChessPosition(8, 6);
+                                this.board.addPiece(move.getEndPosition(), piece);
+                                this.board.addPiece(starPosition, null);
+                                this.board.addPiece(newRook, board.getPiece(posRook2));
+                                this.board.addPiece(posRook2, null);
+                                this.board.getPiece(newRook).setMoved(true);
+                                this.board.getPiece(move.getEndPosition()).setMoved(true);
+                            }
+                        }
+                        else {
+                            this.board.addPiece(move.getEndPosition(), piece);
+                            this.board.addPiece(starPosition, null);
+                            this.board.getPiece(move.getEndPosition()).setMoved(true);
+                        }
+                    }
+                    else {
+                        ChessPosition posRook1 = new ChessPosition(1, 1);
+                        ChessPosition posRook2 = new ChessPosition(1, 8);
+                        if (move.getEndPosition().equals(new ChessPosition(1, 3)) && board.getPiece(posRook1) != null && board.getPiece(posRook1).getMoved() == false) {
+                            if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) 
+                            {
+                                //maybe also check for middle I guess, although if it's in moves it should be fine
+                                ChessPosition newRook = new ChessPosition(1, 4);
+                                this.board.addPiece(move.getEndPosition(), piece);
+                                this.board.addPiece(starPosition, null);
+                                this.board.addPiece(newRook, board.getPiece(posRook1));
+                                this.board.addPiece(posRook1, null);
+                                this.board.getPiece(newRook).setMoved(true);
+                                this.board.getPiece(move.getEndPosition()).setMoved(true);
+                            }
+                        }
+                        else if (move.getEndPosition().equals(new ChessPosition(1, 7)) && board.getPiece(posRook2) != null && board.getPiece(posRook2).getMoved() == false) {
+                            if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) 
+                            {
+                                //maybe also check for middle I guess, although if it's in moves it should be fine
+                                ChessPosition newRook = new ChessPosition(1, 6);
+                                this.board.addPiece(move.getEndPosition(), piece);
+                                this.board.addPiece(starPosition, null);
+                                this.board.addPiece(newRook, board.getPiece(posRook2));
+                                this.board.addPiece(posRook2, null);
+                                this.board.getPiece(newRook).setMoved(true);
+                                this.board.getPiece(move.getEndPosition()).setMoved(true);
+                            }
+                        }
+                        else {
+                            this.board.addPiece(move.getEndPosition(), piece);
+                            this.board.addPiece(starPosition, null);
+                            this.board.getPiece(move.getEndPosition()).setMoved(true);
+                        }
+                    }
+                    //check every place they could end? 
+                    
+                }
+                
+                else {
+                    this.board.addPiece(starPosition, null);
+                    this.board.addPiece(move.getEndPosition(), piece); 
+                    this.board.getPiece(move.getEndPosition()).setMoved(true);
+                }
+            }
+            
             setTeamTurn(next);
+            //board.getPiece(move.getEndPosition()).setMoved(true);
             //change who's turn it is here lol
             //not sure if this will work lol
         }

@@ -33,7 +33,8 @@ public class ChessPiece {
     }
 
     @Override
-    public String toString() {
+    public String toString() 
+    {
         return "{" +
             " pieceType='" + getPieceType() + "'" +
             ", color='" + getTeamColor() + "'" +
@@ -43,13 +44,19 @@ public class ChessPiece {
     private ChessPosition pos;
     private PieceType pieceType;
     private TeamColor color;
-
+    private boolean moved = false;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceType = type;
         this.color = pieceColor;
     }
     public void setPosition(ChessPosition position) {
         this.pos = position;
+    }
+    public void setMoved(boolean value) {
+        this.moved = value;
+    }
+    public boolean getMoved() {
+        return this.moved;
     }
     public ChessPosition getChessPosition() {
         return this.pos;
@@ -101,6 +108,7 @@ public class ChessPiece {
         }
         int column = myPosition.getColumn();
         int rows = myPosition.getRow();
+        //add castling? 
         if (this.pieceType == PieceType.BISHOP) {
             // need 4 seperate cases, diagonal in 4 different ways
             //
@@ -199,7 +207,81 @@ public class ChessPiece {
                 }
             }
         }
-        else if (this.pieceType == PieceType.KING) {
+        else if (this.pieceType == PieceType.KING) 
+        {
+            //check for castling woohoo
+            if (this.color == TeamColor.BLACK) 
+            {
+                ChessPosition posKing = new ChessPosition(8, 5);
+                ChessPosition posRook1 = new ChessPosition(8, 1);
+                ChessPosition posRook2 = new ChessPosition(8, 8);
+                if (board.getPiece(posKing) == null || board.getPiece(posRook1) == null) {
+
+                }
+                else if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook1).pieceType == PieceType.ROOK) 
+                {
+                    //check if pieces in between them are empty 
+                    if (board.getPiece(new ChessPosition(8, 4)) == null && board.getPiece(new ChessPosition(8, 3))== null && board.getPiece(new ChessPosition(8, 2))==null) {
+                        ChessPosition newKing = new ChessPosition(8, 3);
+                        ChessPosition newRook = new ChessPosition(8, 4);
+                        ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                        newMove.setCastle(posRook1, newRook);
+                        moves.add(newMove);
+                    }
+                    //later make sure they're the right color
+                }
+                if (board.getPiece(posKing) == null || board.getPiece(posRook2) == null) {
+
+                }
+                else if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook2).pieceType == PieceType.ROOK) 
+                {
+                    if (board.getPiece(new ChessPosition(8, 6)) == null && board.getPiece(new ChessPosition(8, 7)) == null) {
+                        ChessPosition newKing = new ChessPosition(8, 7);
+                        ChessPosition newRook = new ChessPosition(8, 6);
+                        ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                        newMove.setCastle(posRook2, newRook);
+                        moves.add(newMove);
+                    }
+                    //later make sure they're the right color
+                }
+                //maybe just add one move, with a castle thing added, then we can manually move the other piece
+                //next to it
+            }
+            else 
+            {
+                ChessPosition posKing = new ChessPosition(1, 5);
+                ChessPosition posRook1 = new ChessPosition(1, 1);
+                ChessPosition posRook2 = new ChessPosition(1, 8);
+                if (board.getPiece(posKing) == null || board.getPiece(posRook1) == null) {
+
+                }
+                else if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook1).pieceType == PieceType.ROOK) 
+                {
+                    if (board.getPiece(new ChessPosition(1, 4)) == null && board.getPiece(new ChessPosition(1, 3)) == null && board.getPiece(new ChessPosition(1, 2)) == null) {
+                        ChessPosition newKing = new ChessPosition(1, 3);
+                        ChessPosition newRook = new ChessPosition(1, 4);
+                        ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                        newMove.setCastle(posRook1, newRook);
+                        moves.add(newMove);
+                    }
+                    //later make sure they're the right color
+
+                }
+                if (board.getPiece(posKing) != null && board.getPiece(posRook2) != null) {
+                    //do nothing
+                    if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook2).pieceType == PieceType.ROOK) 
+                    {
+                        if (board.getPiece(new ChessPosition(1, 6)) == null && board.getPiece(new ChessPosition(1, 7)) == null) {
+                            ChessPosition newKing = new ChessPosition(1, 7);
+                            ChessPosition newRook = new ChessPosition(1, 6);
+                            ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                            newMove.setCastle(posRook2, newRook);
+                            moves.add(newMove);
+                        }
+                        //later make sure they're the right color
+                    }
+                }
+            }
             //check every one piece move
             int rows1 = rows+1;
             int minusRows = rows-1;
@@ -263,44 +345,6 @@ public class ChessPiece {
                 }
             }
             if (addCols < 9) {
-                /*if ((minusRows) > 0) 
-                {
-                    ChessPosition pos = new ChessPosition(minusRows, addCols);
-                    ChessPiece pieceBlocked = board.getPiece(pos);
-                    if (pieceBlocked == null) {
-                        ChessMove move = new ChessMove(myPosition, pos, null);
-                        moves.add(move);
-                    }
-                    else {
-                        ChessPiece currPiece = board.getPiece(myPosition);
-                        if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
-                            //do nothing
-                        }
-                        else {
-                            ChessMove move = new ChessMove(myPosition, pos, null); //checking this
-                            moves.add(move);
-                        }
-                    }
-                }
-                if ((rows1) < 9) 
-                {
-                    ChessPosition pos = new ChessPosition(rows1, addCols);
-                    ChessPiece pieceBlocked = board.getPiece(pos);
-                    if (pieceBlocked == null) {
-                        ChessMove move = new ChessMove(myPosition, pos, null);
-                        moves.add(move);
-                    }
-                    else {
-                        ChessPiece currPiece = board.getPiece(myPosition);
-                        if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
-                            //do nothing
-                        }
-                        else {
-                            ChessMove move = new ChessMove(myPosition, pos, null); //checking this
-                            moves.add(move);
-                        }
-                    }
-                }*/
                 ChessPosition pos = new ChessPosition(rows, addCols);
                 ChessPiece pieceBlocked = board.getPiece(pos);
                 if (pieceBlocked == null) {
@@ -949,6 +993,76 @@ public class ChessPiece {
         }
         else if (this.pieceType == PieceType.ROOK) 
         {
+            if (this.color == TeamColor.BLACK) 
+            {
+                ChessPosition posKing = new ChessPosition(8, 5);
+                ChessPosition posRook1 = new ChessPosition(8, 1);
+                ChessPosition posRook2 = new ChessPosition(8, 8);
+                if (board.getPiece(posKing) == null || board.getPiece(posRook1) == null) {
+
+                }
+                else if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook1).pieceType == PieceType.ROOK) 
+                {
+                    //later make sure they're the right color
+                    if (board.getPiece(new ChessPosition(8, 4)) == null && board.getPiece(new ChessPosition(8, 3))== null && board.getPiece(new ChessPosition(8, 2))==null) {
+                        ChessPosition newKing = new ChessPosition(8, 3);
+                        ChessPosition newRook = new ChessPosition(8, 4);
+                        ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                        newMove.setCastle(posRook1, newRook);
+                        moves.add(newMove);
+                    }
+                }
+                if (board.getPiece(posKing) == null || board.getPiece(posRook2) == null) {
+
+                }
+                else if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook2).pieceType == PieceType.ROOK) 
+                {
+                    //later make sure they're the right color
+                    if (board.getPiece(new ChessPosition(8, 6)) == null && board.getPiece(new ChessPosition(8, 7)) == null) {
+                        ChessPosition newKing = new ChessPosition(8, 7);
+                        ChessPosition newRook = new ChessPosition(8, 6);
+                        ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                        newMove.setCastle(posRook2, newRook);
+                        moves.add(newMove);
+                    }
+                }
+                //maybe just add one move, with a castle thing added, then we can manually move the other piece
+                //next to it
+            }
+            else 
+            {
+                ChessPosition posKing = new ChessPosition(1, 5);
+                ChessPosition posRook1 = new ChessPosition(1, 1);
+                ChessPosition posRook2 = new ChessPosition(1, 8);
+                if (board.getPiece(posKing) == null || board.getPiece(posRook1) == null) {
+
+                }
+                else if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook1).pieceType == PieceType.ROOK) 
+                {
+                    //later make sure they're the right color
+                    if (board.getPiece(new ChessPosition(1, 4)) == null && board.getPiece(new ChessPosition(1, 3)) == null && board.getPiece(new ChessPosition(1, 2)) == null) {
+                        ChessPosition newKing = new ChessPosition(1, 3);
+                        ChessPosition newRook = new ChessPosition(1, 4);
+                        ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                        newMove.setCastle(posRook1, newRook);
+                        moves.add(newMove);
+                    }
+                }
+                if (board.getPiece(posKing) != null && board.getPiece(posRook2) != null) {
+                    //do nothing
+                    if (board.getPiece(posKing).pieceType == PieceType.KING && board.getPiece(posRook2).pieceType == PieceType.ROOK) 
+                    {
+                        //later make sure they're the right color
+                        if (board.getPiece(new ChessPosition(1, 6)) == null && board.getPiece(new ChessPosition(1, 7)) == null) {
+                            ChessPosition newKing = new ChessPosition(1, 7);
+                            ChessPosition newRook = new ChessPosition(1, 6);
+                            ChessMove newMove = new ChessMove(myPosition, newKing, null);
+                            newMove.setCastle(posRook2, newRook);
+                            moves.add(newMove);
+                        }
+                    }
+                }
+            }
             for (int i = column+1; i < 9; i++) {
                 ChessPosition pos = new ChessPosition(rows, i);
                 //if there isn't a 
