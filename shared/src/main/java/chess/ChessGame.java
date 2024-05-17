@@ -178,18 +178,25 @@ public class ChessGame {
         //iterate through board??
         ChessPiece piece = findPiece(PieceType.KING, teamColor);
         //should have position now
-        ChessPosition pos = piece.getChessPosition(); //checking the king? 
+        ChessPosition kingPosition= piece.getChessPosition(); //checking the king? 
         //from position, check if any pieces are in range
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) 
             {
-
+                ChessPosition pos = new ChessPosition(i, j);
+                ChessPiece piece2 = board.getPiece(pos);
+                if (piece2 != null && piece2.getTeamColor() != teamColor) {
+                    //check if in check
+                    if (isCheck(pos, kingPosition, null)) {
+                        return true;
+                    }
+                }
                 //check every one of the pieces and see if they're in check? 
             }
         }
         
         //check for team's king, then see if it could be attacked? How to find king?
-        throw new RuntimeException("Not implemented");
+        return false;
     }
 
     public ChessPiece findPiece(PieceType type, TeamColor color) {
