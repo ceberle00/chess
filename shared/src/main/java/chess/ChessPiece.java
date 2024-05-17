@@ -706,7 +706,7 @@ public class ChessPiece {
                 }
                 ChessPosition attack = new ChessPosition(rows+1, column+1);
                 ChessPosition backAttack = new ChessPosition(rows+1, column-1); //making sure it isn't trapped on one side
-                if (column+1 < 0 && rows+1 < 9) {
+                if (column+1 < 9 && rows+1 < 9) {
                     if (board.getPiece(attack) != null) 
                     {
                         if (board.getPiece(attack).color == ChessGame.TeamColor.BLACK) 
