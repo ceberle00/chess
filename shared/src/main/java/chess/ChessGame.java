@@ -38,6 +38,7 @@ public class ChessGame {
     private Map<ChessPiece, ChessPosition> blackKing = new HashMap<>();
     private Map<ChessPiece, ChessPosition> whiteKing = new HashMap<>();
     public ChessGame() {
+        this.board = new ChessBoard();
         this.board.resetBoard();
         //set kings for easy access
         ChessPosition white = new ChessPosition(1, 4); //should be the default board, unless otherwise specificed
@@ -86,13 +87,14 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
         Collection<ChessMove> validMoves = new ArrayList<>();
-        ChessPiece piece = board.getPiece(startPosition);
+        ChessPiece piece = this.board.getPiece(startPosition);
         //maybe first find where king is?
-        moves = piece.pieceMoves(board, startPosition);
-        ChessPiece king = findPiece(PieceType.KING, piece.getTeamColor());
+        if (piece != null) {
+            moves = piece.pieceMoves(this.board, startPosition);
+        }
+        ChessPiece king = findPiece(PieceType.KING, piece.getTeamColor()); //get your own king?
         for (ChessMove move : moves) 
         {
-            
             ChessPosition end = move.getEndPosition();
             if (!(isCheck(end, king.getChessPosition(), startPosition)))
             {
@@ -104,29 +106,35 @@ public class ChessGame {
         }
        //maybe check start position to see if king is nearby//moving will affect it?
         //iterate through moves, check each one to see if it leaves the king open?
-        return moves; //check if any moves leave king open
+        return validMoves; //check if any moves leave king open
     }
 
     private boolean isCheck(ChessPosition endPosition, ChessPosition kingPosition, ChessPosition start) 
     {
+        //kingPosition WRONG
         ChessBoard boardCopy = this.board.clone();
         //resetting 
-        boardCopy.addPiece(endPosition, board.getPiece(endPosition));
         if (start != null) {
+            boardCopy.addPiece(endPosition, board.getPiece(start));
             boardCopy.addPiece(start, null);
+        }
+        else {
+            boardCopy.addPiece(endPosition, board.getPiece(endPosition));
         }
 
         //should be right? Check with copying
-        TeamColor color = board.getPiece(kingPosition).getTeamColor();
+        //weird thing with two diff colors????
+        TeamColor color = boardCopy.getPiece(endPosition).getTeamColor();
+        //TeamColor kingColor = this.board.getPiece(kingPosition).getTeamColor();
+
         if (kingPosition == null) {
             return false;
         }
         else 
         {
-            for (int i = 0; i < 9; i++) {
-                for (int j =0; j <9; j++) 
+            for (int i = 1; i < 9; i++) {
+                for (int j =1; j <9; j++) 
                 {
-                    //make position
                     ChessPosition pos = new ChessPosition(i, j);
                     ChessPiece piece = boardCopy.getPiece(pos);
                     if (piece != null && color != piece.getTeamColor()) {
@@ -180,8 +188,8 @@ public class ChessGame {
         //should have position now
         ChessPosition kingPosition= piece.getChessPosition(); //checking the king? 
         //from position, check if any pieces are in range
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) 
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) 
             {
                 ChessPosition pos = new ChessPosition(i, j);
                 ChessPiece piece2 = board.getPiece(pos);
@@ -200,8 +208,8 @@ public class ChessGame {
     }
 
     public ChessPiece findPiece(PieceType type, TeamColor color) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
                 ChessPosition pos = new ChessPosition(i, j);
                 ChessPiece piece = this.board.getPiece(pos);
                 if (piece != null && piece.getPieceType() == type && piece.getTeamColor() == color) {
