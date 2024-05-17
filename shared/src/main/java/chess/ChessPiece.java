@@ -54,6 +54,9 @@ public class ChessPiece {
     public ChessPosition getChessPosition() {
         return this.pos;
     }
+    public void setPieceType(PieceType type) {
+        this.pieceType = type;
+    }
     /**
      * The various different chess piece options
      */
@@ -202,6 +205,7 @@ public class ChessPiece {
             int minusRows = rows-1;
             int addCols = column+1;
             int minusCols = column-1;
+            //may be doubling?? 
             if ((rows1) < 9) {  //here all the moves in the next row{
                 if ((minusCols) > 0) 
                 {
@@ -259,7 +263,7 @@ public class ChessPiece {
                 }
             }
             if (addCols < 9) {
-                if ((minusRows) > 0) 
+                /*if ((minusRows) > 0) 
                 {
                     ChessPosition pos = new ChessPosition(minusRows, addCols);
                     ChessPiece pieceBlocked = board.getPiece(pos);
@@ -296,7 +300,7 @@ public class ChessPiece {
                             moves.add(move);
                         }
                     }
-                }
+                }*/
                 ChessPosition pos = new ChessPosition(rows, addCols);
                 ChessPiece pieceBlocked = board.getPiece(pos);
                 if (pieceBlocked == null) {
@@ -371,7 +375,7 @@ public class ChessPiece {
                 }
             }
             if (minusCols > 0) {
-                if ((minusRows) > 0) 
+                /*if ((minusRows) > 0) 
                 {
                     ChessPosition pos = new ChessPosition(minusRows, minusCols);
                     ChessPiece pieceBlocked = board.getPiece(pos);
@@ -408,7 +412,7 @@ public class ChessPiece {
                             moves.add(move);
                         }
                     }
-                }
+                }*/
                 ChessPosition pos = new ChessPosition(rows, minusCols);
                 ChessPiece pieceBlocked = board.getPiece(pos);
                 if (pieceBlocked == null) {

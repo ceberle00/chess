@@ -92,11 +92,23 @@ public class ChessGame {
         if (piece != null) {
             moves = piece.pieceMoves(this.board, startPosition);
         }
+        else {
+            return null;
+        }
         ChessPiece king = findPiece(PieceType.KING, piece.getTeamColor()); //get your own king?
+        //one case doesn't allow kings, not sure what to do here
+        //case for if king is null i guess
         for (ChessMove move : moves) 
         {
             ChessPosition end = move.getEndPosition();
-            if (!(isCheck(end, king.getChessPosition(), startPosition)))
+            ChessPosition kingPos;
+            if (king == null) {
+                kingPos = null;
+            }
+            else {
+                kingPos = king.getChessPosition();
+            }
+            if (!(isCheck(end, kingPos, startPosition)))
             {
                 validMoves.add(move);
             }
@@ -112,6 +124,14 @@ public class ChessGame {
     private boolean isCheck(ChessPosition endPosition, ChessPosition kingPosition, ChessPosition start) 
     {
         //kingPosition WRONG
+        //will be wrong when the piece is king
+        if (kingPosition == null) 
+        {
+            return false;
+        }
+        if (kingPosition.equals(start)) {
+            kingPosition = new ChessPosition(endPosition.getRow(), endPosition.getColumn());
+        }
         ChessBoard boardCopy = this.board.clone();
         //resetting 
         if (start != null) {
@@ -121,28 +141,20 @@ public class ChessGame {
         else {
             boardCopy.addPiece(endPosition, board.getPiece(endPosition));
         }
-
         //should be right? Check with copying
         //weird thing with two diff colors????
         TeamColor color = boardCopy.getPiece(endPosition).getTeamColor();
         //TeamColor kingColor = this.board.getPiece(kingPosition).getTeamColor();
-
-        if (kingPosition == null) {
-            return false;
-        }
-        else 
-        {
-            for (int i = 1; i < 9; i++) {
-                for (int j =1; j <9; j++) 
-                {
-                    ChessPosition pos = new ChessPosition(i, j);
-                    ChessPiece piece = boardCopy.getPiece(pos);
-                    if (piece != null && color != piece.getTeamColor()) {
-                        Collection<ChessMove> moves = piece.pieceMoves(boardCopy, pos);
-                        for (ChessMove move : moves) {
-                            if (move.getEndPosition().getColumn() == kingPosition.getColumn() && move.getEndPosition().getRow() == kingPosition.getRow()) {
-                                return true;
-                            }
+        for (int i = 1; i < 9; i++) {
+            for (int j =1; j <9; j++) 
+            {
+                ChessPosition pos = new ChessPosition(i, j);
+                ChessPiece piece = boardCopy.getPiece(pos);
+                if (piece != null && color != piece.getTeamColor()) {
+                    Collection<ChessMove> moves = piece.pieceMoves(boardCopy, pos);
+                    for (ChessMove move : moves) {
+                        if (move.getEndPosition().getColumn() == kingPosition.getColumn() && move.getEndPosition().getRow() == kingPosition.getRow()) {
+                            return true;
                         }
                     }
                 }
@@ -159,22 +171,45 @@ public class ChessGame {
     //maybe do the check here?
     public void makeMove(ChessMove move) throws InvalidMoveException 
     {
+        if (move == null) {
+            throw new InvalidMoveException();
+        }
         ChessPosition starPosition = move.getStartPosition();
+        if (starPosition == null || move.getEndPosition() == null) {
+            throw new InvalidMoveException();
+        }
         Collection<ChessMove> moves = validMoves(starPosition);
+        if (moves == null) {
+            throw new InvalidMoveException("no valid moves available");
+        }
+        if (this.board.getPiece(starPosition).getTeamColor() != this.getTeamTurn()) 
+        {
+            throw new InvalidMoveException("not your turn");
+        }
         //check if that move is in moves? maybe?
         //not sure how the different objects will work with "contains"
         if (moves.contains(move)) 
         {
             //we'll have valid moves check for the 
             ChessPiece piece = board.getPiece(move.getStartPosition());
+            if (move.getPromotionPiece() != null) {
+                piece.setPieceType(move.getPromotionPiece());
+            }
+            TeamColor next = TeamColor.BLACK;
+            if (piece.getTeamColor() == TeamColor.BLACK) {
+                next = TeamColor.WHITE;
+            }
             this.board.addPiece(starPosition, null);
             this.board.addPiece(move.getEndPosition(), piece);
+            setTeamTurn(next);
+            //change who's turn it is here lol
             //not sure if this will work lol
         }
         else {
             throw new InvalidMoveException();
         }
     }
+
     /**
      * Determines if the given team is in check
      *
