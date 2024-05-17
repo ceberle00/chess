@@ -9,4 +9,4 @@ Notes for my CS 240 class
 
 5/9:
 - Collection: arrays but they can be resizeable, as arrays have to have the size declared
-- 
+- Code should work

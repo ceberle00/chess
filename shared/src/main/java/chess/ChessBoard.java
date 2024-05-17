@@ -39,6 +39,19 @@ public class ChessBoard {
         return Arrays.deepEquals(board, that.board);
     
     }
+    public ChessBoard clone() 
+    {
+        ChessPiece [][] board = new ChessPiece[8][8];
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (this.board[i][j] != null) {
+                    board[i][j] = new ChessPiece(this.board[i][j].getTeamColor(), this.board[i][j].getPieceType());
+                }
+            }
+        }
+        ChessBoard chess = new ChessBoard(board);
+        return chess;
+    }
 
     /*@Override
     public int hashCode() {

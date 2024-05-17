@@ -82,19 +82,66 @@ public class ChessGame {
      * @return Set of valid moves for requested piece, or null if no piece at
      * startPosition
      */
+    //
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> validMoves = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
+        //maybe first find where king is?
         moves = piece.pieceMoves(board, startPosition);
-        int row = startPosition.getRow();
-        int column = startPosition.getColumn();
-        
-        //just checking for one piece tho?
-        //maybe check start position to see if king is nearby//moving will affect it?
+        ChessPiece king = findPiece(PieceType.KING, piece.getTeamColor());
+        for (ChessMove move : moves) 
+        {
+            
+            ChessPosition end = move.getEndPosition();
+            if (!(isCheck(end, king.getChessPosition(), startPosition)))
+            {
+                validMoves.add(move);
+            }
+            else {
+                //do nothing
+            }
+        }
+       //maybe check start position to see if king is nearby//moving will affect it?
         //iterate through moves, check each one to see if it leaves the king open?
         return moves; //check if any moves leave king open
     }
 
+    private boolean isCheck(ChessPosition endPosition, ChessPosition kingPosition, ChessPosition start) 
+    {
+        ChessBoard boardCopy = this.board.clone();
+        //resetting 
+        boardCopy.addPiece(endPosition, board.getPiece(endPosition));
+        if (start != null) {
+            boardCopy.addPiece(start, null);
+        }
+
+        //should be right? Check with copying
+        TeamColor color = board.getPiece(kingPosition).getTeamColor();
+        if (kingPosition == null) {
+            return false;
+        }
+        else 
+        {
+            for (int i = 0; i < 9; i++) {
+                for (int j =0; j <9; j++) 
+                {
+                    //make position
+                    ChessPosition pos = new ChessPosition(i, j);
+                    ChessPiece piece = boardCopy.getPiece(pos);
+                    if (piece != null && color != piece.getTeamColor()) {
+                        Collection<ChessMove> moves = piece.pieceMoves(boardCopy, pos);
+                        for (ChessMove move : moves) {
+                            if (move.getEndPosition().getColumn() == kingPosition.getColumn() && move.getEndPosition().getRow() == kingPosition.getRow()) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
     /**
      * Makes a move in a chess game
      *
@@ -108,7 +155,9 @@ public class ChessGame {
         Collection<ChessMove> moves = validMoves(starPosition);
         //check if that move is in moves? maybe?
         //not sure how the different objects will work with "contains"
-        if (moves.contains(move)) {
+        if (moves.contains(move)) 
+        {
+            //we'll have valid moves check for the 
             ChessPiece piece = board.getPiece(move.getStartPosition());
             this.board.addPiece(starPosition, null);
             this.board.addPiece(move.getEndPosition(), piece);
@@ -118,7 +167,6 @@ public class ChessGame {
             throw new InvalidMoveException();
         }
     }
-
     /**
      * Determines if the given team is in check
      *
@@ -130,10 +178,15 @@ public class ChessGame {
         //iterate through board??
         ChessPiece piece = findPiece(PieceType.KING, teamColor);
         //should have position now
-        ChessPosition pos = piece.getChessPosition();
+        ChessPosition pos = piece.getChessPosition(); //checking the king? 
         //from position, check if any pieces are in range
-        int row = pos.getRow();
-        int col = pos.getColumn();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) 
+            {
+
+                //check every one of the pieces and see if they're in check? 
+            }
+        }
         
         //check for team's king, then see if it could be attacked? How to find king?
         throw new RuntimeException("Not implemented");
