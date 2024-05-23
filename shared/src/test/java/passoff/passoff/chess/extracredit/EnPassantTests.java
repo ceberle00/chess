@@ -2,12 +2,10 @@ package passoff.passoff.chess.extracredit;
 
 import chess.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static passoff.chess.TestUtilities.*;
-
 /**
  * Tests if the ChessGame implementation can handle En Passant moves
  * En Passant is a situational move in chess taken directly after your opponent has double moved a pawn
