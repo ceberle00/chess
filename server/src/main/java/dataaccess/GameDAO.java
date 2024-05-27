@@ -32,12 +32,13 @@ public class GameDAO implements MemoryGameDAO
         return null;
     }
     @Override
-    public void createGame(String gameName) 
+    public int createGame(String gameName) 
     {
         this.gameID += 1;
         ChessGame game = new ChessGame();
         GameData data = new GameData(this.gameID, gameName, null, null, game);
         this.games.add(data);
+        return this.gameID;
         //maybe return gameID
     }
     @Override

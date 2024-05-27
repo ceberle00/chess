@@ -25,10 +25,11 @@ public class AuthDAO implements MemoryAuthDAO
         return null;
     }
     @Override
-    public void createAuth(String username) {
-        String auth = UUID.randomUUID().toString();
-        AuthData data = new AuthData(auth, username);
+    public String createAuth(String username) {
+        String authValue = UUID.randomUUID().toString();
+        AuthData data = new AuthData(authValue, username);
         this.auth.add(data);
+        return authValue;
     }
     @Override
     public void deleteSession(String authToken) 

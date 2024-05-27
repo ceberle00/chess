@@ -6,6 +6,6 @@ public interface MemoryGameDAO {
     void clearGames();
     Vector<GameData> getGames();
     GameData getGameName(String name);
-    void createGame(String name);
+    int createGame(String name);
     GameData checkGame(int num);
 }
