@@ -1,10 +1,10 @@
 package chess.model;
 
 public record AuthData(String authToken, String username) {
-    String getAuth() {
+    public String getAuth() {
         return authToken;
     }
-    String getUser(){
+    public String getUser(){
         return username;
     }
 }
