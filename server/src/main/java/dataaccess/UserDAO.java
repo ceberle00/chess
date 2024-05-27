@@ -2,13 +2,15 @@ package dataaccess;
 
 import chess.model.*;
 import java.util.Vector;
-public class UserDAO 
+public class UserDAO implements MemoryUserDAO
 {
     private Vector <UserData> users = new Vector<>();
 
+    @Override
     public void clearUsers(){
         this.users.clear();
     }
+    @Override
     public UserData getUser(String username)
     {
         for (int i = 0; i < this.users.size(); i++) {
@@ -19,6 +21,7 @@ public class UserDAO
         } 
         return null;
     }
+    @Override
     public UserData getUserPass(String username, String password) 
     {
         for (int i = 0; i < this.users.size(); i++) {
@@ -35,6 +38,7 @@ public class UserDAO
         } 
         return null;
     }
+    @Override
     public void createUser(String username, String password, String email) 
     {
         UserData data = new UserData(username, password, email);

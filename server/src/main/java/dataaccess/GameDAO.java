@@ -5,18 +5,22 @@ import java.util.Vector;
 import chess.model.*;
 import chess.*;
 
-public class GameDAO 
+public class GameDAO implements MemoryGameDAO
 {
     //vector of games?
     private Vector<GameData> games = new Vector<>();
     private int gameID = 0;
+    
+    @Override
     public void clearGames()
     {
         this.games.clear();
     }
+    @Override
     public Vector<GameData> getGames() {
         return this.games; //hopefully right, idk if just the vector is okay
     }
+    @Override
     public GameData getGameName(String gameName) 
     {
         for (int i = 0; i < this.games.size(); i++) 
@@ -27,6 +31,7 @@ public class GameDAO
         }
         return null;
     }
+    @Override
     public void createGame(String gameName) 
     {
         this.gameID += 1;
@@ -35,6 +40,7 @@ public class GameDAO
         this.games.add(data);
         //maybe return gameID
     }
+    @Override
     public GameData checkGame(int gameId) 
     {
         return null;
