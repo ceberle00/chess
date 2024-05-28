@@ -5,5 +5,5 @@ public interface MemoryUserDAO {
     void clearUsers();
     UserData getUser(String name);
     UserData getUserPass(String name, String pass);
-    void createUser(String username, String password, String email);
+    void createUser(String username, String password, String email) throws DataAccessException;
 }

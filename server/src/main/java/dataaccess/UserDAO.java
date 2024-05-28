@@ -39,9 +39,14 @@ public class UserDAO implements MemoryUserDAO
         return null;
     }
     @Override
-    public void createUser(String username, String password, String email) 
+    public void createUser(String username, String password, String email) throws DataAccessException
     {
-        UserData data = new UserData(username, password, email);
-        this.users.add(data);
+        if (getUser(username) != null) {
+            throw new DataAccessException("user already taken");
+        }
+        else {
+            UserData data = new UserData(username, password, email);
+            this.users.add(data);
+        }
     }
 }

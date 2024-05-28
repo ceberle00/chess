@@ -40,7 +40,6 @@ public class GameDAO implements MemoryGameDAO
         GameData data = new GameData(this.gameID, null, null, gameName, game);
         this.games.put(this.gameID, data);
         return this.gameID;
-        //maybe return gameID
     }
     @Override
     public GameData checkGame(int gameId) 

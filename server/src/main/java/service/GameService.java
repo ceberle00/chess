@@ -1,11 +1,14 @@
 package service;
 
+import java.util.ArrayList;
+
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
 import chess.model.GameData;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
+
 
 public class GameService {
 
@@ -60,5 +63,21 @@ public class GameService {
         else {
             throw new DataAccessException("Cannot join null color");
         }
+    }
+    public void createGame(String authToken, String gameName) throws DataAccessException
+    {
+        valiAuthData(authToken);
+        if (this.game.getGameName(gameName) != null) 
+        {
+            throw new DataAccessException("Game name already taken");
+        }
+        this.game.createGame(gameName);
+        //will pass back gameID later for handlers
+    }
+    public ArrayList<GameData> listGames(String authToken) throws DataAccessException
+    {
+        valiAuthData(authToken);
+        ArrayList<GameData> games = new ArrayList<>(this.game.getGames().values());
+        return games;
     }
 }
