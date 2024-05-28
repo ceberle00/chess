@@ -4,7 +4,8 @@ import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 
-public class SystemService {
+public class SystemService 
+{
     private AuthDAO auth;
     private GameDAO game;
     private UserDAO user;

@@ -1,4 +1,4 @@
-package server.passoff.server;
+package passoff.server;
 
 import chess.ChessGame;
 import org.junit.jupiter.api.*;
@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
+import org.junit.jupiter.api.Test;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StandardAPITests {
