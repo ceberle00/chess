@@ -1,8 +1,8 @@
 package service;
 
+import chess.model.AuthData;
 import chess.model.UserData;
 import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
 import dataaccess.UserDAO;
 
 public class UserService {
@@ -17,11 +17,30 @@ public class UserService {
     {
         return this.user.getUser(userName);
     }
-    public void createUser(String username, String password, String email) throws DataAccessException
+    public void createUser(String username, String password, String email) throws Exception
     {
         this.user.createUser(username, password, email);
     }
-    public void createAuth(String username) {
-        this.auth.createAuth(username);
+    public String createAuth(String username) {
+        return this.auth.createAuth(username);
+    }
+    public void loginUser(String username, String password) throws Exception
+    {
+        UserData user = getUser(username); 
+        if (user == null) {throw new Exception("username does not exist");}
+        UserData actualUser = this.user.getUserPass(username, password);
+        if (actualUser == null) {throw new Exception("password incorrect");}
+        createAuth(username);
+    }
+    public void logoutUser(String authToken) throws Exception
+    {
+        AuthData data = auth.getAuth(authToken);
+        if (data == null) {
+            throw new Exception("authorization failed");
+        }
+        this.auth.deleteSession(data.authToken());
+    }
+    public AuthDAO getAuth() {
+        return this.auth;
     }
 }

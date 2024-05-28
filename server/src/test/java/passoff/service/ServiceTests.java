@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.*;
 
 import chess.ChessGame.TeamColor;
-import chess.model.AuthData;
 import chess.model.GameData;
 import chess.model.UserData;
 
@@ -29,8 +28,7 @@ public class ServiceTests {
         this.game.clearGames();
     }
     @Test
-    public void clearTest() throws Exception
-    {
+    public void clearTest() throws Exception{
         user.createUser("username", "password", "email");
         user.createUser("username2", "password2", "newEmail");
 
@@ -52,8 +50,7 @@ public class ServiceTests {
 
     
     @Test
-    public void joinGameTestPass() throws Exception
-    {
+    public void joinGameTestPass() throws Exception{
         user.createUser("username", "password", "email");
         String auth1=auto.createAuth("username");
         int id = game.createGame("newGame");
@@ -64,8 +61,7 @@ public class ServiceTests {
         Assertions.assertEquals(expectedGame, service.getGame().checkGame(id));
     }
     @Test
-    public void joinGameTestFail() throws Exception 
-    {
+    public void joinGameTestFail() throws Exception {
         user.createUser("username", "password", "email");
         String auth1=auto.createAuth("username");
         int id = game.createGame("newGame");
@@ -79,8 +75,7 @@ public class ServiceTests {
         //it should fail, make sure that it throws an exception for 
     }
     @Test
-    public void listGamesTest() throws Exception 
-    {
+    public void listGamesTest() throws Exception {
         user.createUser("username", "password", "email");
         String auth1=auto.createAuth("username");
         int id = game.createGame("newGame");
@@ -92,8 +87,7 @@ public class ServiceTests {
         Assertions.assertEquals(gamesWanted, service.listGames(auth1));
     }
     @Test 
-    public void listGamesEmptyTest() throws Exception
-    {
+    public void listGamesEmptyTest() throws Exception{
         user.createUser("username", "password", "email");
         String auth1=auto.createAuth("username");
         game.createGame("newGame");
@@ -104,8 +98,7 @@ public class ServiceTests {
         Assertions.assertEquals(gamesWanted, service.listGames(auth1));
     }
     @Test
-    public void registerNewUserTest() throws Exception 
-    {
+    public void registerNewUserTest() throws Exception {
         UserService service = new UserService(user, auto);
         //create new user 
         UserData user = service.getUser("username");
@@ -116,8 +109,8 @@ public class ServiceTests {
         UserData wantedUser = new UserData("username", "password", "email");
         Assertions.assertEquals(service.getUser("username"), wantedUser);
     }
-    @Test public void registerExistingUser() throws Exception 
-    {
+    @Test
+    public void registerExistingUser() throws Exception {
         UserService service = new UserService(user, auto);
         //create new user 
         UserData user = service.getUser("username");
@@ -125,9 +118,53 @@ public class ServiceTests {
 
         service.createUser("username", "password", "email");
         service.createAuth("username");
-        DataAccessException exception = Assertions.assertThrows(DataAccessException.class, () -> {
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
             service.createUser("username", "samepass", "otheremail");;
         });
         Assertions.assertEquals("user already taken", exception.getMessage());
+    }
+    @Test
+    public void loginUserPass() throws Exception {
+        UserService service = new UserService(user, auto);
+        //create new user 
+        UserData user = service.getUser("username");
+        Assertions.assertNull(user);
+
+        service.createUser("username", "password", "email");
+        service.createAuth("username");
+        Assertions.assertDoesNotThrow(() -> service.loginUser("username", "password"));
+    }
+    @Test
+    public void loginUserFail() throws Exception {
+        UserService service = new UserService(user, auto);
+        //create new user 
+        UserData user = service.getUser("username");
+        Assertions.assertNull(user);
+
+        service.createUser("username", "password", "email");
+        service.createAuth("username");
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            service.loginUser("username", "wrongPassword");
+        });
+        Assertions.assertEquals("password incorrect", exception.getMessage());
+    }
+    @Test
+    public void logoutPass() throws Exception {
+        UserService service = new UserService(user, auto);
+
+        service.createUser("username", "password", "email");
+        String data = service.createAuth("username");
+        service.logoutUser(data);
+        Assertions.assertNull(service.getAuth().getAuth(data));
+    }
+    @Test
+    public void logoutFail() throws Exception {
+        UserService service = new UserService(user, auto);
+
+        service.createUser("username", "password", "email");
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            service.logoutUser("username");
+        });
+        Assertions.assertEquals("authorization failed", exception.getMessage());
     }
 }

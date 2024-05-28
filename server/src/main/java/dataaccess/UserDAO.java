@@ -22,7 +22,7 @@ public class UserDAO implements MemoryUserDAO
         return null;
     }
     @Override
-    public UserData getUserPass(String username, String password) 
+    public UserData getUserPass(String username, String password)
     {
         for (int i = 0; i < this.users.size(); i++) {
             UserData data = this.users.elementAt(i);
@@ -33,16 +33,16 @@ public class UserDAO implements MemoryUserDAO
                 else {
                     return null;
                 }
-                //else return null
+                
             }
         } 
         return null;
     }
     @Override
-    public void createUser(String username, String password, String email) throws DataAccessException
+    public void createUser(String username, String password, String email) throws Exception
     {
         if (getUser(username) != null) {
-            throw new DataAccessException("user already taken");
+            throw new Exception("user already taken");
         }
         else {
             UserData data = new UserData(username, password, email);
