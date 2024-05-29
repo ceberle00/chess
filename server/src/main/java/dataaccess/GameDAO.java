@@ -26,7 +26,7 @@ public class GameDAO implements MemoryGameDAO
     {
         for (Map.Entry<Integer,GameData> entry : this.games.entrySet()) 
         {
-            if (entry.getValue().Gamename() == gameName) {
+            if (entry.getValue().Gamename().equals(gameName)) {
                 return entry.getValue();
             }
         }

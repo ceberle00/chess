@@ -1,5 +1,8 @@
 package server;
 
+import service.LoginRequest;
+import service.LoginResult;
+import service.LogoutResult;
 import service.RegisterRequest;
 import service.RegisterResult;
 import service.UserService;
@@ -45,4 +48,31 @@ public class UserHandler {
             return new Gson().toJson(e);
         }
     }
+    public Object loginUser(Request request, Response response) throws Exception{
+        try {
+            LoginRequest log = new Gson().fromJson(request.body(), LoginRequest.class);
+            String auth = service.loginUser(log.getUsername(), log.getPassword());
+            response.status(200);
+            return new Gson().toJson(new RegisterResult(log.getUsername(), auth));
+        }catch(Exception e) {
+            response.status(401);
+            LoginResult newRes = new LoginResult(e.getMessage());
+            return new Gson().toJson(newRes);
+        }
+    }
+    public Object logoutUser(Request request, Response response) throws Exception 
+    {
+        try {
+            String authToken = request.headers("authorization");
+            service.logoutUser(authToken);
+            response.status(200);
+            return new Gson().toJson(null);
+        }
+        catch(Exception e) {
+            LogoutResult log = new LogoutResult(e.getMessage());
+            response.status(401);
+            return new Gson().toJson(log);
+        }
+    }
+
 }

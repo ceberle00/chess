@@ -18,7 +18,7 @@ public class AuthDAO implements MemoryAuthDAO
     {
         for (int i = 0; i < this.auth.size(); i++) 
         {
-            if (this.auth.elementAt(i).getAuth() == authData) {
+            if (this.auth.elementAt(i).getAuth().equals(authData)) {
                 return this.auth.elementAt(i);
             }
         }
@@ -36,7 +36,7 @@ public class AuthDAO implements MemoryAuthDAO
     {
         for (int i = 0; i < this.auth.size(); i++) 
         {
-            if (this.auth.elementAt(i).getAuth() == authToken) {
+            if (this.auth.elementAt(i).getAuth().equals(authToken)) {
                 this.auth.remove(i);
                 i = i-1;
             }

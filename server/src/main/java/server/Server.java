@@ -40,6 +40,12 @@ public class Server
        Spark.post("/user", (req, res) ->
         (userHandler.RegisterUser(req,  
        res)));
+       Spark.post("/session", (req, res) ->
+        (userHandler.loginUser(req,  
+       res)));
+       Spark.delete("/session", (req, res) ->
+        (userHandler.logoutUser(req,  
+       res)));
        
 
         Spark.awaitInitialization();

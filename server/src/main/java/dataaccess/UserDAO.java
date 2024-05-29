@@ -30,8 +30,8 @@ public class UserDAO implements MemoryUserDAO
     {
         for (int i = 0; i < this.users.size(); i++) {
             UserData data = this.users.get(i);
-            if (data.getUser() == username){
-                if(data.getPass() == password) {
+            if (data.getUser().equals(username)){
+                if(data.getPass().equals(password)) {
                     return data;
                 }
                 else {

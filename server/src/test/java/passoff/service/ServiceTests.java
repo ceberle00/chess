@@ -121,7 +121,7 @@ public class ServiceTests {
         Exception exception = Assertions.assertThrows(Exception.class, () -> {
             service.createUser("username", "samepass", "otheremail");;
         });
-        Assertions.assertEquals("user already taken", exception.getMessage());
+        Assertions.assertEquals("Error: already taken", exception.getMessage());
     }
     @Test
     public void loginUserPass() throws Exception {
@@ -146,7 +146,7 @@ public class ServiceTests {
         Exception exception = Assertions.assertThrows(Exception.class, () -> {
             service.loginUser("username", "wrongPassword");
         });
-        Assertions.assertEquals("password incorrect", exception.getMessage());
+        Assertions.assertEquals("Error: unauthorized", exception.getMessage());
     }
     @Test
     public void logoutPass() throws Exception {
