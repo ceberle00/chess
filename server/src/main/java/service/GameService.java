@@ -36,11 +36,14 @@ public class GameService {
         }
 
     }
-    public void joinGame(int gameID, String gameName, TeamColor color, String authToken) throws Exception
+    public void joinGame(int gameID, TeamColor color, String authToken) throws Exception
     {
         AuthData auth = valiAuthData(authToken);
         GameData data = this.game.checkGame(gameID);
         if (data == null) {
+            throw new Exception("Error: bad request");
+        }
+        if (color == null) {
             throw new Exception("Error: bad request");
         }
         if (color == TeamColor.BLACK) 
@@ -51,7 +54,7 @@ public class GameService {
 
             }
             else {
-                throw new Exception("Error: bad request");
+                throw new Exception("Error: already taken");
             }
         }
         else if (color == TeamColor.WHITE){
@@ -59,7 +62,7 @@ public class GameService {
                 this.game.joinGame(gameID, auth, color);
             }
             else {
-                throw new Exception("Error: bad request");
+                throw new Exception("Error: already taken");
             }
         }
         else {

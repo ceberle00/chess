@@ -2,15 +2,17 @@ package server;
 import chess.model.*;
 import spark.*;
 import com.google.gson.Gson;
-
+import java.util.Map;
 import service.AddGameRequest;
 import service.AddGameResult;
 import service.GameService;
+import service.JoinGameRequest;
 import service.ListGamesResult;
 
 import java.util.ArrayList;
 
 public class GameHandler {
+
     private GameService service;
 
     public GameHandler(GameService service) {
@@ -71,10 +73,29 @@ public class GameHandler {
     }
     public Object joinGame(Request request, Response response) throws Exception {
         try {
+            String authString = request.headers("authorization");
+            service.valiAuthData(authString);
+            //String requestBody = request.body();
+            //System.out.println("Received request body: " + requestBody);
+            JoinGameRequest joinRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
+            service.joinGame(joinRequest.getId(), joinRequest.getColor(), authString);
+            response.status(200);
+            return new Gson().toJson(null);
 
         }catch (Exception e) {
-            
+            if (e.getMessage().equals("Error: already taken")) {
+                response.status(403);
+            }
+            else if (e.getMessage().equals("Error: bad request")) {
+                response.status(400);
+            }
+            else if (e.getMessage().equals("Error: unauthorized")) {
+                response.status(401);
+            }
+            else {
+                response.status(500);
+            }
+            return new Gson().toJson(Map.of("message", e.getMessage()));
         }
-        return null;
     }
 }

@@ -1,6 +1,6 @@
 package passoff.service;
 import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
+
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import service.GameService;
@@ -56,7 +56,7 @@ public class ServiceTests {
         int id = game.createGame("newGame");
 
         GameService service = new GameService(game, auto);
-        service.joinGame(id, "newGame", TeamColor.WHITE, auth1);
+        service.joinGame(id, TeamColor.WHITE, auth1);
         GameData expectedGame = new GameData(id, "username", null, "newGame", service.getGame().checkGame(id).game());
         Assertions.assertEquals(expectedGame, service.getGame().checkGame(id));
     }
@@ -67,11 +67,11 @@ public class ServiceTests {
         int id = game.createGame("newGame");
 
         GameService service = new GameService(game, auto);
-        service.joinGame(id, "newGame", TeamColor.WHITE, auth1);
+        service.joinGame(id, TeamColor.WHITE, auth1);
         Exception exception = Assertions.assertThrows(Exception.class, () -> {
-            service.joinGame(id, "newGame", TeamColor.WHITE, auth1);
+            service.joinGame(id, TeamColor.WHITE, auth1);
         });
-        Assertions.assertEquals("Error: bad request", exception.getMessage());
+        Assertions.assertEquals("Error: already taken", exception.getMessage());
         //it should fail, make sure that it throws an exception for 
     }
     @Test
