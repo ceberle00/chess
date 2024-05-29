@@ -22,12 +22,16 @@ public class UserHandler {
             RegisterRequest reg = new Gson().fromJson(request.body(), RegisterRequest.class);
             if (reg.getEmail() == null || reg.getPassword() == null || reg.getUsername() == null) {
                 result.status(400);
-                return new Gson().toJson(new Exception("Error: bad request"));
+                RegisterResult res = new RegisterResult("Error: bad response");
+                //Exception e = new Exception("Error: bad response");
+                return new Gson().toJson(res);
             }
             if (service.getUser(reg.getUsername()) != null) 
             {
-                result.status(400);
-                return new Gson().toJson(new Exception("Error: already taken"));
+                result.status(403);
+                //Exception e = new Exception("Error: already taken");
+                RegisterResult res = new RegisterResult("Error: already taken");
+                return new Gson().toJson(res);
             }
 
             service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail());
@@ -37,8 +41,8 @@ public class UserHandler {
         }
         catch (Exception e) 
         {
-            result.status(403);
-            return new Gson().toJson(e.getMessage());
+            result.status(500);
+            return new Gson().toJson(e);
         }
     }
 }

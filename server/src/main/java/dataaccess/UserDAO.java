@@ -3,7 +3,7 @@ package dataaccess;
 import chess.model.*;
 
 import java.util.ArrayList;
-import java.util.Vector;
+
 public class UserDAO implements MemoryUserDAO
 {
     private ArrayList <UserData> users;
@@ -19,7 +19,7 @@ public class UserDAO implements MemoryUserDAO
     public UserData getUser(String username)
     {
         for (UserData user : this.users) {
-            if (user.getUser() == username){
+            if (user.getUser().equals(username)){
                 return user;
             }
         } 

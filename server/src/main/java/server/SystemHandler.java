@@ -1,8 +1,5 @@
 package server;
 
-import dataaccess.AuthDAO;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
 import service.SystemService;
 import spark.*;
 import com.google.gson.Gson;
