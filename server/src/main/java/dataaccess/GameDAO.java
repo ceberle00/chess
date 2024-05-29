@@ -30,7 +30,7 @@ public class GameDAO implements MemoryGameDAO
     {
         for (Map.Entry<Integer,GameData> entry : this.games.entrySet()) 
         {
-            if (entry.getValue().Gamename().equals(gameName)) {
+            if (entry.getValue().gameName().equals(gameName)) {
                 return entry.getValue();
             }
         }
@@ -56,11 +56,11 @@ public class GameDAO implements MemoryGameDAO
         GameData tempGame = this.games.get(gameID);
         if (color == TeamColor.BLACK) 
         {
-            GameData newGame = new GameData(gameID, tempGame.whiteUsername(), data.getUser(), tempGame.Gamename(), tempGame.game());
+            GameData newGame = new GameData(gameID, tempGame.whiteUsername(), data.getUser(), tempGame.gameName(), tempGame.game());
             this.games.put(gameID, newGame);
         }
         else {
-            GameData newGame = new GameData(gameID, data.getUser(), tempGame.blackUsername(), tempGame.Gamename(), tempGame.game());
+            GameData newGame = new GameData(gameID, data.getUser(), tempGame.blackUsername(), tempGame.gameName(), tempGame.game());
             this.games.put(gameID, newGame);
         }
 

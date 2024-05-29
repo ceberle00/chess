@@ -43,7 +43,7 @@ public class Server
         (clearHandler.clear(req,  
        res)));
        Spark.post("/user", (req, res) ->
-        (userHandler.RegisterUser(req,  
+        (userHandler.registerUser(req,  
        res)));
        Spark.post("/session", (req, res) ->
         (userHandler.loginUser(req,  

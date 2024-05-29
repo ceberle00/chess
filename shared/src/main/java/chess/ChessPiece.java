@@ -419,44 +419,6 @@ public class ChessPiece {
                 }
             }
             if (minusCols > 0) {
-                /*if ((minusRows) > 0) 
-                {
-                    ChessPosition pos = new ChessPosition(minusRows, minusCols);
-                    ChessPiece pieceBlocked = board.getPiece(pos);
-                    if (pieceBlocked == null) {
-                        ChessMove move = new ChessMove(myPosition, pos, null);
-                        moves.add(move);
-                    }
-                    else {
-                        ChessPiece currPiece = board.getPiece(myPosition);
-                        if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
-                            //do nothing
-                        }
-                        else {
-                            ChessMove move = new ChessMove(myPosition, pos, null); //checking this
-                            moves.add(move);
-                        }
-                    }
-                }
-                if ((rows1) < 9) 
-                {
-                    ChessPosition pos = new ChessPosition(rows1, minusCols);
-                    ChessPiece pieceBlocked = board.getPiece(pos);
-                    if (pieceBlocked == null) {
-                        ChessMove move = new ChessMove(myPosition, pos, null);
-                        moves.add(move);
-                    }
-                    else {
-                        ChessPiece currPiece = board.getPiece(myPosition);
-                        if (currPiece.getTeamColor() == pieceBlocked.getTeamColor()) {
-                            //do nothing
-                        }
-                        else {
-                            ChessMove move = new ChessMove(myPosition, pos, null); //checking this
-                            moves.add(move);
-                        }
-                    }
-                }*/
                 ChessPosition pos = new ChessPosition(rows, minusCols);
                 ChessPiece pieceBlocked = board.getPiece(pos);
                 if (pieceBlocked == null) {

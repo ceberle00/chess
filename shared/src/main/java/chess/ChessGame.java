@@ -322,9 +322,6 @@ public class ChessGame {
             }
             
             setTeamTurn(next);
-            //board.getPiece(move.getEndPosition()).setMoved(true);
-            //change who's turn it is here lol
-            //not sure if this will work lol
         }
         else {
             throw new InvalidMoveException();
@@ -347,22 +344,8 @@ public class ChessGame {
         boolean check = isCheck(kingPosition, kingPosition, null);
         return check;
         //from position, check if any pieces are in range
-        /*for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) 
-            {
-                ChessPosition pos = new ChessPosition(i, j);
-                ChessPiece piece2 = board.getPiece(pos);
-                if (piece2 != null && piece2.getTeamColor() != teamColor) {
-                    //check if in check
-                    if (isCheck(pos, kingPosition, null)) {
-                        return true;
-                    }
-                }
-            }
-        }
         
         //check for team's king, then see if it could be attacked? How to find king?
-        return false;*/
     }
 
     public ChessPiece findPiece(PieceType type, TeamColor color) {

@@ -23,13 +23,6 @@ public class ChessBoard {
     public void setBoard(ChessPiece[][] board) {
         this.board = board;
     }
-
-    public ChessBoard board(ChessPiece[][] board) {
-        setBoard(board);
-        return this;
-    }
-
-
     private ChessPiece [][] board = new ChessPiece[8][8];
     @Override
     public boolean equals(Object object) {

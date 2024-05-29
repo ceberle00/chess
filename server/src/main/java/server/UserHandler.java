@@ -19,7 +19,7 @@ public class UserHandler {
         this.service = user;
     }
 
-    public Object RegisterUser(Request request, Response result) 
+    public Object registerUser(Request request, Response result) 
     {
         try {
             RegisterRequest reg = new Gson().fromJson(request.body(), RegisterRequest.class);

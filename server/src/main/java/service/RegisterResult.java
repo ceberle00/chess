@@ -17,9 +17,6 @@ public class RegisterResult
         return this.authToken;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
-    }
 
     public String getUsername() {
         return this.username;
