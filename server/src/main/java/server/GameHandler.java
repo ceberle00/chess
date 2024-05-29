@@ -52,7 +52,6 @@ public class GameHandler {
             failedPast = true;
             Integer id = service.createGame(authString, req.getName());
             AddGameResult res = new AddGameResult(id);
-            System.out.println(id);
             response.status(200);
             return new Gson().toJson(res);
 
@@ -85,7 +84,7 @@ public class GameHandler {
             
             JoinGameRequest joinRequest = new Gson().fromJson(requestBody, JoinGameRequest.class);
             
-            if (joinRequest.getId() == null) {
+            if (joinRequest.getGameID() == null) {
                 badData = true;
                 System.out.println("in id null");
                 throw new Exception("Error: bad request");
@@ -98,7 +97,7 @@ public class GameHandler {
             }
             colorTaken = true;
             //JoinGameRequest joinRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
-            service.joinGame(joinRequest.getId(), joinRequest.getColor(), authString);
+            service.joinGame(joinRequest.getGameID(), joinRequest.getColor(), authString);
             response.status(200);
             return new Gson().toJson(null);
 

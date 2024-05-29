@@ -10,7 +10,7 @@ public class JoinGameRequest {
         this.playerColor = color;
         this.gameID = id;
     }
-    public Integer getId() {
+    public Integer getGameID() {
         return this.gameID;
     }
     public TeamColor getColor() {

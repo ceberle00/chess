@@ -241,14 +241,11 @@ public class StandardAPITests {
     public void stealColorJoin() {
         //create game
         TestCreateResult createResult = serverFacade.createGame(createRequest, existingAuth);
-
         //add existing user as black
         TestJoinRequest joinRequest = new TestJoinRequest(ChessGame.TeamColor.BLACK, createResult.getGameID());
         serverFacade.joinPlayer(joinRequest, existingAuth);
-        System.out.println(joinRequest);
         //register second user
         TestAuthResult registerResult = serverFacade.register(newUser);
-        System.out.println(registerResult);
         //join request trying to also join  as black
         TestResult joinResult = serverFacade.joinPlayer(joinRequest, registerResult.getAuthToken());
 

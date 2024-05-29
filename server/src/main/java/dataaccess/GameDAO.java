@@ -39,11 +39,16 @@ public class GameDAO implements MemoryGameDAO
     @Override
     public Integer createGame(String gameName) 
     {
+        if (this.gameID == null) {
+            this.gameID = 0;
+        }
         this.gameID += 1;
+        Integer newValue = this.gameID;
         ChessGame game = new ChessGame();
-        GameData data = new GameData(this.gameID, null, null, gameName, game);
-        this.games.put(this.gameID, data);
-        return this.gameID;
+        GameData data = new GameData(newValue, null, null, gameName, game);
+        this.games.put(newValue, data);
+        System.out.println(newValue);
+        return newValue;
     }
     @Override
     public GameData checkGame(int gameId) 

@@ -68,13 +68,11 @@ public class GameService {
     }
     public Integer createGame(String authToken, String gameName) throws DataAccessException
     {
-        valiAuthData(authToken);
         if (this.game.getGameName(gameName) != null) 
         {
             throw new DataAccessException("Error: already taken");
         }
         return this.game.createGame(gameName);
-        //will pass back gameID later for handlers
     }
     public ArrayList<GameData> listGames(String authToken) throws DataAccessException
     {
