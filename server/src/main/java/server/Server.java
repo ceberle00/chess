@@ -3,6 +3,7 @@ package server;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+import service.GameService;
 import service.SystemService;
 import service.UserService;
 import spark.*;
@@ -19,15 +20,19 @@ public class Server
 
     private final UserService userService;
     private final SystemService systemService;
+    private final GameService gameService;
 
     private final SystemHandler clearHandler;
     private final UserHandler userHandler;
+    private final GameHandler gameHandler;
 
     public Server() {
         this.userService = new UserService(user, auth);
         this.userHandler = new UserHandler(userService);
         this.systemService = new SystemService(auth, game, user);
         this.clearHandler = new SystemHandler(systemService);
+        this.gameService = new GameService(game, auth);
+        this.gameHandler = new GameHandler(gameService);
     }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -46,7 +51,12 @@ public class Server
        Spark.delete("/session", (req, res) ->
         (userHandler.logoutUser(req,  
        res)));
-       
+       Spark.get("/game", (req, res) ->
+        (gameHandler.listGames(req,  
+       res)));
+       Spark.post("/game", (req, res) ->
+        (gameHandler.listGames(req,  
+       res)));
 
         Spark.awaitInitialization();
         return Spark.port();
