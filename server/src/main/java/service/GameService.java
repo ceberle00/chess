@@ -2,6 +2,8 @@ package service;
 
 import java.util.ArrayList;
 
+import com.mysql.cj.exceptions.ExceptionFactory;
+
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
 import chess.model.GameData;
@@ -25,6 +27,9 @@ public class GameService {
     }
     public AuthData valiAuthData(String authToken) throws DataAccessException
     {
+        if (auth == null) {
+            throw new DataAccessException("Error: unauthorized");
+        }
         AuthData data = auth.getAuth(authToken);
         if (data == null) 
         {   
@@ -66,11 +71,11 @@ public class GameService {
             throw new Exception("Error: bad request");
         }
     }
-    public Integer createGame(String authToken, String gameName) throws DataAccessException
+    public Integer createGame(String authToken, String gameName) throws Exception
     {
         if (this.game.getGameName(gameName) != null) 
         {
-            throw new DataAccessException("Error: already taken");
+            throw new Exception("Error: already taken");
         }
         return this.game.createGame(gameName);
     }

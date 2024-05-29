@@ -3,11 +3,18 @@ import dataaccess.AuthDAO;
 
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.util.ArrayList;
 
+import org.glassfish.grizzly.utils.Exceptions;
 import org.junit.jupiter.api.*;
 
+import com.mysql.cj.exceptions.ExceptionFactory;
+
 import chess.ChessGame.TeamColor;
+import chess.model.AuthData;
 import chess.model.GameData;
 import chess.model.UserData;
 
@@ -44,7 +51,49 @@ public class ServiceTests {
 
     }
 
-    
+    @Test 
+    public void authCheckPass() throws Exception {
+        user.createUser("username", "password", "email");
+        String auth1=auto.createAuth("username");
+        game.createGame("newGame");
+        GameService gs = new GameService(game, auto);
+        AuthData data = auto.getAuth(auth1);
+        assertEquals(gs.valiAuthData(auth1), data);
+       
+    }
+    @Test 
+    public void authCheckFail() throws Exception {
+        user.createUser("username", "password", "email");
+        String auth1=auto.createAuth("username");
+        game.createGame("newGame");
+        GameService gs = new GameService();
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            gs.valiAuthData(auth1);;
+        });
+        Assertions.assertEquals("Error: unauthorized", exception.getMessage());
+       
+    }
+    @Test 
+    public void createGamePass() throws Exception {
+        user.createUser("username", "password", "email");
+        String auth1=auto.createAuth("username");
+        int id = game.createGame("newGame");
+        assertNotNull(id);
+        assertEquals("newGame", game.checkGame(id).gameName());
+    }
+    @Test 
+    public void createGameFail() throws Exception {
+        user.createUser("username", "password", "email");
+        String auth1=auto.createAuth("username");
+        int id = game.createGame("newGame");
+        GameService service = new GameService(game, auto);
+        assertNotNull(id);
+        //adding same game
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
+            service.createGame(auth1, "newGame");;
+        });
+        Assertions.assertEquals("Error: already taken", exception.getMessage());
+    }
     @Test
     public void joinGameTestPass() throws Exception{
         user.createUser("username", "password", "email");
