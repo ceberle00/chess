@@ -68,10 +68,10 @@ public class ServiceTests {
 
         GameService service = new GameService(game, auto);
         service.joinGame(id, "newGame", TeamColor.WHITE, auth1);
-        DataAccessException exception = Assertions.assertThrows(DataAccessException.class, () -> {
+        Exception exception = Assertions.assertThrows(Exception.class, () -> {
             service.joinGame(id, "newGame", TeamColor.WHITE, auth1);
         });
-        Assertions.assertEquals("color already taken", exception.getMessage());
+        Assertions.assertEquals("Error: bad request", exception.getMessage());
         //it should fail, make sure that it throws an exception for 
     }
     @Test
@@ -165,6 +165,6 @@ public class ServiceTests {
         Exception exception = Assertions.assertThrows(Exception.class, () -> {
             service.logoutUser("username");
         });
-        Assertions.assertEquals("authorization failed", exception.getMessage());
+        Assertions.assertEquals("Error: unauthorized", exception.getMessage());
     }
 }

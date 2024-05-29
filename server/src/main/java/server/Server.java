@@ -55,7 +55,7 @@ public class Server
         (gameHandler.listGames(req,  
        res)));
        Spark.post("/game", (req, res) ->
-        (gameHandler.listGames(req,  
+        (gameHandler.createGame(req,  
        res)));
 
         Spark.awaitInitialization();

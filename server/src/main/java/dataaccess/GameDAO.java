@@ -10,12 +10,16 @@ public class GameDAO implements MemoryGameDAO
 {
     //vector of games?
     private Map<Integer, GameData> games = new HashMap<Integer, GameData>(); //maybe make into map
-    private int gameID = 0;
+    private Integer gameID = 0;
     
     @Override
     public void clearGames()
     {
         this.games.clear();
+    }
+    @Override
+    public void setID(Integer value) {
+        this.gameID = value;
     }
     @Override
     public Map<Integer, GameData> getGames() {
@@ -33,7 +37,7 @@ public class GameDAO implements MemoryGameDAO
         return null;
     }
     @Override
-    public int createGame(String gameName) 
+    public Integer createGame(String gameName) 
     {
         this.gameID += 1;
         ChessGame game = new ChessGame();

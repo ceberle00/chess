@@ -26,20 +26,22 @@ public class GameService {
     public AuthData valiAuthData(String authToken) throws DataAccessException
     {
         AuthData data = auth.getAuth(authToken);
-        if (data == null) {
-            throw new DataAccessException("authorization failed");
+        if (data == null) 
+        {   
+            this.game.setID(null);
+            throw new DataAccessException("Error: unauthorized");
         }
         else {
             return data;
         }
 
     }
-    public void joinGame(int gameID, String gameName, TeamColor color, String authToken) throws DataAccessException
+    public void joinGame(int gameID, String gameName, TeamColor color, String authToken) throws Exception
     {
         AuthData auth = valiAuthData(authToken);
         GameData data = this.game.checkGame(gameID);
         if (data == null) {
-            throw new DataAccessException("game does not exist");
+            throw new Exception("Error: bad request");
         }
         if (color == TeamColor.BLACK) 
         {
@@ -49,7 +51,7 @@ public class GameService {
 
             }
             else {
-                throw new DataAccessException("color already taken");
+                throw new Exception("Error: bad request");
             }
         }
         else if (color == TeamColor.WHITE){
@@ -57,21 +59,21 @@ public class GameService {
                 this.game.joinGame(gameID, auth, color);
             }
             else {
-                throw new DataAccessException("color already taken");
+                throw new Exception("Error: bad request");
             }
         }
         else {
-            throw new DataAccessException("Cannot join null color");
+            throw new Exception("Error: bad request");
         }
     }
-    public void createGame(String authToken, String gameName) throws DataAccessException
+    public Integer createGame(String authToken, String gameName) throws DataAccessException
     {
         valiAuthData(authToken);
         if (this.game.getGameName(gameName) != null) 
         {
             throw new DataAccessException("Game name already taken");
         }
-        this.game.createGame(gameName);
+        return this.game.createGame(gameName);
         //will pass back gameID later for handlers
     }
     public ArrayList<GameData> listGames(String authToken) throws DataAccessException
