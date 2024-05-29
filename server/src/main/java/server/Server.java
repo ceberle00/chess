@@ -14,17 +14,17 @@ import spark.*;
 public class Server 
 {
 
-    private final AuthDAO auth = new AuthDAO();
-    private final GameDAO game = new GameDAO();
-    private final UserDAO user = new UserDAO();
+    private AuthDAO auth = new AuthDAO();
+    private  GameDAO game = new GameDAO();
+    private UserDAO user = new UserDAO();
 
-    private final UserService userService;
-    private final SystemService systemService;
-    private final GameService gameService;
+    private UserService userService;
+    private SystemService systemService;
+    private GameService gameService;
 
-    private final SystemHandler clearHandler;
-    private final UserHandler userHandler;
-    private final GameHandler gameHandler;
+    private SystemHandler clearHandler;
+    private UserHandler userHandler;
+    private GameHandler gameHandler;
 
     public Server() {
         this.userService = new UserService(user, auth);

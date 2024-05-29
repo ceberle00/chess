@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
-import org.junit.jupiter.api.Test;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StandardAPITests {
@@ -69,8 +68,7 @@ public class StandardAPITests {
     @Test
     @Order(2)
     @DisplayName("Normal User Login")
-    public void successLogin() 
-    {
+    public void successLogin() {
         TestAuthResult loginResult = serverFacade.login(existingUser);
 
         assertHttpOk(loginResult);
@@ -247,10 +245,10 @@ public class StandardAPITests {
         //add existing user as black
         TestJoinRequest joinRequest = new TestJoinRequest(ChessGame.TeamColor.BLACK, createResult.getGameID());
         serverFacade.joinPlayer(joinRequest, existingAuth);
-
+        System.out.println(joinRequest);
         //register second user
         TestAuthResult registerResult = serverFacade.register(newUser);
-
+        System.out.println(registerResult);
         //join request trying to also join  as black
         TestResult joinResult = serverFacade.joinPlayer(joinRequest, registerResult.getAuthToken());
 

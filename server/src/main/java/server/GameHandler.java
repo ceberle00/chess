@@ -52,6 +52,7 @@ public class GameHandler {
             failedPast = true;
             Integer id = service.createGame(authString, req.getName());
             AddGameResult res = new AddGameResult(id);
+            System.out.println(id);
             response.status(200);
             return new Gson().toJson(res);
 
@@ -72,24 +73,44 @@ public class GameHandler {
         }
     }
     public Object joinGame(Request request, Response response) throws Exception {
+        boolean badData = false;
+        boolean failAuth = false;
+        boolean colorTaken = false;
         try {
             String authString = request.headers("authorization");
+            failAuth = true;
             service.valiAuthData(authString);
-            //String requestBody = request.body();
-            //System.out.println("Received request body: " + requestBody);
-            JoinGameRequest joinRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
+            String requestBody = request.body();
+            System.out.println("Received request body: " + requestBody); // Debug log
+            
+            JoinGameRequest joinRequest = new Gson().fromJson(requestBody, JoinGameRequest.class);
+            
+            if (joinRequest.getId() == null) {
+                badData = true;
+                System.out.println("in id null");
+                throw new Exception("Error: bad request");
+            }
+            
+            if (joinRequest.getColor() == null) {
+                System.out.println("in color null");
+                badData = true;
+                throw new Exception("Error: bad request");
+            }
+            colorTaken = true;
+            //JoinGameRequest joinRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
             service.joinGame(joinRequest.getId(), joinRequest.getColor(), authString);
             response.status(200);
             return new Gson().toJson(null);
 
         }catch (Exception e) {
-            if (e.getMessage().equals("Error: already taken")) {
+            System.err.println("Caught exception: " + e.getMessage()); // Debug log
+            if (colorTaken) {
                 response.status(403);
             }
-            else if (e.getMessage().equals("Error: bad request")) {
+            else if (badData) {
                 response.status(400);
             }
-            else if (e.getMessage().equals("Error: unauthorized")) {
+            else if (failAuth) {
                 response.status(401);
             }
             else {

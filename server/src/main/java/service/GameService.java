@@ -43,9 +43,6 @@ public class GameService {
         if (data == null) {
             throw new Exception("Error: bad request");
         }
-        if (color == null) {
-            throw new Exception("Error: bad request");
-        }
         if (color == TeamColor.BLACK) 
         {
             if (data.blackUsername() == null) {
@@ -74,7 +71,7 @@ public class GameService {
         valiAuthData(authToken);
         if (this.game.getGameName(gameName) != null) 
         {
-            throw new DataAccessException("Game name already taken");
+            throw new DataAccessException("Error: already taken");
         }
         return this.game.createGame(gameName);
         //will pass back gameID later for handlers
