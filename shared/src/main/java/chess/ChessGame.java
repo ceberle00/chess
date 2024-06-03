@@ -209,15 +209,11 @@ public class ChessGame {
         if (moves == null) {
             throw new InvalidMoveException("no valid moves available");
         }
-        if (this.board.getPiece(starPosition).getTeamColor() != this.getTeamTurn()) 
-        {
+        if (this.board.getPiece(starPosition).getTeamColor() != this.getTeamTurn()) {
             throw new InvalidMoveException("not your turn");
         }
-        //check if that move is in moves? maybe?
-        //not sure how the different objects will work with "contains"
         if (moves.contains(move)) 
         {
-            //we'll have valid moves check for the 
             ChessPiece piece = board.getPiece(move.getStartPosition());
             if (move.getPromotionPiece() != null) {
                 piece.setPieceType(move.getPromotionPiece());
@@ -281,7 +277,6 @@ public class ChessGame {
                         if (move.getEndPosition().equals(new ChessPosition(1, 3)) && board.getPiece(posRook1) != null && board.getPiece(posRook1).getMoved() == false) {
                             if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) 
                             {
-                                //maybe also check for middle I guess, although if it's in moves it should be fine
                                 ChessPosition newRook = new ChessPosition(1, 4);
                                 this.board.addPiece(move.getEndPosition(), piece);
                                 this.board.addPiece(starPosition, null);
@@ -294,7 +289,6 @@ public class ChessGame {
                         else if (move.getEndPosition().equals(new ChessPosition(1, 7)) && board.getPiece(posRook2) != null && board.getPiece(posRook2).getMoved() == false) {
                             if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) 
                             {
-                                //maybe also check for middle I guess, although if it's in moves it should be fine
                                 ChessPosition newRook = new ChessPosition(1, 6);
                                 this.board.addPiece(move.getEndPosition(), piece);
                                 this.board.addPiece(starPosition, null);

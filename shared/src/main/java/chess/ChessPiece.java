@@ -1125,13 +1125,10 @@ public class ChessPiece {
         if (board.getPiece(myPosition) == null) {
             throw new RuntimeException("No piece in this position");
         }
-        int column = myPosition.getColumn();
-        int rows = myPosition.getRow();
         if (this.pieceType == PieceType.BISHOP) {
             moves = bishopMoves(board, myPosition, moves);
         }
-        else if (this.pieceType == PieceType.KING) 
-        {
+        else if (this.pieceType == PieceType.KING) {
             moves = kingMoves(board, myPosition, moves);
         }
         else if (this.pieceType == PieceType.KNIGHT) {
@@ -1144,8 +1141,7 @@ public class ChessPiece {
         else if (this.pieceType == PieceType.QUEEN) {
             moves = queenMoves(board, myPosition, moves);
         }
-        else if (this.pieceType == PieceType.ROOK) 
-        {
+        else if (this.pieceType == PieceType.ROOK) {
             moves = rookMoves(board, myPosition, moves);
         }
         return moves;
