@@ -6,8 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 import java.util.*;
+import com.google.gson.Gson;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -19,38 +19,46 @@ public class SQLAuthDAO implements MemoryAuthDAO
     @Override
     public void clearAuth() throws DataAccessException
     {
-        String message = "TRUNCATE authData";
+        var message = "TRUNCATE authData";
         executeUpdate(message);
     }
     @Override
-    public AuthData getAuth(String authData) 
+    public AuthData getAuth(String authData) throws DataAccessException
     {
-        String message = "";
-        for (int i = 0; i < this.auth.size(); i++) 
-        {
-            if (this.auth.elementAt(i).getAuth().equals(authData)) {
-                return this.auth.elementAt(i);
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT * FROM authData WHERE token=?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, authData);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        String token = rs.getString("token");
+                        String username = rs.getString("username");
+                        return new AuthData(token, username);
+                    }
+                    else {
+                        return null;
+                    }
+                }
             }
         }
-        return null;
+        catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
     @Override
-    public String createAuth(String username) {
+    public String createAuth(String user) throws DataAccessException{
         String authValue = UUID.randomUUID().toString();
-        AuthData data = new AuthData(authValue, username);
-        this.auth.add(data);
+        AuthData data = new AuthData(authValue, user);
+        var statement = "INSERT INTO authData (username, token) VALUES (?, ?)";
+        var json = new Gson().toJson(data);
+        executeUpdate(statement, data.getUser(), data.getAuth(), json);
         return authValue;
     }
     @Override
-    public void deleteSession(String authToken) 
+    public void deleteSession(String authToken) throws DataAccessException
     {
-        for (int i = 0; i < this.auth.size(); i++) 
-        {
-            if (this.auth.elementAt(i).getAuth().equals(authToken)) {
-                this.auth.remove(i);
-                i = i-1;
-            }
-        }
+        var statement = "DELETE FROM authData WHERE token= ?";
+        executeUpdate(statement, authToken);
     }
 
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
