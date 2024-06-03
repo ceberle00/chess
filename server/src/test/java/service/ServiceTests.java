@@ -8,10 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 
-import org.glassfish.grizzly.utils.Exceptions;
 import org.junit.jupiter.api.*;
-
-import com.mysql.cj.exceptions.ExceptionFactory;
 
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
