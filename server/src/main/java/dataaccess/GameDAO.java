@@ -23,8 +23,8 @@ public class GameDAO implements MemoryGameDAO
     }
     
     @Override
-    public Map<Integer, GameData> getGames() {
-        return this.games; //hopefully right, idk if just the vector is okay
+    public Collection<GameData> getGames() {
+        return this.games.values(); //hopefully right, idk if just the vector is okay
     }
     @Override
     public GameData getGameName(String gameName) 
