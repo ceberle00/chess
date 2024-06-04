@@ -1,21 +1,17 @@
 package dataaccess;
 
 import chess.model.AuthData;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import com.google.gson.Gson;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class SQLAuthDAO implements MemoryAuthDAO
 {
-    private Vector<AuthData> auth = new Vector<>();
-
     @Override
     public void clearAuth() throws DataAccessException
     {
@@ -49,9 +45,8 @@ public class SQLAuthDAO implements MemoryAuthDAO
     public String createAuth(String user) throws DataAccessException{
         String authValue = UUID.randomUUID().toString();
         AuthData data = new AuthData(authValue, user);
-        var statement = "INSERT INTO authData (username, token) VALUES (?, ?)";
-        var json = new Gson().toJson(data);
-        executeUpdate(statement, data.getUser(), data.getAuth(), json);
+        var statement = "INSERT INTO authData (token, username) VALUES (?, ?)";
+        executeUpdate(statement, data.getAuth(), data.getUser());
         return authValue;
     }
     @Override
@@ -66,10 +61,10 @@ public class SQLAuthDAO implements MemoryAuthDAO
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param instanceof AuthData p) ps.setString(i + 1, p.toString());
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p) ps.setString(i+1, p);
+                    else if (param instanceof Integer p) ps.setInt(i +1, p);
+                    else if (param instanceof AuthData p) ps.setString(i+1, p.toString());
+                    else if (param == null) ps.setNull(i+1, NULL);
                 }
                 ps.executeUpdate();
 
