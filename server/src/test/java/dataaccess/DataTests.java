@@ -1,13 +1,6 @@
 package dataaccess;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.SQLAuthDAO;
-import dataaccess.SQLGameDAO;
-import dataaccess.SQLUserDAO;
+
 import java.util.Collection;
-import dataaccess.UserDAO;
-import service.SQLGameService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,7 +15,7 @@ import chess.model.GameData;
 import chess.model.UserData;
 
     
-public class DaoTests {
+public class DataTests {
     private SQLAuthDAO auth = new SQLAuthDAO();
     private SQLGameDAO games = new SQLGameDAO();
     private SQLUserDAO users = new SQLUserDAO();
