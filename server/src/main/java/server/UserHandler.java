@@ -1,11 +1,11 @@
 package server;
 
-import service.LoginRequest;
-import service.LoginResult;
-import service.LogoutResult;
-import service.RegisterRequest;
-import service.RegisterResult;
-import service.UserService;
+import service.*;
+import service.Requests.LoginRequest;
+import service.Requests.RegisterRequest;
+import service.Results.LoginResult;
+import service.Results.LogoutResult;
+import service.Results.RegisterResult;
 import spark.*;
 import com.google.gson.Gson;
 
@@ -13,9 +13,9 @@ import com.google.gson.Gson;
 
 public class UserHandler {
 
-    private UserService service;
+    private SQLUserService service;
 
-    public UserHandler(UserService user) {
+    public UserHandler(SQLUserService user) {
         this.service = user;
     }
 

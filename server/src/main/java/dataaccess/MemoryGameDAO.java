@@ -1,13 +1,8 @@
 package dataaccess;
-import chess.ChessGame;
 import chess.ChessGame.TeamColor;
 import chess.model.*;
-import javax.xml.crypto.Data;
 import java.util.Collection;
 
-import java.text.CollationElementIterator;
-import java.util.ArrayList;
-import java.util.List;
 
 public interface MemoryGameDAO {
     void clearGames() throws DataAccessException;

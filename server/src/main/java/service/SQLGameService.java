@@ -3,26 +3,23 @@ package service;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
 import chess.model.GameData;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
+import dataaccess.*;
 
+public class SQLGameService implements GameServiceMemory{
+    
+    private SQLGameDAO game = new SQLGameDAO();
+    private SQLAuthDAO auth = new SQLAuthDAO();
 
-public class GameService implements GameServiceMemory{
-
-    private GameDAO game = new GameDAO();
-    private AuthDAO auth = new AuthDAO();
-
-    public GameService() {
+    public SQLGameService() {
     }
-    public GameDAO getGame() {
+    public SQLGameDAO getGame() {
+        System.out.println("In get Game");
         return this.game;
     }
-    public GameService(GameDAO game, AuthDAO auth) {
+    public SQLGameService(SQLGameDAO game, SQLAuthDAO auth) {
         this.game = game;
         this.auth = auth;
     }

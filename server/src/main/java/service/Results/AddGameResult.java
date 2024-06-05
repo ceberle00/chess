@@ -1,4 +1,4 @@
-package service;
+package service.Results;
 
 public class AddGameResult {
     private Integer gameID;

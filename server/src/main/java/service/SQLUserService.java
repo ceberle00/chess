@@ -2,19 +2,18 @@ package service;
 
 import chess.model.AuthData;
 import chess.model.UserData;
-import dataaccess.AuthDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
 
-public class UserService implements UserServiceMemory{
-    private UserDAO user;
-    private AuthDAO auth;
+public class SQLUserService implements UserServiceMemory{
+    private SQLUserDAO user;
+    private SQLAuthDAO auth;
 
-    public UserService(UserDAO u, AuthDAO a) {
+    public SQLUserService(SQLUserDAO u, SQLAuthDAO a) {
         this.auth = a;
         this.user = u;
     }
     @Override
-    public UserData getUser(String userName) 
+    public UserData getUser(String userName) throws DataAccessException
     {
         return this.user.getUser(userName);
     }
@@ -24,7 +23,7 @@ public class UserService implements UserServiceMemory{
         this.user.createUser(username, password, email);
     }
     @Override
-    public String createAuth(String username) {
+    public String createAuth(String username) throws DataAccessException {
         return this.auth.createAuth(username);
     }
     @Override
@@ -45,7 +44,7 @@ public class UserService implements UserServiceMemory{
         }
         this.auth.deleteSession(data.authToken());
     }
-    public AuthDAO getAuth() {
+    public SQLAuthDAO getAuth() {
         return this.auth;
     }
 }

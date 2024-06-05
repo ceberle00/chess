@@ -3,19 +3,20 @@ import chess.model.*;
 import spark.*;
 import com.google.gson.Gson;
 import java.util.Map;
-import service.AddGameRequest;
-import service.AddGameResult;
-import service.GameService;
-import service.JoinGameRequest;
-import service.ListGamesResult;
+import java.util.Collection;
 
-import java.util.ArrayList;
+import service.*;
+import service.Requests.AddGameRequest;
+import service.Requests.JoinGameRequest;
+import service.Results.AddGameResult;
+import service.Results.ListGamesResult;
+
 
 public class GameHandler {
 
-    private GameService service;
+    private SQLGameService service;
 
-    public GameHandler(GameService service) {
+    public GameHandler(SQLGameService service) {
         this.service = service;
     }
 
@@ -25,7 +26,7 @@ public class GameHandler {
             String authString = request.headers("authorization");
             failedAuth = true;
             service.valiAuthData(authString);
-            ArrayList<GameData> listGames = service.listGames(authString);
+            Collection<GameData> listGames = service.listGames(authString);
             ListGamesResult res = new ListGamesResult(listGames);
             response.status(200);
             return new Gson().toJson(res);

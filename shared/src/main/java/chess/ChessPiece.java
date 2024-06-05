@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import chess.ChessGame.TeamColor;
 import java.util.Objects;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Represents a single chess piece
  * <p>
@@ -41,8 +43,11 @@ public class ChessPiece {
             "}";
     }
 
+
     private ChessPosition pos;
+    @SerializedName("pieceType")
     private PieceType pieceType;
+    @SerializedName("color")
     private TeamColor color;
     private boolean moved = false;
 

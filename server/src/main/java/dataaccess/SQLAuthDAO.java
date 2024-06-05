@@ -1,7 +1,6 @@
 package dataaccess;
 
 import chess.model.AuthData;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,14 +14,14 @@ public class SQLAuthDAO implements MemoryAuthDAO
     @Override
     public void clearAuth() throws DataAccessException
     {
-        var message = "TRUNCATE authData";
+        var message = "TRUNCATE authdata";
         executeUpdate(message);
     }
     @Override
     public AuthData getAuth(String authData) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT * FROM authData WHERE token=?";
+            String statement = "SELECT * FROM authdata WHERE token=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authData);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -45,14 +44,14 @@ public class SQLAuthDAO implements MemoryAuthDAO
     public String createAuth(String user) throws DataAccessException{
         String authValue = UUID.randomUUID().toString();
         AuthData data = new AuthData(authValue, user);
-        var statement = "INSERT INTO authData (token, username) VALUES (?, ?)";
+        var statement = "INSERT INTO authdata (token, username) VALUES (?, ?)";
         executeUpdate(statement, data.getAuth(), data.getUser());
         return authValue;
     }
     @Override
     public void deleteSession(String authToken) throws DataAccessException
     {
-        var statement = "DELETE FROM authData WHERE token= ?";
+        var statement = "DELETE FROM authdata WHERE token= ?";
         executeUpdate(statement, authToken);
     }
 

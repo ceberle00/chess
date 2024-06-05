@@ -46,10 +46,8 @@ public class SQLUserDAO implements MemoryUserDAO
     @Override
     public UserData getUserPass(String username, String password) throws DataAccessException
     {
-        //hopefully right, may have problems with matching both
-        //handle with hashing?
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT * FROM userData WHERE username=? AND password=?";
+            String statement = "SELECT * FROM userdata WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -78,7 +76,10 @@ public class SQLUserDAO implements MemoryUserDAO
     @Override
     public void createUser(String username, String password, String email) throws DataAccessException
     {
-        var Statement = "INSERT INTO userData (username, pasword, email) VALUES (?,?,?)";
+        if (getUser(username) != null) {
+            throw new DataAccessException("Error: already taken");
+        }
+        var Statement = "INSERT INTO userData (username, password, email) VALUES (?,?,?)";
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         executeUpdate(Statement, username, hashedPassword, email);
     }
@@ -89,7 +90,7 @@ public class SQLUserDAO implements MemoryUserDAO
                     var param = params[i];
                     if (param instanceof String p) ps.setString(i+1, p);
                     else if (param instanceof Integer p) ps.setInt(i +1, p);
-                    else if (param instanceof AuthData p) ps.setString(i+1, p.toString());
+                    else if (param instanceof UserData p) ps.setString(i+1, p.toString());
                     else if (param == null) ps.setNull(i+1, NULL);
                 }
                 ps.executeUpdate();

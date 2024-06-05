@@ -2,16 +2,13 @@ package dataaccess;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.google.gson.Gson;
-import javax.xml.crypto.Data;
 import java.util.Collection;
 import chess.ChessGame;
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
 import chess.model.GameData;
-import chess.model.UserData;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -36,7 +33,7 @@ public class SQLGameDAO implements MemoryGameDAO {
     public Collection<GameData> getGames() throws DataAccessException{
         ArrayList<GameData> result = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT chessGame FROM gameData";
+            String statement = "SELECT * FROM gameData";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -51,19 +48,26 @@ public class SQLGameDAO implements MemoryGameDAO {
         }
     }
     private GameData readGame(ResultSet rs) throws SQLException {
-        var gameJson = rs.getString("chessGame");
-        ChessGame game = new Gson().fromJson(gameJson, ChessGame.class);
-        Integer id = rs.getInt("gameID");
-        String bUser = rs.getString("blackUsername");
-        String wUser = rs.getString("whiteUsername");
-        String gameName = rs.getString("gameName");
-        return new GameData(id, bUser, wUser, gameName, game);
+        try {
+            Integer id = rs.getInt("gameID");
+            String wUser = rs.getString("whiteUsername");
+            String bUser = rs.getString("blackUsername");
+            String gameName = rs.getString("gameName");
+            String jsonGame = rs.getString("games");
+            ChessGame game = new Gson().fromJson(jsonGame, ChessGame.class);
+            return new GameData(id, wUser, bUser, gameName, game);
+        }
+        catch (SQLException e) {
+            System.err.println("Error deserializing ChessGame: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
     @Override
     public GameData getGameName(String gameName) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT * FROM gameData WHERE gameName=?";
+            String statement = "SELECT * FROM gamedata WHERE gameName=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, gameName);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -71,7 +75,7 @@ public class SQLGameDAO implements MemoryGameDAO {
                         Integer gameId = rs.getInt("gameID");
                         String whiteUser = rs.getString("whiteUsername");
                         String blkUser = rs.getString("blackUsername");
-                        var gameJson = rs.getString("chessGame");
+                        var gameJson = rs.getString("games");
                         ChessGame game = new Gson().fromJson(gameJson, ChessGame.class);
                         return new GameData(gameId, whiteUser, blkUser, gameName, game);
 
@@ -96,8 +100,9 @@ public class SQLGameDAO implements MemoryGameDAO {
         this.gameID += 1;
         Integer newValue = this.gameID;
         ChessGame game = new ChessGame();
-        var Statement = "INSERT INTO userData (gameID, whiteUsername, blackUsername, gameName, chessGame) VALUES (?,?,?, ?,?)";
-        executeUpdate(Statement, newValue, NULL, NULL, gameName, game);
+        String jsonGame = new Gson().toJson(game);
+        var Statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, games) VALUES (?,?,?,?,?)";
+        executeUpdate(Statement, newValue, null, null, gameName, jsonGame);
         return newValue;
     }
     @Override
@@ -109,6 +114,7 @@ public class SQLGameDAO implements MemoryGameDAO {
                 ps.setInt(1, gameId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
+                        System.out.println("before return");
                         return readGame(rs);
                     }
                     else {
@@ -118,6 +124,7 @@ public class SQLGameDAO implements MemoryGameDAO {
             }
         }
         catch (SQLException e) {
+            System.err.println("Error deserializing ChessGame: " + e.getMessage());
             throw new DataAccessException(e.getMessage());
         }
     }
@@ -127,13 +134,12 @@ public class SQLGameDAO implements MemoryGameDAO {
         GameData tempGame = checkGame(gameID);
         if (color == TeamColor.BLACK && tempGame.blackUsername() == null) 
         {
-            //GameData newGame = new GameData(gameID, tempGame.whiteUsername(), data.getUser(), tempGame.gameName(), tempGame.game());
             var Statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
             executeUpdate(Statement, data.username(), gameID);
         }
         else if (color == TeamColor.WHITE && tempGame.whiteUsername() == null)
         {
-            var Statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
+            var Statement = "UPDATE gamedata SET whiteUsername = ? WHERE gameID = ?";
             executeUpdate(Statement, data.username(), gameID);
         }
 
@@ -143,13 +149,13 @@ public class SQLGameDAO implements MemoryGameDAO {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i+1, p);
-                    else if (param instanceof Integer p) ps.setInt(i +1, p);
-                    else if (param instanceof AuthData p) ps.setString(i+1, p.toString());
-                    else if (param == null) ps.setNull(i+1, NULL);
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                    else ps.setString(i + 1, param.toString()); // Treat all other objects as strings
                 }
                 ps.executeUpdate();
-
+    
                 var rs = ps.getGeneratedKeys();
                 if (rs.next()) {
                     return;

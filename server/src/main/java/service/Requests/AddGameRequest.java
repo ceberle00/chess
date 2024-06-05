@@ -1,4 +1,4 @@
-package service;
+package service.Requests;
 
 public class AddGameRequest {
     private String gameName;

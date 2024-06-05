@@ -1,17 +1,16 @@
-package service;
+package service.Results;
 
-import java.util.ArrayList;
-
+import java.util.Collection;
 
 import chess.model.GameData;
 
 public class ListGamesResult {
     private String message;
-    private ArrayList<GameData> games;
+    private Collection<GameData> games;
     public ListGamesResult(String m) {
         this.message = m;
     }
-    public ListGamesResult(ArrayList<GameData> g) {
+    public ListGamesResult(Collection<GameData> g) {
         this.games = g;
     }
 }

@@ -2,7 +2,9 @@ package chess;
 
 import java.util.*;
 
-import chess.ChessPiece.PieceType; 
+import com.google.gson.annotations.SerializedName;
+
+import chess.ChessPiece.PieceType;
 /**
  * For a class that can manage a chess game, making moves on a board
  * <p>
@@ -11,34 +13,20 @@ import chess.ChessPiece.PieceType;
  */
 public class ChessGame {
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (!(o instanceof ChessGame)) {
-            return false;
-        }
-        ChessGame chessGame = (ChessGame) o;
-        return Objects.equals(this, chessGame);
-    }
-
     //maybe will need to change once variables added
     @Override
     public int hashCode() {
         return super.hashCode();
     }
-
-    @Override
-    public String toString() {
-        return "{" +
-            "}";
-    }
     private boolean isCastle = false; //using this maybe?
     private TeamColor turn = TeamColor.WHITE;
     private ChessBoard board;
     private ChessMove castleMove;
-    private Map<ChessPiece, ChessPosition> blackKing = new HashMap<>();
-    private Map<ChessPiece, ChessPosition> whiteKing = new HashMap<>();
+
+    @SerializedName("blackKing")
+    private ChessPosition blackKing;
+    @SerializedName("whiteKing")
+    private ChessPosition whiteKing;
     public ChessGame() {
         this.board = new ChessBoard();
         this.board.resetBoard();
@@ -47,8 +35,8 @@ public class ChessGame {
         ChessPosition black = new ChessPosition(7, 4);
         ChessPiece wh = this.board.getPiece(white);
         ChessPiece bl = this.board.getPiece(black);
-        blackKing.put(bl, black);
-        whiteKing.put(wh, white);
+        blackKing = black;
+        whiteKing = white;
 
 
     }
@@ -436,8 +424,8 @@ public class ChessGame {
     {
         this.board = board;
         //iterate through board, find kings, set them 
-        this.blackKing.clear();
-        this.whiteKing.clear();
+        //this.blackKing.clear();
+        //this.whiteKing.clear();
 
     }
 
@@ -449,4 +437,17 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return this.board;
     }
+    //HERE STOPPED
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ChessGame)) {
+            return false;
+        }
+        ChessGame chessGame = (ChessGame) o;
+        return isCastle == chessGame.isCastle && Objects.equals(turn, chessGame.turn) && Objects.equals(board, chessGame.board) && Objects.equals(castleMove, chessGame.castleMove) && Objects.equals(blackKing, chessGame.blackKing) && Objects.equals(whiteKing, chessGame.whiteKing);
+    }
+    
 }
