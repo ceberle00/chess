@@ -42,6 +42,9 @@ public class SQLAuthDAO
         }
     }
     public String createAuth(String user) throws DataAccessException{
+        if (user == null) {
+            throw new DataAccessException("Error: unauthorized");
+        }
         String authValue = UUID.randomUUID().toString();
         AuthData data = new AuthData(authValue, user);
         var statement = "INSERT INTO authData (token, username) VALUES (?, ?)";
