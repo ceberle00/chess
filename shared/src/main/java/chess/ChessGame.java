@@ -198,7 +198,7 @@ public class ChessGame {
         if (this.board.getPiece(starPosition).getTeamColor() != this.getTeamTurn()) {
             throw new InvalidMoveException("not your turn");
         }
-        if (moves.contains(move)) 
+        if (moves.contains(move))
         {
             ChessPiece piece = board.getPiece(move.getStartPosition());
             if (move.getPromotionPiece() != null) {
@@ -208,52 +208,35 @@ public class ChessGame {
             if (piece.getTeamColor() == TeamColor.BLACK) {
                 next = TeamColor.WHITE;
             }
-            if (move.getIsCastle()) 
-            {
+            if (move.getIsCastle()) {
                 ChessPiece piece2 = this.board.getPiece(move.getCastleStart());
-                this.board.addPiece(move.getCastleEnd(), piece2);
-                this.board.addPiece(move.getCastleStart(), null);
-                this.board.addPiece(move.getEndPosition(), piece);
-                this.board.addPiece(move.getCastleStart(), null);
+                this.board.castlingMove(move.getCastleStart(), move.getCastleEnd(), piece2, move.getStartPosition(), move.getEndPosition(), piece);
                 this.board.getPiece(move.getCastleEnd()).setMoved(true);
                 this.board.getPiece(move.getEndPosition()).setMoved(true);
             }
             else {
-                if (piece.getPieceType() == PieceType.KING ) 
-                {
-                    if (piece.getTeamColor() == TeamColor.BLACK) 
-                    {
+                if (piece.getPieceType() == PieceType.KING ) {
+                    if (piece.getTeamColor() == TeamColor.BLACK) {
                         ChessPosition posRook1 = new ChessPosition(8, 1);
                         ChessPosition posRook2 = new ChessPosition(8, 8);
                         if (move.getEndPosition().equals(new ChessPosition(8, 3)) && board.getPiece(posRook1) != null && board.getPiece(posRook1).getMoved() == false) {
-                            if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) 
-                            {
-                                //maybe also check for middle I guess, although if it's in moves it should be fine
+                            if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) {
                                 ChessPosition newRook = new ChessPosition(8, 4);
-                                this.board.addPiece(move.getEndPosition(), piece);
-                                this.board.addPiece(starPosition, null);
-                                this.board.addPiece(newRook, board.getPiece(posRook1));
-                                this.board.addPiece(posRook1, null);
+                                this.board.castlingMove(posRook1, newRook, board.getPiece(posRook1), starPosition, move.getEndPosition(), piece);
                                 this.board.getPiece(newRook).setMoved(true);
                                 this.board.getPiece(move.getEndPosition()).setMoved(true);
                             }
                         }
                         else if (move.getEndPosition().equals(new ChessPosition(8, 7)) && board.getPiece(posRook2) != null && board.getPiece(posRook2).getMoved() == false) {
-                            if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) 
-                            {
-                                //maybe also check for middle I guess, although if it's in moves it should be fine
+                            if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) {
                                 ChessPosition newRook = new ChessPosition(8, 6);
-                                this.board.addPiece(move.getEndPosition(), piece);
-                                this.board.addPiece(starPosition, null);
-                                this.board.addPiece(newRook, board.getPiece(posRook2));
-                                this.board.addPiece(posRook2, null);
+                                this.board.castlingMove(posRook2, newRook, board.getPiece(posRook2), starPosition, move.getEndPosition(), piece);
                                 this.board.getPiece(newRook).setMoved(true);
                                 this.board.getPiece(move.getEndPosition()).setMoved(true);
                             }
                         }
                         else {
-                            this.board.addPiece(move.getEndPosition(), piece);
-                            this.board.addPiece(starPosition, null);
+                            this.board.addPieceMove(starPosition, move.getEndPosition(), piece);
                             this.board.getPiece(move.getEndPosition()).setMoved(true);
                         }
                     }
@@ -261,46 +244,32 @@ public class ChessGame {
                         ChessPosition posRook1 = new ChessPosition(1, 1);
                         ChessPosition posRook2 = new ChessPosition(1, 8);
                         if (move.getEndPosition().equals(new ChessPosition(1, 3)) && board.getPiece(posRook1) != null && board.getPiece(posRook1).getMoved() == false) {
-                            if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) 
-                            {
+                            if (board.getPiece(posRook1).getPieceType() == PieceType.ROOK) {
                                 ChessPosition newRook = new ChessPosition(1, 4);
-                                this.board.addPiece(move.getEndPosition(), piece);
-                                this.board.addPiece(starPosition, null);
-                                this.board.addPiece(newRook, board.getPiece(posRook1));
-                                this.board.addPiece(posRook1, null);
+                                this.board.castlingMove(posRook1, newRook, board.getPiece(posRook1), starPosition, move.getEndPosition(), piece);
                                 this.board.getPiece(newRook).setMoved(true);
                                 this.board.getPiece(move.getEndPosition()).setMoved(true);
                             }
                         }
                         else if (move.getEndPosition().equals(new ChessPosition(1, 7)) && board.getPiece(posRook2) != null && board.getPiece(posRook2).getMoved() == false) {
-                            if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) 
-                            {
+                            if (board.getPiece(posRook2).getPieceType() == PieceType.ROOK) {
                                 ChessPosition newRook = new ChessPosition(1, 6);
-                                this.board.addPiece(move.getEndPosition(), piece);
-                                this.board.addPiece(starPosition, null);
-                                this.board.addPiece(newRook, board.getPiece(posRook2));
-                                this.board.addPiece(posRook2, null);
+                                this.board.castlingMove(posRook2, newRook, board.getPiece(posRook2), starPosition, move.getEndPosition(), piece);
                                 this.board.getPiece(newRook).setMoved(true);
                                 this.board.getPiece(move.getEndPosition()).setMoved(true);
                             }
                         }
                         else {
-                            this.board.addPiece(move.getEndPosition(), piece);
-                            this.board.addPiece(starPosition, null);
+                            this.board.addPieceMove(starPosition, move.getEndPosition(), piece);
                             this.board.getPiece(move.getEndPosition()).setMoved(true);
                         }
                     }
-                    //check every place they could end? 
-                    
                 }
-                
                 else {
-                    this.board.addPiece(starPosition, null);
-                    this.board.addPiece(move.getEndPosition(), piece); 
+                    this.board.addPieceMove(starPosition, move.getEndPosition(), piece);
                     this.board.getPiece(move.getEndPosition()).setMoved(true);
                 }
             }
-            
             setTeamTurn(next);
         }
         else {
@@ -393,7 +362,7 @@ public class ChessGame {
         if (getTeamTurn() != teamColor) {
             return false;
         }
-        else 
+        else
         {
             for (int i = 1; i < 9; i++) {
                 for (int j = 1; j < 9; j++)

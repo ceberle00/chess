@@ -82,6 +82,35 @@ public class ChessBoard {
         //throw new RuntimeException();
     }
 
+    public void addPieceMove(ChessPosition start, ChessPosition end, ChessPiece piece) {
+        if (start.getRow() < 1 || start.getRow() > 8 || end.getRow() < 1 || end.getRow() > 8) {
+            throw new RuntimeException("Invalid position");
+        }
+        if (start.getColumn() < 1 || start.getColumn() > 8 || end.getColumn() < 1 || end.getColumn() > 8) {
+            throw new RuntimeException("Invalid position");
+        }
+        board[end.getRow()-1][end.getColumn()-1] = piece;
+        board[start.getRow()-1][start.getColumn()-1] = null;
+    }
+    public void castlingMove(ChessPosition castleStart, ChessPosition castleEnd, ChessPiece piece, ChessPosition start, ChessPosition end, ChessPiece piece2) 
+    {
+        if (start.getRow() < 1 || start.getRow() > 8 || end.getRow() < 1 || end.getRow() > 8) {
+            throw new RuntimeException("Invalid position");
+        }
+        if (start.getColumn() < 1 || start.getColumn() > 8 || end.getColumn() < 1 || end.getColumn() > 8) {
+            throw new RuntimeException("Invalid position");
+        }
+        if (castleStart.getRow() < 1 || castleStart.getRow() > 8 || castleEnd.getRow() < 1 || castleEnd.getRow() > 8) {
+            throw new RuntimeException("Invalid position");
+        }
+        if (castleStart.getColumn() < 1 || castleStart.getColumn() > 8 || castleEnd.getColumn() < 1 || castleEnd.getColumn() > 8) {
+            throw new RuntimeException("Invalid position");
+        }
+        board[start.getRow()-1][start.getColumn()-1] = null;
+        board[castleStart.getRow()-1][castleStart.getColumn()-1] = null;
+        board[end.getRow()-1][end.getColumn()-1] = piece2;
+        board[castleEnd.getRow()-1][castleEnd.getColumn()-1] = piece;
+    }
     /**
      * Gets a chess piece on the chessboard
      *
