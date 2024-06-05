@@ -47,7 +47,7 @@ public class DatabaseManager {
             var value = "CREATE TABLE `authData` (" +
                 "`token` varchar(255) DEFAULT NULL," +
                 "`username` varchar(255) DEFAULT NULL" +
-            ") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci";
+            ")";
             try (var preparedStatement = conn.prepareStatement(value)) {
                 preparedStatement.executeUpdate();
             }
@@ -57,7 +57,7 @@ public class DatabaseManager {
                 "`blackUsername` varchar(255) DEFAULT NULL," +
                 "`gameName` varchar(255) DEFAULT NULL," +
                 "`games` text" +
-                "ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci";
+                ")";
             try (var preparedStatement = conn.prepareStatement(gameTable)) {
                 preparedStatement.executeUpdate();
             }
@@ -65,7 +65,7 @@ public class DatabaseManager {
                 "`username` varchar(255) DEFAULT NULL," +
                 "`password` varchar(255) DEFAULT NULL," +
                 "`email` varchar(255) NOT NULL" +
-            ") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci";
+            ")";
             try (var preparedStatement = conn.prepareStatement(userdata)) {
                 preparedStatement.executeUpdate();
             }
