@@ -11,15 +11,15 @@ import chess.model.UserData;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
-public class SQLUserDAO implements MemoryUserDAO 
+public class SQLUserDAO
 {
     public SQLUserDAO(){};
-    @Override
+    
     public void clearUsers() throws DataAccessException{
         var message = "TRUNCATE userData";
         executeUpdate(message);
     }
-    @Override
+    
     public UserData getUser(String username) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
@@ -43,7 +43,6 @@ public class SQLUserDAO implements MemoryUserDAO
             throw new DataAccessException(e.getMessage());
         }
     }
-    @Override
     public UserData getUserPass(String username, String password) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
@@ -73,7 +72,6 @@ public class SQLUserDAO implements MemoryUserDAO
             throw new DataAccessException(e.getMessage());
         }
     }
-    @Override
     public void createUser(String username, String password, String email) throws DataAccessException
     {
         if (getUser(username) != null) {

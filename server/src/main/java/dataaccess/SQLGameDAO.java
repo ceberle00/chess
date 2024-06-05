@@ -16,21 +16,18 @@ import static java.sql.Types.NULL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class SQLGameDAO implements MemoryGameDAO {
+public class SQLGameDAO {
     private Integer gameID = 0;
     public SQLGameDAO() {};
-    @Override
     public void clearGames() throws DataAccessException
     {
         var message = "TRUNCATE gameData";
         executeUpdate(message);
     }
-    @Override
     public void setID(Integer value) {
         this.gameID = value;
     }
     
-    @Override
     public Collection<GameData> getGames() throws DataAccessException{
         ArrayList<GameData> result = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {
@@ -64,7 +61,6 @@ public class SQLGameDAO implements MemoryGameDAO {
             return null;
         }
     }
-    @Override
     public GameData getGameName(String gameName) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
@@ -91,7 +87,6 @@ public class SQLGameDAO implements MemoryGameDAO {
             throw new DataAccessException(e.getMessage());
         }
     }
-    @Override
     public Integer createGame(String gameName) throws DataAccessException
     {
 
@@ -106,7 +101,6 @@ public class SQLGameDAO implements MemoryGameDAO {
         executeUpdate(statement, newValue, null, null, gameName, jsonGame);
         return newValue;
     }
-    @Override
     public GameData checkGame(int gameId) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
@@ -128,7 +122,6 @@ public class SQLGameDAO implements MemoryGameDAO {
             throw new DataAccessException(e.getMessage());
         }
     }
-    @Override
     public void joinGame(int gameID, AuthData data, TeamColor color) throws DataAccessException
     {
         GameData tempGame = checkGame(gameID);

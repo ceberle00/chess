@@ -20,7 +20,7 @@ public class ServiceTests {
     private UserDAO user = new UserDAO();
     private AuthDAO auto = new AuthDAO();
     private GameDAO game = new GameDAO();
-
+    
     @BeforeEach
     public void setUp() {
         this.user.clearUsers();

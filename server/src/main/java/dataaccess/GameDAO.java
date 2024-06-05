@@ -6,27 +6,22 @@ import chess.model.*;
 import chess.*;
 import chess.ChessGame.TeamColor;
 
-public class GameDAO implements MemoryGameDAO
+public class GameDAO
 {
     //vector of games?
     private Map<Integer, GameData> games = new HashMap<Integer, GameData>(); //maybe make into map
     private Integer gameID = 0;
     
-    @Override
     public void clearGames()
     {
         this.games.clear();
     }
-    @Override
     public void setID(Integer value) {
         this.gameID = value;
     }
-    
-    @Override
     public Collection<GameData> getGames() {
         return this.games.values(); //hopefully right, idk if just the vector is okay
     }
-    @Override
     public GameData getGameName(String gameName) 
     {
         for (Map.Entry<Integer,GameData> entry : this.games.entrySet()) 
@@ -37,7 +32,6 @@ public class GameDAO implements MemoryGameDAO
         }
         return null;
     }
-    @Override
     public Integer createGame(String gameName) 
     {
         if (this.gameID == null) {
@@ -51,12 +45,10 @@ public class GameDAO implements MemoryGameDAO
         System.out.println(newValue);
         return newValue;
     }
-    @Override
     public GameData checkGame(int gameId) 
     {
         return this.games.get(gameId);
     }
-    @Override
     public void joinGame(int gameID, AuthData data, TeamColor color) 
     {
         GameData tempGame = this.games.get(gameID);

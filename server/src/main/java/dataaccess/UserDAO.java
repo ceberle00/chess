@@ -4,18 +4,17 @@ import chess.model.*;
 
 import java.util.ArrayList;
 
-public class UserDAO implements MemoryUserDAO
+public class UserDAO
 {
     private ArrayList <UserData> users;
 
     public UserDAO() {
         this.users = new ArrayList<>();
     }
-    @Override
+    
     public void clearUsers(){
         this.users.clear();
     }
-    @Override
     public UserData getUser(String username)
     {
         for (UserData user : this.users) {
@@ -25,7 +24,7 @@ public class UserDAO implements MemoryUserDAO
         } 
         return null;
     }
-    @Override
+    
     public UserData getUserPass(String username, String password)
     {
         for (int i = 0; i < this.users.size(); i++) {
@@ -42,7 +41,7 @@ public class UserDAO implements MemoryUserDAO
         } 
         return null;
     }
-    @Override
+    
     public void createUser(String username, String password, String email) throws Exception
     {
         UserData data = new UserData(username, password, email);

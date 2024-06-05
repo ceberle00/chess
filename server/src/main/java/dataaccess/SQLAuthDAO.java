@@ -9,16 +9,16 @@ import java.util.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
-public class SQLAuthDAO implements MemoryAuthDAO
+public class SQLAuthDAO
 {
     public SQLAuthDAO() {};
-    @Override
+    
     public void clearAuth() throws DataAccessException
     {
         var message = "TRUNCATE authData";
         executeUpdate(message);
     }
-    @Override
+   
     public AuthData getAuth(String authData) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
@@ -41,7 +41,6 @@ public class SQLAuthDAO implements MemoryAuthDAO
             throw new DataAccessException(e.getMessage());
         }
     }
-    @Override
     public String createAuth(String user) throws DataAccessException{
         String authValue = UUID.randomUUID().toString();
         AuthData data = new AuthData(authValue, user);
@@ -49,7 +48,6 @@ public class SQLAuthDAO implements MemoryAuthDAO
         executeUpdate(statement, data.getAuth(), data.getUser());
         return authValue;
     }
-    @Override
     public void deleteSession(String authToken) throws DataAccessException
     {
         var statement = "DELETE FROM authData WHERE token= ?";
