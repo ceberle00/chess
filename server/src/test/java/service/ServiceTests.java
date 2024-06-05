@@ -73,7 +73,7 @@ public class ServiceTests {
     @Test 
     public void createGamePass() throws Exception {
         user.createUser("username", "password", "email");
-        String auth1=auto.createAuth("username");
+        auto.createAuth("username");
         int id = game.createGame("newGame");
         assertNotNull(id);
         assertEquals("newGame", game.checkGame(id).gameName());
