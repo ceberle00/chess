@@ -1,4 +1,4 @@
-package chess.ChessPieces;
+package chess.chessPieces;
 import chess.ChessBoard;
 import chess.ChessGame.TeamColor;
 import chess.ChessMove;

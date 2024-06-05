@@ -101,8 +101,8 @@ public class SQLGameDAO implements MemoryGameDAO {
         Integer newValue = this.gameID;
         ChessGame game = new ChessGame();
         String jsonGame = new Gson().toJson(game);
-        var Statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, games) VALUES (?,?,?,?,?)";
-        executeUpdate(Statement, newValue, null, null, gameName, jsonGame);
+        var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, games) VALUES (?,?,?,?,?)";
+        executeUpdate(statement, newValue, null, null, gameName, jsonGame);
         return newValue;
     }
     @Override
@@ -114,7 +114,6 @@ public class SQLGameDAO implements MemoryGameDAO {
                 ps.setInt(1, gameId);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        System.out.println("before return");
                         return readGame(rs);
                     }
                     else {
@@ -134,13 +133,13 @@ public class SQLGameDAO implements MemoryGameDAO {
         GameData tempGame = checkGame(gameID);
         if (color == TeamColor.BLACK && tempGame.blackUsername() == null) 
         {
-            var Statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
-            executeUpdate(Statement, data.username(), gameID);
+            var statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
+            executeUpdate(statement, data.username(), gameID);
         }
         else if (color == TeamColor.WHITE && tempGame.whiteUsername() == null)
         {
-            var Statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
-            executeUpdate(Statement, data.username(), gameID);
+            var statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
+            executeUpdate(statement, data.username(), gameID);
         }
 
     }

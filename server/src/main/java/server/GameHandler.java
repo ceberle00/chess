@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Collection;
 
 import service.*;
-import service.Requests.AddGameRequest;
-import service.Requests.JoinGameRequest;
-import service.Results.AddGameResult;
-import service.Results.ListGamesResult;
+import service.requests.AddGameRequest;
+import service.requests.JoinGameRequest;
+import service.results.AddGameResult;
+import service.results.ListGamesResult;
 
 
 public class GameHandler {

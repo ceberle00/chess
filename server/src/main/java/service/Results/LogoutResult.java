@@ -1,4 +1,4 @@
-package service.Results;
+package service.results;
 
 public class LogoutResult {
     private String message;

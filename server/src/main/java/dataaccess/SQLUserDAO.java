@@ -78,9 +78,9 @@ public class SQLUserDAO implements MemoryUserDAO
         if (getUser(username) != null) {
             throw new DataAccessException("Error: already taken");
         }
-        var Statement = "INSERT INTO userData (username, password, email) VALUES (?,?,?)";
+        var statement = "INSERT INTO userData (username, password, email) VALUES (?,?,?)";
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        executeUpdate(Statement, username, hashedPassword, email);
+        executeUpdate(statement, username, hashedPassword, email);
     }
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {

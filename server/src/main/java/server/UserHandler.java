@@ -1,11 +1,11 @@
 package server;
 
 import service.*;
-import service.Requests.LoginRequest;
-import service.Requests.RegisterRequest;
-import service.Results.LoginResult;
-import service.Results.LogoutResult;
-import service.Results.RegisterResult;
+import service.requests.LoginRequest;
+import service.requests.RegisterRequest;
+import service.results.LoginResult;
+import service.results.LogoutResult;
+import service.results.RegisterResult;
 import spark.*;
 import com.google.gson.Gson;
 
