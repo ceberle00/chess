@@ -44,27 +44,27 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            var value = "CREATE TABLE `authData` (" +
-                "`token` varchar(255) DEFAULT NULL," +
-                "`username` varchar(255) DEFAULT NULL" +
+            var value = "CREATE TABLE authData (" +
+                "token varchar(255) DEFAULT NULL," +
+                "username varchar(255) DEFAULT NULL" +
             ")";
             try (var preparedStatement = conn.prepareStatement(value)) {
                 preparedStatement.executeUpdate();
             }
-            var gameTable = "CREATE TABLE `gameData` (" +
-                "`gameID` int DEFAULT NULL," +
-                "`whiteUsername` varchar(255) DEFAULT NULL," +
-                "`blackUsername` varchar(255) DEFAULT NULL," +
-                "`gameName` varchar(255) DEFAULT NULL," +
-                "`games` text" +
-                ")";
+            var gameTable = "CREATE TABLE gameData (" +
+                "gameID int DEFAULT NULL," +
+                "whiteUsername varchar(255) DEFAULT NULL," +
+                "blackUsername varchar(255) DEFAULT NULL," +
+                "gameName varchar(255) DEFAULT NULL," +
+                "games text" +
+            ")";
             try (var preparedStatement = conn.prepareStatement(gameTable)) {
                 preparedStatement.executeUpdate();
             }
-            var userdata = "CREATE TABLE `userData` (" +
-                "`username` varchar(255) DEFAULT NULL," +
-                "`password` varchar(255) DEFAULT NULL," +
-                "`email` varchar(255) NOT NULL" +
+            var userdata = "CREATE TABLE userData (" +
+                "username varchar(255) DEFAULT NULL," +
+                "password varchar(255) DEFAULT NULL," +
+                "email varchar(255) NOT NULL" +
             ")";
             try (var preparedStatement = conn.prepareStatement(userdata)) {
                 preparedStatement.executeUpdate();
