@@ -5,7 +5,7 @@ import chess.model.UserData;
 import dataaccess.AuthDAO;
 import dataaccess.UserDAO;
 
-public class UserService implements UserServiceMemory{
+public class UserService{
     private UserDAO user;
     private AuthDAO auth;
 
@@ -13,21 +13,17 @@ public class UserService implements UserServiceMemory{
         this.auth = a;
         this.user = u;
     }
-    @Override
     public UserData getUser(String userName) 
     {
         return this.user.getUser(userName);
     }
-    @Override
     public void createUser(String username, String password, String email) throws Exception
     {
         this.user.createUser(username, password, email);
     }
-    @Override
     public String createAuth(String username) {
         return this.auth.createAuth(username);
     }
-    @Override
     public String loginUser(String username, String password) throws Exception
     {
         UserData user = getUser(username); 
@@ -36,7 +32,6 @@ public class UserService implements UserServiceMemory{
         if (actualUser == null) {throw new Exception("Error: unauthorized");}
         return createAuth(username);
     }
-    @Override
     public void logoutUser(String authToken) throws Exception
     {
         AuthData data = auth.getAuth(authToken);

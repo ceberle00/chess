@@ -8,7 +8,7 @@ import chess.model.AuthData;
 import chess.model.GameData;
 import dataaccess.*;
 
-public class SQLGameService implements GameServiceMemory{
+public class SQLGameService{
     
     private SQLGameDAO game = new SQLGameDAO();
     private SQLAuthDAO auth = new SQLAuthDAO();
@@ -23,7 +23,6 @@ public class SQLGameService implements GameServiceMemory{
         this.game = game;
         this.auth = auth;
     }
-    @Override
     public AuthData valiAuthData(String authToken) throws DataAccessException
     {
         if (auth == null) {
@@ -40,7 +39,6 @@ public class SQLGameService implements GameServiceMemory{
         }
 
     }
-    @Override
     public void joinGame(int gameID, TeamColor color, String authToken) throws Exception
     {
         AuthData auth = valiAuthData(authToken);
@@ -71,7 +69,6 @@ public class SQLGameService implements GameServiceMemory{
             throw new Exception("Error: bad request");
         }
     }
-    @Override
     public Integer createGame(String authToken, String gameName) throws Exception
     {
         if (this.game.getGameName(gameName) != null) 
@@ -80,7 +77,6 @@ public class SQLGameService implements GameServiceMemory{
         }
         return this.game.createGame(gameName);
     }
-    @Override
     public Collection<GameData> listGames(String authToken) throws DataAccessException
     {
         valiAuthData(authToken);

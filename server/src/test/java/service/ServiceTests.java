@@ -53,7 +53,7 @@ public class ServiceTests {
         Assertions.assertNull(users.getUser("username2"));
         Assertions.assertNull(auth.getAuth(auth1));
         Assertions.assertNull(auth.getAuth(auth2));
-        //Assertions.assertNull(game.getGameName("newGame"));
+        Assertions.assertNull(games.getGameName("newGame"));
 
     }
     @Test
@@ -77,14 +77,13 @@ public class ServiceTests {
 
     }
     @Test 
-    public void authCheckPassSQL    () throws Exception {
+    public void authCheckPassSQL() throws Exception {
         users.createUser("username", "password", "email");
         String auth1=auth.createAuth("username");
         games.createGame("newGame");
         SQLGameService gs = new SQLGameService(games, auth);
         AuthData data = auth.getAuth(auth1);
         assertEquals(gs.valiAuthData(auth1), data);
-       
     }
     @Test 
     public void authCheckFailSQL() throws Exception {

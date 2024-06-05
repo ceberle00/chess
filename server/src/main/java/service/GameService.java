@@ -12,7 +12,7 @@ import dataaccess.DataAccessException;
 import dataaccess.GameDAO;
 
 
-public class GameService implements GameServiceMemory{
+public class GameService {
 
     private GameDAO game = new GameDAO();
     private AuthDAO auth = new AuthDAO();
@@ -26,7 +26,7 @@ public class GameService implements GameServiceMemory{
         this.game = game;
         this.auth = auth;
     }
-    @Override
+    
     public AuthData valiAuthData(String authToken) throws DataAccessException
     {
         if (auth == null) {
@@ -43,7 +43,7 @@ public class GameService implements GameServiceMemory{
         }
 
     }
-    @Override
+    
     public void joinGame(int gameID, TeamColor color, String authToken) throws Exception
     {
         AuthData auth = valiAuthData(authToken);
@@ -74,7 +74,6 @@ public class GameService implements GameServiceMemory{
             throw new Exception("Error: bad request");
         }
     }
-    @Override
     public Integer createGame(String authToken, String gameName) throws Exception
     {
         if (this.game.getGameName(gameName) != null) 
@@ -83,7 +82,7 @@ public class GameService implements GameServiceMemory{
         }
         return this.game.createGame(gameName);
     }
-    @Override
+    
     public Collection<GameData> listGames(String authToken) throws DataAccessException
     {
         valiAuthData(authToken);
