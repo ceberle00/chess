@@ -22,7 +22,7 @@ import chess.model.GameData;
 import chess.model.UserData;
 
     
-public class daoTests {
+public class DaoTests {
     private SQLAuthDAO auth = new SQLAuthDAO();
     private SQLGameDAO games = new SQLGameDAO();
     private SQLUserDAO users = new SQLUserDAO();
