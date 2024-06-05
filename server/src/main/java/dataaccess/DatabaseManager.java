@@ -12,6 +12,9 @@ public class DatabaseManager {
     /*
      * Load the database information for the db.properties file.
      */
+    public DatabaseManager() {
+
+    }
     static {
         try {
             try (var propStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("db.properties")) {
@@ -34,11 +37,36 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    public void createDatabase() throws DataAccessException {
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + DATABASE_NAME;
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+            var value = "CREATE TABLE `authData` (" +
+                "`token` varchar(255) DEFAULT NULL," +
+                "`username` varchar(255) DEFAULT NULL" +
+            ") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci";
+            try (var preparedStatement = conn.prepareStatement(value)) {
+                preparedStatement.executeUpdate();
+            }
+            var gameTable = "CREATE TABLE `gameData` (" +
+                "`gameID` int DEFAULT NULL," +
+                "`whiteUsername` varchar(255) DEFAULT NULL," +
+                "`blackUsername` varchar(255) DEFAULT NULL," +
+                "`gameName` varchar(255) DEFAULT NULL," +
+                "`games` text" +
+                "ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci";
+            try (var preparedStatement = conn.prepareStatement(gameTable)) {
+                preparedStatement.executeUpdate();
+            }
+            var userdata = "CREATE TABLE `userData` (" +
+                "`username` varchar(255) DEFAULT NULL," +
+                "`password` varchar(255) DEFAULT NULL," +
+                "`email` varchar(255) NOT NULL" +
+            ") ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci";
+            try (var preparedStatement = conn.prepareStatement(userdata)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {

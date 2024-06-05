@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import chess.model.AuthData;
 import chess.model.UserData;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;

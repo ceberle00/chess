@@ -1,9 +1,6 @@
 package server;
 
 import dataaccess.*;
-import dataaccess.GameDAO;
-import dataaccess.UserDAO;
-import service.GameService;
 import service.SystemService;
 import service.*;
 import spark.*;
@@ -13,8 +10,6 @@ import spark.*;
 
 public class Server 
 {
-
-    //EDIT, WILL HAVE ERRORS
 
     private SQLAuthDAO auth = new SQLAuthDAO();
     private SQLGameDAO game = new SQLGameDAO();
@@ -27,7 +22,7 @@ public class Server
     private SystemHandler clearHandler;
     private UserHandler userHandler;
     private GameHandler gameHandler;
-
+    private DatabaseManager manager = new DatabaseManager();
     public Server() {
         this.userService = new SQLUserService(user, auth);
         this.userHandler = new UserHandler(userService);
@@ -37,6 +32,11 @@ public class Server
         this.gameHandler = new GameHandler(gameService);
     }
     public int run(int desiredPort) {
+        try {
+            manager.createDatabase();
+        } catch (DataAccessException e) {
+            //add print
+        }
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
