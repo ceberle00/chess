@@ -5,6 +5,7 @@ import dataaccess.GameDAO;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
+import java.util.Collection;
 import dataaccess.UserDAO;
 import service.SQLGameService;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 import org.junit.jupiter.api.*;
 
+import chess.ChessGame;
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
 import chess.model.GameData;
@@ -151,6 +153,102 @@ public class daoTests {
         catch (DataAccessException accessException) {
             Assertions.assertEquals("Error: already taken", accessException.getMessage());
         }
+        
+    }
+    @Test 
+    public void creatGamePass() throws DataAccessException
+    {
+        int id = this.games.createGame("gameName");
+        int id2 =this.games.createGame("game2");
+        assertEquals(this.games.getGameName("game2").gameID(), id2);
+        assertEquals(this.games.getGameName("gameName").gameID(), id);
+    }
+    @Test 
+    public void creatGameFail() throws DataAccessException
+    {
+        try {
+            int id = this.games.createGame("gameName");
+            int id2 =this.games.createGame("gameName");
+        }catch (DataAccessException e) {
+            Assertions.assertEquals("Error: already taken", e.getMessage());
+        }
+        
+    }
+    @Test 
+    public void getGamePass() throws DataAccessException
+    {
+        int id = this.games.createGame("gameName");
+        int id2 =this.games.createGame("game2");
+        assertEquals(this.games.getGameName("game2").gameID(), id2);
+        assertEquals(this.games.getGameName("gameName").gameID(), id);
+    }
+    @Test 
+    public void getGameFail() throws DataAccessException
+    {
+        try {
+            this.games.getGameName(null);
+        }catch (DataAccessException e) {
+            Assertions.assertEquals("error: not allowed", e.getMessage());
+        }
+    }
+    @Test 
+    public void getGamesPass() throws DataAccessException{
+        int id = this.games.createGame("gameName");
+        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        int id2 =this.games.createGame("game2");
+        GameData game2 = new GameData(id2, null, null, "game2", new ChessGame());
+        Collection<GameData> games = new ArrayList<>();
+        games.add(game1);
+        games.add(game2);
+        assertEquals(games, this.games.getGames());
+    }
+    @Test 
+    public void getGamesFail() throws DataAccessException{
+        int id = this.games.createGame("gameName");
+        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        int id2 =this.games.createGame("game2");
+        GameData game2 = new GameData(id2, null, null, "game2", new ChessGame());
+        Collection<GameData> games = new ArrayList<>();
+        this.games.clearGames();
+        games.add(game1);
+        games.add(game2);
+        assertNotEquals(games, this.games.getGames());
+    }
+    @Test 
+    public void checkGamesPass() throws DataAccessException{
+        int id = this.games.createGame("gameName");
+        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        int id2 =this.games.createGame("game2");
+        GameData game2 = new GameData(id2, null, null, "game2", new ChessGame());
+        assertEquals(game2, this.games.checkGame(id2));
+        assertEquals(game1, this.games.checkGame(id));
+    }
+    @Test 
+    public void checkGamesFail() throws DataAccessException{
+        int id = this.games.createGame("gameName");
+        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        int id2 =this.games.createGame("game2");
+        GameData game2 = new GameData(id2, null, null, "game2", new ChessGame());
+        this.games.clearGames();
+        assertNotEquals(game2, this.games.checkGame(id2));
+        assertNull(this.games.checkGame(id2));
+    }
+    @Test 
+    public void joinGamePass() throws DataAccessException{
+        int id = this.games.createGame("gameName");
+        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        AuthData auth = new AuthData("token", "username");
+        assertDoesNotThrow(() -> this.games.joinGame(id, auth, TeamColor.BLACK));   
+    }
+    @Test 
+    public void joinGameFail() throws DataAccessException{
+        int id = this.games.createGame("gameName");
+        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        AuthData auth = new AuthData("token", "username");
+        AuthData auth2 = new AuthData("token2", "username2");
+        this.games.joinGame(id, auth, TeamColor.BLACK);
+        assertThrows(DataAccessException.class, () -> this.games.joinGame(id, auth2, TeamColor.BLACK));
+        
         
     }
 }

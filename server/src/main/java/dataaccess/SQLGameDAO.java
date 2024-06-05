@@ -63,6 +63,9 @@ public class SQLGameDAO {
     }
     public GameData getGameName(String gameName) throws DataAccessException
     {
+        if (gameName == null) {
+            throw new DataAccessException("error: not allowed");
+        }
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "SELECT * FROM gameData WHERE gameName=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -95,6 +98,9 @@ public class SQLGameDAO {
         }
         this.gameID += 1;
         Integer newValue = this.gameID;
+        if (getGameName(gameName) != null) {
+            throw new DataAccessException("Error: already taken");
+        }
         ChessGame game = new ChessGame();
         String jsonGame = new Gson().toJson(game);
         var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, games) VALUES (?,?,?,?,?)";
@@ -134,6 +140,9 @@ public class SQLGameDAO {
         {
             var statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
             executeUpdate(statement, data.username(), gameID);
+        }
+        else {
+            throw new DataAccessException("Error: User already Taken");
         }
 
     }
