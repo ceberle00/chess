@@ -44,24 +44,24 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            var value = "CREATE TABLE `authData` (" +
-                "`token` varchar(255) DEFAULT NULL," +
-                "`username` varchar(255) DEFAULT NULL" +
+            var value = "CREATE TABLE IF NOT EXISTS authData (" +
+                "token varchar(255)," +
+                "username varchar(255)" +
             ")";
             try (var preparedStatement = conn.prepareStatement(value)) {
                 preparedStatement.executeUpdate();
             }
-            var gameTable = "CREATE TABLE gameData (" +
-                "gameID int DEFAULT NULL," +
-                "whiteUsername varchar(255) DEFAULT NULL," +
-                "blackUsername varchar(255) DEFAULT NULL," +
-                "gameName varchar(255) DEFAULT NULL," +
+            var gameTable = "CREATE TABLE IF NOT EXISTS gameData (" +
+                "gameID int," +
+                "whiteUsername varchar(255)," +
+                "blackUsername varchar(255)," +
+                "gameName varchar(255)," +
                 "games text" +
                 ")";
             try (var preparedStatement = conn.prepareStatement(gameTable)) {
                 preparedStatement.executeUpdate();
             }
-            var userdata = "CREATE TABLE userData (" +
+            var userdata = "CREATE TABLE IF NOT EXISTS userData (" +
                 "username varchar(255) DEFAULT NULL," +
                 "password varchar(255) DEFAULT NULL," +
                 "email varchar(255) DEFAULT NULL" +

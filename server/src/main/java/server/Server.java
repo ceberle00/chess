@@ -14,13 +14,13 @@ public class Server
     private SQLGameDAO game = new SQLGameDAO();
     private SQLUserDAO user = new SQLUserDAO();
 
-    private SQLUserService userService;
-    private SystemService systemService;
-    private SQLGameService gameService;
+    private SQLUserService userService = new SQLUserService(user, auth);
+    private SystemService systemService = new SystemService(auth, game, user);
+    private SQLGameService gameService = new SQLGameService(game, auth);
 
-    private SystemHandler clearHandler;
-    private UserHandler userHandler;
-    private GameHandler gameHandler;
+    private SystemHandler clearHandler = new SystemHandler(systemService);
+    private UserHandler userHandler = new UserHandler(userService);
+    private GameHandler gameHandler = new GameHandler(gameService);
     private DatabaseManager manager = new DatabaseManager();
     public Server() {
         this.userService = new SQLUserService(user, auth);
@@ -33,7 +33,7 @@ public class Server
             manager.createDatabase();
         }
         catch (DataAccessException e) {
-             System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
     public int run(int desiredPort) {
