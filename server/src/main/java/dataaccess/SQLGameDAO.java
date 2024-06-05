@@ -67,7 +67,7 @@ public class SQLGameDAO implements MemoryGameDAO {
     public GameData getGameName(String gameName) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT * FROM gamedata WHERE gameName=?";
+            String statement = "SELECT * FROM gameData WHERE gameName=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, gameName);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -139,7 +139,7 @@ public class SQLGameDAO implements MemoryGameDAO {
         }
         else if (color == TeamColor.WHITE && tempGame.whiteUsername() == null)
         {
-            var Statement = "UPDATE gamedata SET whiteUsername = ? WHERE gameID = ?";
+            var Statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
             executeUpdate(Statement, data.username(), gameID);
         }
 

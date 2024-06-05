@@ -14,14 +14,14 @@ public class SQLAuthDAO implements MemoryAuthDAO
     @Override
     public void clearAuth() throws DataAccessException
     {
-        var message = "TRUNCATE authdata";
+        var message = "TRUNCATE authData";
         executeUpdate(message);
     }
     @Override
     public AuthData getAuth(String authData) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT * FROM authdata WHERE token=?";
+            String statement = "SELECT * FROM authData WHERE token=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authData);
                 try (ResultSet rs = ps.executeQuery()) {
@@ -44,14 +44,14 @@ public class SQLAuthDAO implements MemoryAuthDAO
     public String createAuth(String user) throws DataAccessException{
         String authValue = UUID.randomUUID().toString();
         AuthData data = new AuthData(authValue, user);
-        var statement = "INSERT INTO authdata (token, username) VALUES (?, ?)";
+        var statement = "INSERT INTO authData (token, username) VALUES (?, ?)";
         executeUpdate(statement, data.getAuth(), data.getUser());
         return authValue;
     }
     @Override
     public void deleteSession(String authToken) throws DataAccessException
     {
-        var statement = "DELETE FROM authdata WHERE token= ?";
+        var statement = "DELETE FROM authData WHERE token= ?";
         executeUpdate(statement, authToken);
     }
 

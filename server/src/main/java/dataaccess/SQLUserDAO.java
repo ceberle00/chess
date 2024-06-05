@@ -46,7 +46,7 @@ public class SQLUserDAO implements MemoryUserDAO
     public UserData getUserPass(String username, String password) throws DataAccessException
     {
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = "SELECT * FROM userdata WHERE username=?";
+            String statement = "SELECT * FROM userData WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (ResultSet rs = ps.executeQuery()) {
