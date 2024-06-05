@@ -44,6 +44,8 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            String dbUrl = CONNECTION_URL + "/" + DATABASE_NAME;
+            conn = DriverManager.getConnection(dbUrl, USER, PASSWORD);
             var value = "CREATE TABLE IF NOT EXISTS authData (" +
                 "token varchar(255)," +
                 "username varchar(255)" +

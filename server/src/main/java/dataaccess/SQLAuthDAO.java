@@ -11,6 +11,7 @@ import static java.sql.Types.NULL;
 
 public class SQLAuthDAO implements MemoryAuthDAO
 {
+    public SQLAuthDAO() {};
     @Override
     public void clearAuth() throws DataAccessException
     {

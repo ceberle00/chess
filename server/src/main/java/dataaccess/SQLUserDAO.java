@@ -13,6 +13,7 @@ import static java.sql.Types.NULL;
 
 public class SQLUserDAO implements MemoryUserDAO 
 {
+    public SQLUserDAO(){};
     @Override
     public void clearUsers() throws DataAccessException{
         var message = "TRUNCATE userData";

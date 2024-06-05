@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 
 public class SQLGameDAO implements MemoryGameDAO {
     private Integer gameID = 0;
+    public SQLGameDAO() {};
     @Override
     public void clearGames() throws DataAccessException
     {
