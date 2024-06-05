@@ -44,29 +44,20 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            var value = "CREATE TABLE authData (" +
-                "token varchar(255) DEFAULT NULL," +
-                "username varchar(255) DEFAULT NULL" +
-            ")";
-            try (var preparedStatement = conn.prepareStatement(value)) {
+            statement = "USE " + DATABASE_NAME;
+            try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            var gameTable = "CREATE TABLE gameData (" +
-                "gameID int DEFAULT NULL," +
-                "whiteUsername varchar(255) DEFAULT NULL," +
-                "blackUsername varchar(255) DEFAULT NULL," +
-                "gameName varchar(255) DEFAULT NULL," +
-                "games text" +
-            ")";
-            try (var preparedStatement = conn.prepareStatement(gameTable)) {
+            statement = "CREATE TABLE IF NOT EXISTS users(username varchar(128), password blob, email varchar(128))";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            var userdata = "CREATE TABLE userData (" +
-                "username varchar(255) DEFAULT NULL," +
-                "password varchar(255) DEFAULT NULL," +
-                "email varchar(255) NOT NULL" +
-            ")";
-            try (var preparedStatement = conn.prepareStatement(userdata)) {
+            statement = "CREATE TABLE IF NOT EXISTS authData(token varchar(128), username varchar(128))";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
+                preparedStatement.executeUpdate();
+            }
+            statement = "CREATE TABLE IF NOT EXISTS gameData(id int AUTO_INCREMENT key, whiteUsername varchar(128), blackUsername varchar(128), gameName varchar(128), game varchar(2048))";
+            try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
