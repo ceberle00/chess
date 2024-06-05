@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import chess.ChessGame.TeamColor;
-import chess.chessPieces.BishopMoves;
-import chess.chessPieces.KingMoves;
-import chess.chessPieces.KnightMoves;
-import chess.chessPieces.PawnMoves;
-import chess.chessPieces.QueenMoves;
-import chess.chessPieces.RookMoves;
+import chess.chesspieces.BishopMoves;
+import chess.chesspieces.KingMoves;
+import chess.chesspieces.KnightMoves;
+import chess.chesspieces.PawnMoves;
+import chess.chesspieces.QueenMoves;
+import chess.chesspieces.RookMoves;
 
 import java.util.Objects;
 
