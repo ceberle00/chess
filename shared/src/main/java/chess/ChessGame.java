@@ -33,8 +33,6 @@ public class ChessGame {
         //set kings for easy access
         ChessPosition white = new ChessPosition(1, 4); //should be the default board, unless otherwise specificed
         ChessPosition black = new ChessPosition(7, 4);
-        ChessPiece wh = this.board.getPiece(white);
-        ChessPiece bl = this.board.getPiece(black);
         blackKing = black;
         whiteKing = white;
 
