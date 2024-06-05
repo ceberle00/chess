@@ -1,7 +1,6 @@
 package server;
 
 import dataaccess.*;
-import service.SystemService;
 import service.*;
 import spark.*;
 
@@ -30,12 +29,18 @@ public class Server
         this.clearHandler = new SystemHandler(systemService);
         this.gameService = new SQLGameService(game, auth);
         this.gameHandler = new GameHandler(gameService);
+        try {
+            manager.createDatabase();
+        }
+        catch (DataAccessException e) {
+             System.out.println(e.getMessage());
+        }
     }
     public int run(int desiredPort) {
         try {
             manager.createDatabase();
         } catch (DataAccessException e) {
-            //add print
+            System.out.println(e.getMessage());
         }
         Spark.port(desiredPort);
 

@@ -44,20 +44,29 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
-            statement = "USE " + DATABASE_NAME;
-            try (var preparedStatement = conn.prepareStatement(statement)) {
+            var value = "CREATE TABLE `authData` (" +
+                "`token` varchar(255) DEFAULT NULL," +
+                "`username` varchar(255) DEFAULT NULL" +
+            ")";
+            try (var preparedStatement = conn.prepareStatement(value)) {
                 preparedStatement.executeUpdate();
             }
-            statement = "CREATE TABLE IF NOT EXISTS users(username varchar(128), password blob, email varchar(128))";
-            try (var preparedStatement = conn.prepareStatement(statement)) {
+            var gameTable = "CREATE TABLE gameData (" +
+                "gameID int DEFAULT NULL," +
+                "whiteUsername varchar(255) DEFAULT NULL," +
+                "blackUsername varchar(255) DEFAULT NULL," +
+                "gameName varchar(255) DEFAULT NULL," +
+                "games text" +
+                ")";
+            try (var preparedStatement = conn.prepareStatement(gameTable)) {
                 preparedStatement.executeUpdate();
             }
-            statement = "CREATE TABLE IF NOT EXISTS authData(token varchar(255), username varchar(255))";
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.executeUpdate();
-            }
-            statement = "CREATE TABLE IF NOT EXISTS gameData(gameID int AUTO_INCREMENT key, whiteUsername varchar(255), blackUsername varchar(255), gameName varchar(255), games varchar(2048))";
-            try (var preparedStatement = conn.prepareStatement(statement)) {
+            var userdata = "CREATE TABLE userData (" +
+                "username varchar(255) DEFAULT NULL," +
+                "password varchar(255) DEFAULT NULL," +
+                "email varchar(255) DEFAULT NULL" +
+            ")";
+            try (var preparedStatement = conn.prepareStatement(userdata)) {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
