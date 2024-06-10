@@ -1,4 +1,4 @@
-package service.results;
+package chess.model.results;
 
 public class LogoutResult {
     private String message;

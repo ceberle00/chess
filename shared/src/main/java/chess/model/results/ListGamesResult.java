@@ -1,4 +1,4 @@
-package service.results;
+package chess.model.results;
 
 import java.util.Collection;
 

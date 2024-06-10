@@ -4,12 +4,9 @@ import spark.*;
 import com.google.gson.Gson;
 import java.util.Map;
 import java.util.Collection;
-
+import chess.model.requests.*;
+import chess.model.results.*;
 import service.*;
-import service.requests.AddGameRequest;
-import service.requests.JoinGameRequest;
-import service.results.AddGameResult;
-import service.results.ListGamesResult;
 
 
 public class GameHandler {

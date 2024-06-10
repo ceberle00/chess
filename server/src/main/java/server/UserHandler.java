@@ -1,11 +1,8 @@
 package server;
 
 import service.*;
-import service.requests.LoginRequest;
-import service.requests.RegisterRequest;
-import service.results.LoginResult;
-import service.results.LogoutResult;
-import service.results.RegisterResult;
+import chess.model.requests.*;
+import chess.model.results.*;
 import spark.*;
 import com.google.gson.Gson;
 
