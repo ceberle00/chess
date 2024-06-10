@@ -1,23 +1,31 @@
 package serverFacade;
 
 import java.util.ArrayList;
+
+
 import chess.model.*;
 import chess.model.requests.*;
-
 public class ServerFacade {
-
-    //pre-login
-    public AuthData login(String username, String password) {
-        LoginRequest request = new LoginRequest(username, password);
-        return null;
+    //add part for port number
+    private HttpHandler handler;
+    public ServerFacade(int serverPort) 
+    {
+        String urlString = "http://localhost:";
+        urlString += String.valueOf(serverPort);
+        handler = new HttpHandler(urlString);
     }
-    public AuthData register(String username, String password, String email) {
+    //pre-login
+    public AuthData login(String username, String password) throws Exception{
+        LoginRequest request = new LoginRequest(username, password);
+        return handler.login(request);
+    }
+    public AuthData register(String username, String password, String email) throws Exception {
         UserData data = new UserData(username, password, email);
-
-        return null;
+        return handler.register(data);
+        //return null;
     }
     public void quit() {
-
+        
     }
     public void help()
     {

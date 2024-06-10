@@ -22,6 +22,7 @@ public class Server
     private UserHandler userHandler = new UserHandler(userService);
     private GameHandler gameHandler = new GameHandler(gameService);
     private DatabaseManager manager = new DatabaseManager();
+    
     public Server() {
         this.userService = new SQLUserService(user, auth);
         this.userHandler = new UserHandler(userService);

@@ -11,7 +11,8 @@ import static java.sql.Types.NULL;
 
 public class SQLAuthDAO
 {
-    public SQLAuthDAO() {};
+    public SQLAuthDAO() {
+    };
     
     public void clearAuth() throws DataAccessException
     {
