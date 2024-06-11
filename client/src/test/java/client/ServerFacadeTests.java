@@ -2,20 +2,16 @@ package client;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.glassfish.grizzly.utils.Exceptions;
 import org.junit.jupiter.api.*;
 
 import chess.model.AuthData;
 import chess.model.UserData;
-import chess.model.requests.LoginRequest;
 import dataaccess.DataAccessException;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
-import dataaccess.UserDAO;
 import server.Server;
 import serverFacade.ServerFacade;
-import service.GameService;
 import service.SQLGameService;
 import service.SQLUserService;
 import service.SystemService;
@@ -38,6 +34,7 @@ public class ServerFacadeTests {
 
     private static ServerFacade facade;
 
+    //think this'll just be the services from the diagram
     @BeforeAll
     public static void init() throws DataAccessException{
         server = new Server();
@@ -47,10 +44,18 @@ public class ServerFacadeTests {
         systemService.clear();
 
     }
-
     @AfterAll
     static void stopServer() {
         server.stop();
+    }
+    @Test 
+    public void clearTest() throws Exception
+    {
+        AuthData returnedData = facade.register(userData.username(), userData.password(), userData.email());
+        AuthData help = facade.register(secondUser.username(), secondUser.password(), secondUser.email());
+        systemService.clear();
+        assertNull(user.getUser("username"));
+        assertNull(user.getUser("user"));
     }
     @Test
     public void registerUserTestPass() throws Exception {

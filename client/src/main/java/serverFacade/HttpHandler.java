@@ -60,6 +60,8 @@ public class HttpHandler {
         }
     }
     public void quit() throws Exception {
-        
+        URI uri = new URI(url + "/db");
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod("DELETE");
     }
 }

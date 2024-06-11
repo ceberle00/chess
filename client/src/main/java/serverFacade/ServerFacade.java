@@ -24,8 +24,8 @@ public class ServerFacade {
         return handler.register(data);
         //return null;
     }
-    public void quit() {
-        
+    public void quit() throws Exception {
+        handler.quit();
     }
     public void help()
     {
