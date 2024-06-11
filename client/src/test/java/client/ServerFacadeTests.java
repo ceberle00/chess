@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
+
+import chess.ChessGame;
 import chess.model.AuthData;
+import chess.model.GameData;
 import chess.model.UserData;
 import dataaccess.DataAccessException;
 import dataaccess.SQLAuthDAO;
@@ -118,5 +122,15 @@ public class ServerFacadeTests {
        Assertions.assertThrows(Exception.class, () -> {
             facade.logout("not authToken");;
         });
+    }
+    @Test 
+    public void createGamePass() throws Exception{
+        AuthData data = facade.register("username", "password", "email");
+        facade.login("username", "password");
+        Integer gameData = facade.createGame(data.getAuth(), "name");
+        Integer id2 = facade.createGame(data.getAuth(), "cool name");
+        GameData game1 = new GameData(gameData, null, null, "name", new ChessGame());
+        GameData game2 = new GameData(id2, null, null, "cool name", new ChessGame());
+        assertEquals(games.checkGame(gameData), game1);
     }
 }

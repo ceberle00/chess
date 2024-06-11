@@ -1,8 +1,6 @@
 package serverFacade;
 
-import java.util.ArrayList;
-
-import org.glassfish.grizzly.utils.Exceptions;
+import java.util.Collection;
 
 import chess.model.*;
 import chess.model.requests.*;
@@ -32,11 +30,13 @@ public class ServerFacade {
     {
         handler.logout(authToken);
     }
-    public ArrayList<GameData> listGames() {
-        return null;
+    public Collection<GameData> listGames(String authToken) throws Exception {
+        return handler.listGames(authToken);
     }
-    public GameData createGame(String name) {
-        return null;
+    public Integer createGame(String authToken, String name) throws Exception
+    {
+        AddGameRequest request = new AddGameRequest(name);
+        return handler.createGame(authToken, request);
     }
     public void joinGame(String color, Integer gameID, String authToken) {
         

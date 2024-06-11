@@ -390,9 +390,6 @@ public class ChessGame {
     public void setBoard(ChessBoard board) 
     {
         this.board = board;
-        //iterate through board, find kings, set them 
-        //this.blackKing.clear();
-        //this.whiteKing.clear();
 
     }
 
