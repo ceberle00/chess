@@ -4,16 +4,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import chess.model.requests.AddGameRequest;
+import chess.model.requests.JoinGameRequest;
 import chess.model.requests.LoginRequest;
-import chess.*;
 import java.lang.reflect.Type;
 import com.google.gson.reflect.TypeToken;
 import chess.model.*;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.net.*;
 import java.util.Collection;
 
-import org.glassfish.grizzly.utils.Exceptions;
 
 
 public class HttpHandler {
@@ -78,11 +79,10 @@ public class HttpHandler {
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("DELETE");
         http.setRequestProperty("Authorization", authToken);
-        if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            InputStream responseBody = http.getInputStream();
+        try (InputStream responseBody = http.getInputStream();) {
             InputStreamReader reader = new InputStreamReader(responseBody);
-            String error = reader.toString();
-            throw new Exception("Logout failed?");
+            //String error = reader.toString();
+            //throw new Exception("Logout failed?");
         }
     }
     public Collection<GameData> listGames(String authToken) throws Exception
@@ -91,20 +91,24 @@ public class HttpHandler {
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("GET");
         http.setDoOutput(true);
-        try (var outputStream = http.getOutputStream()) {
-            var jsonBody = new Gson().toJson(authToken);
-            outputStream.write(jsonBody.getBytes());
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new Exception("error at getOutputStream");
-        }
+        http.setRequestProperty("Authorization", authToken);
+        
 
         try (InputStream respBody = http.getInputStream()) {
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             Type collectionType = new TypeToken<Collection<GameData>>(){}.getType();
-            Collection<GameData> responseBody = new Gson().fromJson(inputStreamReader, collectionType);
-            return responseBody;
+            StringBuilder sb = new StringBuilder();
+            char[] buffer = new char[1024];
+            int read;
+            while ((read = inputStreamReader.read(buffer, 0, buffer.length)) != -1) {
+                sb.append(buffer, 0, read);
+            }
+            String jsonResponse = sb.toString();
+            JsonObject jsonObject = new Gson().fromJson(jsonResponse, JsonObject.class);
+            Collection<GameData> games = new Gson().fromJson(jsonObject.get("games"), collectionType);
+            return games;
+            //Collection<GameData> responseBody = new Gson().fromJson(inputStreamReader, collectionType);
+            //return responseBody;
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
@@ -115,11 +119,11 @@ public class HttpHandler {
         URI uri = new URI(url + "/game");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("POST");
+        http.setRequestProperty("Authorization", authToken);
         http.setDoOutput(true);
         try(var requestBody = http.getOutputStream()) { //handle output
-            String reqData = new Gson().toJson(new GameData(0, null, null, request.getName(), null));
-            requestBody.write(authToken.getBytes());
-            requestBody.write(reqData.getBytes());
+            var jsonBody = new Gson().toJson(request);
+            requestBody.write(jsonBody.getBytes());
         }
         catch (Exception ioException) {
             System.out.print(ioException.getMessage());
@@ -127,12 +131,37 @@ public class HttpHandler {
         }
         try (InputStream respBody = http.getInputStream()) {
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
-            Integer responseBody = new Gson().fromJson(inputStreamReader, Integer.class);
-            return responseBody;
+            GameData responseBody = new Gson().fromJson(inputStreamReader, GameData.class);
+            return responseBody.gameID();
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            throw new Exception("Error reading response");
+            throw new Exception(e.getMessage());
+        }
+    }
+    public void joinGame(String authToken, JoinGameRequest request) throws Exception 
+    {
+        URI uri = new URI(url + "/game");
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod("PUT");
+        http.setRequestProperty("Authorization", authToken);
+        http.setDoOutput(true);
+        try(var requestBody = http.getOutputStream()) { //handle output
+            var jsonBody = new Gson().toJson(request);
+            requestBody.write(jsonBody.getBytes());
+        }
+        catch (Exception ioException) {
+            System.out.print(ioException.getMessage());
+            throw new Exception("RequestBody failed");
+        }
+        var statusCode = http.getResponseCode();
+        try (InputStream respBody = http.getInputStream()) {
+            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+            //do nothing? Should just be fine idk
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 }

@@ -2,6 +2,7 @@ package serverFacade;
 
 import java.util.Collection;
 
+import chess.ChessGame.TeamColor;
 import chess.model.*;
 import chess.model.requests.*;
 public class ServerFacade {
@@ -38,8 +39,16 @@ public class ServerFacade {
         AddGameRequest request = new AddGameRequest(name);
         return handler.createGame(authToken, request);
     }
-    public void joinGame(String color, Integer gameID, String authToken) {
-        
+    public void joinGame(String color, Integer gameID, String authToken) throws Exception{
+        TeamColor teamColor;
+        if (color == "Black") {
+            teamColor = TeamColor.BLACK;
+        }
+        else {
+            teamColor = TeamColor.WHITE;
+        }
+        JoinGameRequest request = new JoinGameRequest(teamColor, gameID);
+        handler.joinGame(authToken, request);
     }
 
 }

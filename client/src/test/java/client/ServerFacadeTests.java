@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.*;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Collection;
-
+import java.util.Collection;
+import java.util.ArrayList;
 import chess.ChessGame;
 import chess.model.AuthData;
 import chess.model.GameData;
@@ -16,9 +16,8 @@ import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
 import server.Server;
 import serverFacade.ServerFacade;
-import service.SQLGameService;
-import service.SQLUserService;
 import service.SystemService;
+
 
 
 public class ServerFacadeTests {
@@ -30,8 +29,6 @@ public class ServerFacadeTests {
     private static SQLGameDAO games = new SQLGameDAO();
 
     private static SystemService systemService = new SystemService(auth, games, user);
-    private static SQLGameService gameService = new SQLGameService(games, auth);
-    private static SQLUserService userService = new SQLUserService(user, auth);
 
     private UserData userData = new UserData("username", "password", "email");
     private UserData secondUser = new UserData("user", "pass", "mail");
@@ -54,8 +51,6 @@ public class ServerFacadeTests {
         user = new SQLUserDAO();
         games = new SQLGameDAO();
         systemService = new SystemService(auth, games, user);
-        gameService = new SQLGameService(games, auth);
-        userService = new SQLUserService(user, auth);
         systemService.clear(); // Clear state before each test
     }
     @AfterAll
@@ -132,5 +127,70 @@ public class ServerFacadeTests {
         GameData game1 = new GameData(gameData, null, null, "name", new ChessGame());
         GameData game2 = new GameData(id2, null, null, "cool name", new ChessGame());
         assertEquals(games.checkGame(gameData), game1);
+        assertEquals(games.checkGame(id2), game2);
+    }
+    @Test 
+    public void createGameFail() throws Exception{
+        AuthData data = facade.register("username", "password", "email");
+        facade.login("username", "password");
+        Integer gameData = facade.createGame(data.getAuth(), "name");
+        assertNotNull(gameData);
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.createGame(data.getAuth(), "name");;
+        });
+    }
+    @Test 
+    public void listGamesPass() throws Exception {
+        AuthData data = facade.register("username", "password", "email");
+        facade.login("username", "password");
+        Integer gameData = facade.createGame(data.getAuth(), "name");
+        Integer id2 = facade.createGame(data.getAuth(), "cool name");
+        GameData game1 = new GameData(gameData, null, null, "name", new ChessGame());
+        GameData game2 = new GameData(id2, null, null, "cool name", new ChessGame());
+        Collection<GameData> gamesWanted = new ArrayList<>();
+        gamesWanted.add(game1);
+        gamesWanted.add(game2);
+        Collection<GameData> actualGames = facade.listGames(data.authToken());
+        Assertions.assertEquals(gamesWanted, actualGames);
+    }
+    @Test 
+    public void listGamesFail() throws Exception {
+        AuthData data = facade.register("username", "password", "email");
+        facade.login("username", "password");
+        Integer gameData = facade.createGame(data.getAuth(), "name");
+        Integer id2 = facade.createGame(data.getAuth(), "cool name");
+        GameData game1 = new GameData(gameData, null, null, "name", new ChessGame());
+        GameData game2 = new GameData(id2, null, null, "cool name", new ChessGame());
+        Collection<GameData> gamesWanted = new ArrayList<>();
+        gamesWanted.add(game1);
+        gamesWanted.add(game2);
+        games.clearGames();
+        Collection<GameData> actualGames = facade.listGames(data.authToken());
+        Assertions.assertNotEquals(gamesWanted, actualGames);
+    }
+    @Test 
+    public void joinGamePass() throws Exception{
+        AuthData data = facade.register("username", "password", "email");
+        facade.login("username", "password");
+        Integer gameData = facade.createGame(data.getAuth(), "name");
+        GameData game1 = new GameData(gameData, null, null, "name", new ChessGame());
+        assertEquals(games.checkGame(gameData), game1);
+        facade.joinGame("Black", gameData, data.getAuth());
+        assertEquals(games.checkGame(gameData).blackUsername(), data.getUser());
+    }
+    @Test 
+    public void joinGameFail() throws Exception{
+        AuthData data = facade.register("username", "password", "email");
+        AuthData second = facade.register("user", "pass", "mail");
+        facade.login("username", "password");
+        facade.login("user", "pass");
+        Integer gameData = facade.createGame(data.getAuth(), "name");
+        GameData game1 = new GameData(gameData, null, null, "name", new ChessGame());
+        assertEquals(games.checkGame(gameData), game1);
+        facade.joinGame("Black", gameData, data.getAuth());
+        assertEquals(games.checkGame(gameData).blackUsername(), data.getUser());
+        Assertions.assertThrows(Exception.class, () -> {
+            facade.joinGame("Black", gameData, second.getAuth());;
+        });
     }
 }
