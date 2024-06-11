@@ -64,4 +64,16 @@ public class HttpHandler {
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("DELETE");
     }
+    public void logout(String authToken) throws Exception {
+        URI uri = new URI(url + "/session");
+        HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
+        http.setRequestMethod("DELETE");
+        http.setRequestProperty("Authorization", authToken);
+        if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            InputStream responseBody = http.getInputStream();
+            InputStreamReader reader = new InputStreamReader(responseBody);
+            String error = reader.toString();
+            throw new Exception("Logout failed?");
+        }
+    }
 }

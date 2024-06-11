@@ -44,6 +44,16 @@ public class ServerFacadeTests {
         systemService.clear();
 
     }
+    @BeforeEach
+    public void setUp() throws DataAccessException {
+        auth = new SQLAuthDAO();
+        user = new SQLUserDAO();
+        games = new SQLGameDAO();
+        systemService = new SystemService(auth, games, user);
+        gameService = new SQLGameService(games, auth);
+        userService = new SQLUserService(user, auth);
+        systemService.clear(); // Clear state before each test
+    }
     @AfterAll
     static void stopServer() {
         server.stop();
@@ -84,10 +94,29 @@ public class ServerFacadeTests {
     }
     @Test
     public void loginFailTest() throws Exception {
-        AuthData returnedData = facade.register(userData.username(), userData.password(), userData.email());
+        facade.register(userData.username(), userData.password(), userData.email());
         Exception exception = Assertions.assertThrows(Exception.class, () -> {
             facade.login("username", "wrongPass");;
         });
         assertEquals(exception.getMessage(), "Error reading response");
+    }
+    @Test
+    public void logoutPassTest() throws Exception 
+    {
+        facade.register("username", "password", "email");
+        AuthData data = facade.login("username", "password");
+        assertNotNull(data);
+        facade.logout(data.authToken());
+        assertNull(auth.getAuth(data.authToken()));
+    }
+    @Test
+    public void logoutFailTest() throws Exception 
+    {
+        facade.register("username", "password", "email");
+        AuthData data = facade.login("username", "password");
+        assertNotNull(data);
+       Assertions.assertThrows(Exception.class, () -> {
+            facade.logout("not authToken");;
+        });
     }
 }

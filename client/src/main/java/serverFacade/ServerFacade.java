@@ -2,6 +2,7 @@ package serverFacade;
 
 import java.util.ArrayList;
 
+import org.glassfish.grizzly.utils.Exceptions;
 
 import chess.model.*;
 import chess.model.requests.*;
@@ -27,14 +28,9 @@ public class ServerFacade {
     public void quit() throws Exception {
         handler.quit();
     }
-    public void help()
+    public void logout(String authToken) throws Exception
     {
-
-    }
-    //post login, help and quit included in both
-    public void logout(String authToken) 
-    {
-
+        handler.logout(authToken);
     }
     public ArrayList<GameData> listGames() {
         return null;
