@@ -1,10 +1,11 @@
 package ui;
 
-import chess.ChessBoard;
+import chess.ChessGame;
 
-public class ChessGameplay {
-    //make a chessboard? teehee
-    private ChessBoard board = new ChessBoard();
-    public ChessGameplay() {
+public class ChessGameplay 
+{
+    private ChessGame game = new ChessGame();
+    public ChessGameplay(ChessGame game) {
+        this.game = game;
     }
 }

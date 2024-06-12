@@ -18,7 +18,10 @@ public class Client {
     public Client(int port) {
         this.facade = new ServerFacade(port);
     }
-    public void initial()
+    public void run() {
+        initial();
+    }
+    private void initial()
     {
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(SET_BG_COLOR_WHITE);
