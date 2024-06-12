@@ -1,4 +1,4 @@
-package serverFacade;
+package server;
 
 import java.util.Collection;
 

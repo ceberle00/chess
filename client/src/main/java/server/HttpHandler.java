@@ -1,4 +1,4 @@
-package serverFacade;
+package server;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

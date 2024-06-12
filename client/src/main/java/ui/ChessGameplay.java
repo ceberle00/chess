@@ -7,8 +7,4 @@ public class ChessGameplay {
     private ChessBoard board = new ChessBoard();
     public ChessGameplay() {
     }
-    private void createBoard() 
-    {
-        this.board.resetBoard();
-    }
 }

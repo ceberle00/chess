@@ -15,7 +15,7 @@ import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import dataaccess.SQLUserDAO;
 import server.Server;
-import serverFacade.ServerFacade;
+import server.ServerFacade;
 import service.SystemService;
 
 
