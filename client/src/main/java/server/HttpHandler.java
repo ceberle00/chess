@@ -80,7 +80,7 @@ public class HttpHandler {
         http.setRequestMethod("DELETE");
         http.setRequestProperty("Authorization", authToken);
         try (InputStream responseBody = http.getInputStream();) {
-            InputStreamReader reader = new InputStreamReader(responseBody);
+            new InputStreamReader(responseBody);
             //String error = reader.toString();
             //throw new Exception("Logout failed?");
         }
@@ -154,9 +154,9 @@ public class HttpHandler {
             System.out.print(ioException.getMessage());
             throw new Exception("RequestBody failed");
         }
-        var statusCode = http.getResponseCode();
+        //var statusCode = http.getResponseCode();
         try (InputStream respBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+            //InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             //do nothing? Should just be fine idk
         }
         catch (Exception e) {

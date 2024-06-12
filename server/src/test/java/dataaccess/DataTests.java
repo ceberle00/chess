@@ -79,7 +79,7 @@ public class DataTests {
     @Test
     public void createAuthFail() throws DataAccessException {
         try {
-            String testAuth = this.auth.createAuth(null);
+            this.auth.createAuth(null);
         }
         catch (DataAccessException accessException) {
             Assertions.assertEquals("Error: unauthorized", accessException.getMessage());
@@ -160,8 +160,8 @@ public class DataTests {
     public void creatGameFail() throws DataAccessException
     {
         try {
-            int id = this.games.createGame("gameName");
-            int id2 =this.games.createGame("gameName");
+            this.games.createGame("gameName");
+            this.games.createGame("gameName");
         }catch (DataAccessException e) {
             Assertions.assertEquals("Error: already taken", e.getMessage());
         }
@@ -219,7 +219,7 @@ public class DataTests {
     @Test 
     public void checkGamesFail() throws DataAccessException{
         int id = this.games.createGame("gameName");
-        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        new GameData(id, null, null, "gameName", new ChessGame());
         int id2 =this.games.createGame("game2");
         GameData game2 = new GameData(id2, null, null, "game2", new ChessGame());
         this.games.clearGames();
@@ -229,14 +229,14 @@ public class DataTests {
     @Test 
     public void joinGamePass() throws DataAccessException{
         int id = this.games.createGame("gameName");
-        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        new GameData(id, null, null, "gameName", new ChessGame());
         AuthData auth = new AuthData("token", "username");
         assertDoesNotThrow(() -> this.games.joinGame(id, auth, TeamColor.BLACK));   
     }
     @Test 
     public void joinGameFail() throws DataAccessException{
         int id = this.games.createGame("gameName");
-        GameData game1 = new GameData(id, null, null, "gameName", new ChessGame());
+        new GameData(id, null, null, "gameName", new ChessGame());
         AuthData auth = new AuthData("token", "username");
         AuthData auth2 = new AuthData("token2", "username2");
         this.games.joinGame(id, auth, TeamColor.BLACK);

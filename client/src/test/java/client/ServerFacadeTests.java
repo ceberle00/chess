@@ -60,8 +60,8 @@ public class ServerFacadeTests {
     @Test 
     public void clearTest() throws Exception
     {
-        AuthData returnedData = facade.register(userData.username(), userData.password(), userData.email());
-        AuthData help = facade.register(secondUser.username(), secondUser.password(), secondUser.email());
+        facade.register(userData.username(), userData.password(), userData.email());
+        facade.register(secondUser.username(), secondUser.password(), secondUser.email());
         systemService.clear();
         assertNull(user.getUser("username"));
         assertNull(user.getUser("user"));

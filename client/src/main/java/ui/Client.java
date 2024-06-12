@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 import chess.model.AuthData;
 import chess.model.GameData;
-import java.util.Collection;
 import java.util.ArrayList;
 
 public class Client {
@@ -95,7 +94,7 @@ public class Client {
             case "Play Game":
                 playGame();
             case "Observe Game":
-
+                observeGame();
             default:
         }
     }
@@ -188,7 +187,7 @@ public class Client {
                 out.print("Invalid number, please select a number that was shown\n");
                 playGame();
             }
-            Integer actualID= games.get(gameID).gameID();
+            games.get(gameID).gameID();
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
