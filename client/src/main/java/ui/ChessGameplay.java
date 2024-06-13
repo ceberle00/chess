@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import chess.ChessBoard;
-import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessGame.TeamColor;
 import chess.ChessPiece.PieceType;
