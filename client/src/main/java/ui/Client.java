@@ -27,8 +27,8 @@ public class Client {
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(SET_BG_COLOR_WHITE);
         out.print("Welcome to 240 Chess, type \'help\' to get started :)");
-        //String input = scanner.nextLine();
-        String input = "help";
+        String input = scanner.nextLine();
+        //String input = "help";
         if (input.toLowerCase().equals("help")) 
         {
             prelogin();
@@ -42,8 +42,8 @@ public class Client {
         out.print("Login:\n");
         out.print("Help\n");
         out.print("Quit\n");
-        //String line = scanner.nextLine();
-        String line = "Register";
+        String line = scanner.nextLine();
+        //String line = "Register";
         switch (line) {
             case "Register":
                 register();
@@ -59,12 +59,12 @@ public class Client {
     }
     private void register() {
         out.println("Enter username, password, and email separated by spaces :)");
-        //String username = scanner.next();
-        //String password = scanner.next();
-        //String email = scanner.next();
-        String username = "user";
-        String password = "password";
-        String email = "email";
+        String username = scanner.next();
+        String password = scanner.next();
+        String email = scanner.next();
+        //String username = "user";
+        //String password = "password";
+        //String email = "email";
         try {
             out.println("In register try");
             authToken = facade.register(username, password, email);

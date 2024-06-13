@@ -7,7 +7,7 @@ import spark.*;
 
 
 
-public class Server 
+public class Server
 {
 
     private SQLAuthDAO auth = new SQLAuthDAO();
@@ -43,27 +43,14 @@ public class Server
 
         Spark.staticFiles.location("web");
         
-        Spark.delete("/db", (req, res) ->
-        (clearHandler.clear(req,  
-       res)));
-       Spark.post("/user", (req, res) ->
-       (userHandler.registerUser(req,  
-       res)));
-       Spark.post("/session", (req, res) ->
-        (userHandler.loginUser(req,  
-       res)));
-       Spark.delete("/session", (req, res) ->
-        (userHandler.logoutUser(req,  
-       res)));
-       Spark.get("/game", (req, res) ->
-        (gameHandler.listGames(req,  
-       res)));
-       Spark.post("/game", (req, res) ->
-        (gameHandler.createGame(req,  
-       res)));
-       Spark.put("/game", (req, res) ->
-       (gameHandler.joinGame(req,  
-      res)));
+        Spark.delete("/db", (req, res) ->(clearHandler.clear(req,  res)));
+        Spark.post("/user", (req, res) ->(userHandler.registerUser(req,  res)));
+        Spark.post("/session", (req, res) ->(userHandler.loginUser(req,  res)));
+        Spark.delete("/session", (req, res) -> (userHandler.logoutUser(req, res)));
+        Spark.get("/game", (req, res) ->(gameHandler.listGames(req,  res)));
+        Spark.post("/game", (req, res) ->(gameHandler.createGame(req,  res)));
+        Spark.put("/game", (req, res) ->(gameHandler.joinGame(req,  res)));
+        
         System.out.print("after all sparks ");
         Spark.awaitInitialization();
         return Spark.port();

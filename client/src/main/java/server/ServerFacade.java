@@ -6,9 +6,9 @@ import chess.ChessGame.TeamColor;
 import chess.model.*;
 import chess.model.requests.*;
 public class ServerFacade {
-    //add part for port number
+
     private HttpHandler handler;
-    
+
     public ServerFacade(int serverPort) 
     {
         String urlString = "http://localhost:";

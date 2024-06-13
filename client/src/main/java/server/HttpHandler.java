@@ -29,10 +29,15 @@ public class HttpHandler {
         http.setConnectTimeout(10000); // 5 seconds
         http.setReadTimeout(10000);
         http.setDoOutput(true);
+
         http.connect();
+        int second = http.getResponseCode();
         try (var outputStream = http.getOutputStream()) {
             var jsonBody = new Gson().toJson(data);
+            System.out.print(jsonBody);
             outputStream.write(jsonBody.getBytes());
+            int third = http.getResponseCode();
+            System.out.println(third);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
