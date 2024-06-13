@@ -5,15 +5,16 @@ import server.ServerFacade;
 import static ui.EscapeSequences.SET_BG_COLOR_WHITE;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLACK;
 import java.util.Scanner;
-
+import chess.*;
 import chess.model.AuthData;
-import chess.model.GameData;
+import chess.model.*;
 import java.util.ArrayList;
 
 public class Client {
     private PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private Scanner scanner = new Scanner(System.in);
     private ServerFacade facade;
+    ChessGameplay gameplay;
     private AuthData authToken;
     public Client(int port) {
         this.facade = new ServerFacade(port);
@@ -190,7 +191,10 @@ public class Client {
                 out.print("Invalid number, please select a number that was shown\n");
                 playGame();
             }
-            games.get(gameID).gameID();
+            ChessGame game = games.get(gameID).game();
+            gameplay = new ChessGameplay(game.getBoard());
+            gameplay.main(false); //idk
+            
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }

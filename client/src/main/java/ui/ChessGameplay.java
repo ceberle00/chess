@@ -17,8 +17,14 @@ public class ChessGameplay
     public ChessGameplay(ChessBoard game) {
         this.board = game.getBoard();
     }
-    public void main() {
+    public void main(Boolean isReversed) {
         out.print(ERASE_SCREEN); //resetting back to normal
+        if (isReversed) {
+            setBoardReversed();
+        }
+        else {
+            setBoardNormal();
+        }
     }
     private void setBoardReversed() {
         setHeader(true);
