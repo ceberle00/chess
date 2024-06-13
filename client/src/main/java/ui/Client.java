@@ -167,6 +167,8 @@ public class Client {
             }
             Integer actualID= games.get(gameID).gameID();
             facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
+            gameplay = new ChessGameplay(games.get(gameID).game().getBoard());
+            gameplay.main(false); //idk
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
