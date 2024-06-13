@@ -5,8 +5,6 @@ import chess.model.requests.*;
 import chess.model.results.*;
 import spark.*;
 
-import java.io.InputStream;
-
 import com.google.gson.Gson;
 
 
@@ -33,13 +31,12 @@ public class UserHandler {
             if (service.getUser(reg.getUsername()) != null) 
             {
                 result.status(403);
-                //Exception e = new Exception("Error: already taken");
                 RegisterResult res = new RegisterResult("Error: already taken");
                 return new Gson().toJson(res);
             }
 
             service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail());
-            String auth =service.createAuth(reg.getUsername());
+            String auth = service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail()).getAuth();
             result.status(200);
             return new Gson().toJson(new RegisterResult(reg.getUsername(), auth));
         }
