@@ -4,6 +4,9 @@ import service.*;
 import chess.model.requests.*;
 import chess.model.results.*;
 import spark.*;
+
+import java.io.InputStream;
+
 import com.google.gson.Gson;
 
 
@@ -18,6 +21,7 @@ public class UserHandler {
 
     public Object registerUser(Request request, Response result) 
     {
+        System.out.println("In userhandler");
         try {
             RegisterRequest reg = new Gson().fromJson(request.body(), RegisterRequest.class);
             if (reg.getEmail() == null || reg.getPassword() == null || reg.getUsername() == null) {

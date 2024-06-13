@@ -26,7 +26,10 @@ public class HttpHandler {
         URI uri = new URI(url + "/user");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("POST");
+        http.setConnectTimeout(10000); // 5 seconds
+        http.setReadTimeout(10000);
         http.setDoOutput(true);
+        http.connect();
         try (var outputStream = http.getOutputStream()) {
             var jsonBody = new Gson().toJson(data);
             outputStream.write(jsonBody.getBytes());
@@ -35,7 +38,6 @@ public class HttpHandler {
             System.out.println(e.getMessage());
             throw new Exception("error at getOutputStream");
         }
-
         try (InputStream respBody = http.getInputStream()) {
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             AuthData responseBody = new Gson().fromJson(inputStreamReader, AuthData.class);

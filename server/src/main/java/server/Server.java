@@ -24,20 +24,16 @@ public class Server
     private DatabaseManager manager = new DatabaseManager();
     
     public Server() {
+        System.out.println("in server");
         this.userService = new SQLUserService(user, auth);
         this.userHandler = new UserHandler(userService);
         this.systemService = new SystemService(auth, game, user);
         this.clearHandler = new SystemHandler(systemService);
         this.gameService = new SQLGameService(game, auth);
         this.gameHandler = new GameHandler(gameService);
-        try {
-            manager.createDatabase();
-        }
-        catch (DataAccessException e) {
-            System.out.println(e.getMessage());
-        }
     }
     public int run(int desiredPort) {
+        System.out.println("in run server");
         try {
             manager.createDatabase();
         } catch (DataAccessException e) {
@@ -51,7 +47,7 @@ public class Server
         (clearHandler.clear(req,  
        res)));
        Spark.post("/user", (req, res) ->
-        (userHandler.registerUser(req,  
+       (userHandler.registerUser(req,  
        res)));
        Spark.post("/session", (req, res) ->
         (userHandler.loginUser(req,  
@@ -68,7 +64,7 @@ public class Server
        Spark.put("/game", (req, res) ->
        (gameHandler.joinGame(req,  
       res)));
-
+        System.out.print("after all sparks ");
         Spark.awaitInitialization();
         return Spark.port();
     }
