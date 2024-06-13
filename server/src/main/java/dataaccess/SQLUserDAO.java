@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.mindrot.jbcrypt.BCrypt;
 
 import chess.model.UserData;
+import chess.model.AuthData;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -72,14 +73,17 @@ public class SQLUserDAO
             throw new DataAccessException(e.getMessage());
         }
     }
-    public void createUser(String username, String password, String email) throws DataAccessException
+    public AuthData createUser(String username, String password, String email) throws DataAccessException
     {
         if (getUser(username) != null) {
             throw new DataAccessException("Error: already taken");
         }
         var statement = "INSERT INTO userData (username, password, email) VALUES (?,?,?)";
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        SQLAuthDAO auth = new SQLAuthDAO();
         executeUpdate(statement, username, hashedPassword, email);
+        String authToken = auth.createAuth(username);
+        return new AuthData(authToken, username);
     }
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {

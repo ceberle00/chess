@@ -16,9 +16,9 @@ public class SQLUserService{
     {
         return this.user.getUser(userName);
     }
-    public void createUser(String username, String password, String email) throws Exception
+    public AuthData createUser(String username, String password, String email) throws Exception
     {
-        this.user.createUser(username, password, email);
+        return this.user.createUser(username, password, email);
     }
     public String createAuth(String username) throws DataAccessException {
         return this.auth.createAuth(username);

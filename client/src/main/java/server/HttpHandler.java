@@ -26,31 +26,39 @@ public class HttpHandler {
         URI uri = new URI(url + "/user");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("POST");
-        http.setConnectTimeout(10000); // 5 seconds
+        http.setConnectTimeout(10000); //setting connection time longer
         http.setReadTimeout(10000);
         http.setDoOutput(true);
 
         http.connect();
-        int second = http.getResponseCode();
         try (var outputStream = http.getOutputStream()) {
             var jsonBody = new Gson().toJson(data);
             System.out.print(jsonBody);
             outputStream.write(jsonBody.getBytes());
-            int third = http.getResponseCode();
-            System.out.println(third);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
             throw new Exception("error at getOutputStream");
         }
-        try (InputStream respBody = http.getInputStream()) {
+        var statusCode = http.getResponseCode();
+        var statusMessage = http.getResponseMessage();
+        System.out.println(statusCode + statusMessage);
+        if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(respBody);
+                AuthData responseBody = new Gson().fromJson(inputStreamReader, AuthData.class);
+                return responseBody;
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw new Exception("Error reading response");
+            }
+        }
+        else {
+            InputStream respBody = http.getErrorStream();
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             AuthData responseBody = new Gson().fromJson(inputStreamReader, AuthData.class);
             return responseBody;
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new Exception("Error reading response");
         }
     }
     public AuthData login(LoginRequest request) throws Exception{
