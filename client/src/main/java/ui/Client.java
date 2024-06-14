@@ -2,8 +2,6 @@ package ui;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import server.ServerFacade;
-import static ui.EscapeSequences.SET_BG_COLOR_WHITE;
-import static ui.EscapeSequences.SET_TEXT_COLOR_BLACK;
 import java.util.Scanner;
 import chess.*;
 import chess.model.AuthData;
@@ -52,7 +50,7 @@ public class Client {
             case "Quit":
                 break;
             default:
-                initial();
+                //initial();
         }
     }
     private void register() {
@@ -162,22 +160,25 @@ public class Client {
             out.print("Type in the number of the game you'd like to join followed by the color you'd like to be (seperated by spaces)\n");
             int gameID = Integer.parseInt(scanner.next());
             String color = scanner.next();
+            System.out.print(color);
             if (gameID < 0 || gameID > games.size()-1) {
                 out.print("Invalid number, please select a number that was shown\n");
                 playGame();
             }
-            if (color.toLowerCase() != "white" && color.toLowerCase() != "black") {
+            if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
+                Integer actualID= games.get(gameID).gameID();
+                facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
+                gameplay = new ChessGameplay(games.get(gameID).game().getBoard());
+                gameplay.main(false); //idk
+                out.print("Hit the \'a\' key to go back to the menu:\n");
+                String line = scanner.next();
+                if (line != null) {
+                    postLogin();
+                }
+            }
+            else {
                 out.print("Invalid color :(\n");
                 playGame();
-            }
-            Integer actualID= games.get(gameID).gameID();
-            facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
-            gameplay = new ChessGameplay(games.get(gameID).game().getBoard());
-            gameplay.main(false); //idk
-            out.print("Hit the \'a\' key to go back to the menu:\n");
-            String line = scanner.next();
-            if (line != null) {
-                postLogin();
             }
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());

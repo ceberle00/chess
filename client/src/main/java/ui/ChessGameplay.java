@@ -37,6 +37,7 @@ public class ChessGameplay
                 setBlock(i, j);
             }
             out.print("\n");
+            out.print("\n"); // try two? 
         }
         setHeader(true);
         out.print(SET_BG_COLOR_WHITE);
@@ -58,7 +59,7 @@ public class ChessGameplay
         }
     }
     private void setPiece(ChessPiece piece) {
-        out.print(" ");
+        //out.print(" ");
         PieceType type = piece.getPieceType();
         TeamColor color = piece.getTeamColor();
         if (color == TeamColor.BLACK) {
@@ -101,7 +102,7 @@ public class ChessGameplay
                 out.print(WHITE_PAWN);
             }
         }
-        out.print(" "); //idk about spacing
+        //out.print(" ");
     }
 
     private void setBoardNormal() {
@@ -115,6 +116,9 @@ public class ChessGameplay
             for (int j =0; j < 8; j++) {
                 setBlock(i, j);
             }
+            out.print(SET_BG_COLOR_LIGHT_GREY);
+            out.print(SET_TEXT_COLOR_BLACK);
+            out.print(headers[i]);
             out.print("\n");
         }
         setHeader(false);
@@ -125,10 +129,11 @@ public class ChessGameplay
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_BLACK);
         if (isReversed) {
-            out.print("    h   g   f   e   d   c   b   a     \n");
+            //maybe change spacing
+            out.print("  h  g  f  e  d  c  b  a  \n");
         }
         else {
-            out.print("    a   b   c   d   e   f   g   h     \n");
+            out.print("  a  b  c  d  e  f  g  h  \n");
         }
     }
     private void setBlack() {
