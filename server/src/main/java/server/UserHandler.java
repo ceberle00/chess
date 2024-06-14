@@ -34,9 +34,9 @@ public class UserHandler {
                 RegisterResult res = new RegisterResult("Error: already taken");
                 return new Gson().toJson(res);
             }
-
-            service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail());
+            System.out.println("After ifs");
             String auth = service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail()).getAuth();
+            System.out.println(auth);
             result.status(200);
             return new Gson().toJson(new RegisterResult(reg.getUsername(), auth));
         }

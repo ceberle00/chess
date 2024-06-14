@@ -14,7 +14,7 @@ public class Client {
     private PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     private Scanner scanner = new Scanner(System.in);
     private ServerFacade facade;
-    ChessGameplay gameplay;
+    private ChessGameplay gameplay;
     private AuthData authToken;
     public Client(int port) {
         this.facade = new ServerFacade(port);
@@ -24,15 +24,14 @@ public class Client {
     }
     private void initial()
     {
-        out.print(SET_TEXT_COLOR_BLACK);
-        out.print(SET_BG_COLOR_WHITE);
+        //out.print(SET_TEXT_COLOR_BLACK);
+        //out.print(SET_BG_COLOR_WHITE);
         out.print("Welcome to 240 Chess, type \'help\' to get started :)");
         String input = scanner.nextLine();
         //String input = "help";
         if (input.toLowerCase().equals("help")) 
         {
             prelogin();
-            //call another function
         }
         
     }
@@ -42,15 +41,14 @@ public class Client {
         out.print("Login:\n");
         out.print("Help\n");
         out.print("Quit\n");
-        String line = scanner.nextLine();
-        //String line = "Register";
+        String line = scanner.next();
         switch (line) {
             case "Register":
                 register();
-                break;
+                postLogin();
             case "Login":
                 login();
-                break;
+                postLogin();
             case "Quit":
                 break;
             default:
@@ -62,14 +60,9 @@ public class Client {
         String username = scanner.next();
         String password = scanner.next();
         String email = scanner.next();
-        //String username = "user";
-        //String password = "password";
-        //String email = "email";
         try {
             out.println("In register try");
             authToken = facade.register(username, password, email);
-            postLogin(); //not sure if I need to actually log in
-            //then log in
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
@@ -81,7 +74,6 @@ public class Client {
         String pass = scanner.next();
         try {
             authToken = facade.login(user, pass);
-            postLogin();
         }catch (Exception e ) {
             out.println("Error:" + e.getMessage());
         }
@@ -107,6 +99,7 @@ public class Client {
             case "Observe Game":
                 observeGame();
             default:
+                postLogin();
         }
     }
     private void logout() {
@@ -143,6 +136,7 @@ public class Client {
                 out.print("White username:" + game.whiteUsername());
                 out.print("Game: " + game.game() + "}\n");
             }
+            //maybe have a hit any button to go back to main?
             postLogin();
         }catch (Exception e) {
             out.println("Error:" + e.getMessage());
