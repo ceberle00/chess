@@ -115,6 +115,7 @@ public class ChessGameplay
             for (int j =0; j < 8; j++) {
                 setBlock(i, j);
             }
+            out.print("\n");
         }
         setHeader(false);
         out.print(SET_BG_COLOR_WHITE);

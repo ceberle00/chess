@@ -136,8 +136,12 @@ public class Client {
                 out.print("White username:" + game.whiteUsername());
                 out.print("Game: " + game.game() + "}\n");
             }
+            out.print("Type \'a\' to go back to the menu");
+            String line = scanner.next();
+            if (line.equals("a")) {
+                postLogin();
+            }
             //maybe have a hit any button to go back to main?
-            postLogin();
         }catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
@@ -170,11 +174,16 @@ public class Client {
             facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
             gameplay = new ChessGameplay(games.get(gameID).game().getBoard());
             gameplay.main(false); //idk
+            out.print("Hit the \'a\' key to go back to the menu:\n");
+            String line = scanner.next();
+            if (line != null) {
+                postLogin();
+            }
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
     }
-    private void observeGame() 
+    private void observeGame()
     {
         try {
             out.print("Games:");
@@ -197,7 +206,11 @@ public class Client {
             ChessGame game = games.get(gameID).game();
             gameplay = new ChessGameplay(game.getBoard());
             gameplay.main(false); //idk
-            
+            out.print("Hit the \'a\' key to go back to the menu:\n");
+            String line = scanner.next();
+            if (line != null) {
+                postLogin();
+            }
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
