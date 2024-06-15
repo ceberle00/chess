@@ -8,4 +8,7 @@ public class Resign extends UserGameCommand {
         commandType = UserGameCommand.CommandType.RESIGN;
         this.gameID = gameID;
     }
+    public Integer getGameID() {
+        return this.gameID;
+    }
 }

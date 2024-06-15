@@ -5,4 +5,7 @@ public class LogoutResult {
     public LogoutResult(String m) {
         this.message = m;
     }
+    public String getMessage() {
+        return this.message;
+    }
 }

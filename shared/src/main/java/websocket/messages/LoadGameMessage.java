@@ -13,4 +13,7 @@ public class LoadGameMessage extends ServerMessage {
     public String getMessage() {
         return this.ErrorMessage;
     }
+    public ChessGame getGame() {
+        return game;
+    }
 }

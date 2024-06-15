@@ -12,4 +12,13 @@ public class LoginResult {
     public LoginResult(String mes) {
         this.message = mes;
     }
+    public String getUser() {
+        return this.username;
+    }
+    public String getAuth() {
+        return this.auth;
+    }
+    public String getMessage() {
+        return this.message;
+    }
 }

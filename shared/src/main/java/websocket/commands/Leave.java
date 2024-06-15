@@ -7,4 +7,7 @@ public class Leave extends UserGameCommand{
         commandType = UserGameCommand.CommandType.LEAVE;
         this.gameID = gameID;
     }
+    public Integer getGameID() {
+        return this.gameID;
+    }
 }

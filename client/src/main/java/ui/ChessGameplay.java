@@ -151,11 +151,47 @@ public class ChessGameplay
         out.print(SET_TEXT_COLOR_BLACK);
     }
     private void highlightMoves(Collection<ChessMove> moves) {
+        //maybe works, who knows
+        ChessPosition starting = new ChessPosition(0, 0);
+        Boolean isValid[][] = new Boolean[8][8];
         for (ChessMove move : moves) 
         {
+            starting = move.getStartPosition();
+            //save to list of booleans?
             ChessPosition pos =move.getEndPosition();
+            isValid[pos.getRow()][pos.getColumn()] = true;
             //might just need to reset the whole board lmao
         }
+        setHeader(false);
+        String[] headers = {"1", "2", "3", "4", "5", "6", "7", "8"};
+        for (int i = 0; i < 8; i++) 
+        {
+            out.print(SET_BG_COLOR_LIGHT_GREY);
+            out.print(SET_TEXT_COLOR_BLACK);
+            out.print(headers[i]);
+            for (int j =0; j < 8; j++) {
+                if (isValid[i][j]) {
+                    setGreen();
+                    if (this.board[i][j] != null) {
+                        setPiece(this.board[i][j]);
+                    }
+                    else {
+                        out.print("   ");
+                    }
+                }
+                else if (i+1 == starting.getRow() && j+1 == starting.getColumn()) {
+
+                }
+                else {
+                    setBlock(i, j);
+                }
+            }
+            out.print(SET_BG_COLOR_LIGHT_GREY);
+            out.print(SET_TEXT_COLOR_BLACK);
+            out.print(headers[i]);
+            out.print("\n");
+        }
+        setHeader(false);
+        out.print(SET_BG_COLOR_WHITE);
     }
-    //headers will be a-h, then 1-8, how we set then will depend on which board is being used
 }

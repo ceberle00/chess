@@ -13,4 +13,10 @@ public class ListGamesResult {
     public ListGamesResult(Collection<GameData> g) {
         this.games = g;
     }
+    public Collection<GameData> getGames() {
+        return this.games;
+    }
+    public String getMessage() {
+        return this.message;
+    }
 }

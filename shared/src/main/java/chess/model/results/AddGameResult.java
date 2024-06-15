@@ -9,5 +9,11 @@ public class AddGameResult {
     public AddGameResult(String m) {
         this.message = m;
     }
+    public Integer getGameID() {
+        return this.gameID;
+    }
+    public String getMessage() {
+        return this.message;
+    }
 
 }

@@ -16,10 +16,10 @@ public class RegisterResult
     public String getAuthToken() {
         return this.authToken;
     }
-
-
     public String getUsername() {
         return this.username;
     }
-    
+    public String getMessage() {
+        return this.message;
+    }
 }
