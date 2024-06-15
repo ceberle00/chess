@@ -49,6 +49,8 @@ public class Client {
                 postLogin();
             case "Quit":
                 break;
+            case "Help":
+                prelogin();
             default:
                 //initial();
         }
@@ -151,7 +153,7 @@ public class Client {
             for (int i = 0; i < games.size(); i++) 
             {
                 GameData game = games.get(i);
-                out.print("Game " + i+1 + " {");
+                out.print("Game " + (i+1) + " {");
                 out.print("Game name: " + game.gameName() + ",");
                 out.print(" Black username: " + game.blackUsername());
                 out.print(" White username:" + game.whiteUsername());
@@ -163,7 +165,7 @@ public class Client {
             System.out.print(color);
             if (gameID < 0 || gameID > games.size()) {
                 out.print("Invalid number, please select a number that was shown\n");
-                playGame();
+                //playGame();
             }
             if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
                 Integer actualID= games.get(gameID-1).gameID();

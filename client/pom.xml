@@ -55,6 +55,13 @@
     <dependencies>
 
         <dependency>
+            <groupId>org.eclipse.jetty.ee9.websocket</groupId>
+            <artifactId>jetty-ee9-websocket-jetty-api</artifactId>
+            <version>12.0.10</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.glassfish.tyrus.bundles</groupId>
             <artifactId>tyrus-standalone-client-jdk</artifactId>
             <version>2.2.0-M1</version>

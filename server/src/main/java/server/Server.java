@@ -24,7 +24,6 @@ public class Server
     private DatabaseManager manager = new DatabaseManager();
     
     public Server() {
-        System.out.println("in server");
         this.userService = new SQLUserService(user, auth);
         this.userHandler = new UserHandler(userService);
         this.systemService = new SystemService(auth, game, user);
@@ -33,7 +32,6 @@ public class Server
         this.gameHandler = new GameHandler(gameService);
     }
     public int run(int desiredPort) {
-        System.out.println("in run server");
         try {
             manager.createDatabase();
         } catch (DataAccessException e) {

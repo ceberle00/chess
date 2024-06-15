@@ -42,7 +42,7 @@ public class ServerFacade {
     }
     public void joinGame(String color, Integer gameID, String authToken) throws Exception{
         TeamColor teamColor;
-        if (color == "Black") {
+        if (color.toLowerCase().equals("black")) {
             teamColor = TeamColor.BLACK;
         }
         else {

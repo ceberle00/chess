@@ -151,10 +151,10 @@ public class ChessGameplay
         out.print(SET_TEXT_COLOR_BLACK);
     }
     private void highlightMoves(Collection<ChessMove> moves) {
-        for (ChessMove move : moves) {
+        for (ChessMove move : moves) 
+        {
             ChessPosition pos =move.getEndPosition();
-            setGreen();
-            out.print(board[pos.getColumn()][pos.getRow()]);
+            //might just need to reset the whole board lmao
         }
     }
     //headers will be a-h, then 1-8, how we set then will depend on which board is being used

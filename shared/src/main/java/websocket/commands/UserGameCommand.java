@@ -8,10 +8,13 @@ import java.util.Objects;
  * Note: You can add to this class, but you should not alter the existing
  * methods.
  */
+
+
 public class UserGameCommand {
 
-    public UserGameCommand(String authToken) {
+    public UserGameCommand(String authToken, Integer gameID) {
         this.authToken = authToken;
+        this.gameID = gameID;
     }
 
     public enum CommandType {
@@ -24,6 +27,7 @@ public class UserGameCommand {
     protected CommandType commandType;
 
     private final String authToken;
+    private final Integer gameID;
 
     public String getAuthString() {
         return authToken;
@@ -31,6 +35,9 @@ public class UserGameCommand {
 
     public CommandType getCommandType() {
         return this.commandType;
+    }
+    public Integer getGameID() {
+        return gameID;
     }
 
     @Override
