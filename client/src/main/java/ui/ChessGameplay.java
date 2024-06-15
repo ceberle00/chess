@@ -4,9 +4,12 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 import chess.ChessBoard;
+import chess.ChessMove;
 import chess.ChessPiece;
+import chess.ChessPosition;
 import chess.ChessGame.TeamColor;
 import chess.ChessPiece.PieceType;
+import java.util.Collection;
 
 import static ui.EscapeSequences.*;
 public class ChessGameplay 
@@ -129,7 +132,6 @@ public class ChessGameplay
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_BLACK);
         if (isReversed) {
-            //maybe change spacing
             out.print("  h  g  f  e  d  c  b  a  \n");
         }
         else {
@@ -143,6 +145,17 @@ public class ChessGameplay
     private void setWhite() {
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
+    }
+    private void setGreen() { //use for highlight
+        out.print(SET_BG_COLOR_GREEN);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
+    private void highlightMoves(Collection<ChessMove> moves) {
+        for (ChessMove move : moves) {
+            ChessPosition pos =move.getEndPosition();
+            setGreen();
+            out.print(board[pos.getColumn()][pos.getRow()]);
+        }
     }
     //headers will be a-h, then 1-8, how we set then will depend on which board is being used
 }
