@@ -74,7 +74,7 @@ public class GameHandler {
         boolean failAuth = false;
         boolean colorTaken = false;
         try {
-            String authString = request.headers("authorization");
+            String authString = request.headers("Authorization");
             failAuth = true;
             service.valiAuthData(authString);
             String requestBody = request.body();
@@ -84,12 +84,10 @@ public class GameHandler {
             
             if (joinRequest.getGameID() == null) {
                 badData = true;
-                System.out.println("in id null");
                 throw new Exception("Error: bad request");
             }
             
             if (joinRequest.getColor() == null) {
-                System.out.println("in color null");
                 badData = true;
                 throw new Exception("Error: bad request");
             }

@@ -47,8 +47,8 @@ public class Client {
         out.print("Login:\n");
         out.print("Help\n");
         out.print("Quit\n");
-        String line = scanner.next();
-        //String line = "Login";
+        //String line = scanner.next();
+        String line = "Login";
         switch (line) {
             case "Register":
                 register();
@@ -104,16 +104,22 @@ public class Client {
         switch (line) {
             case "Logout":
                 logout();
+                break;
             case "Create Game":
                 createGame();
+                break;
             case "List Games":
                 listGames();
+                break;
             case "Play Game":
                 playGame();
+                break;
             case "Observe Game":
                 observeGame();
+                break;
             default:
                 postLogin();
+                break;
         }
     }
     private void logout() {
@@ -223,12 +229,11 @@ public class Client {
                 //playGame();
                 observeGame();
             }
-            out.print("before game");
             GameData game = games.get((gameID-1));
             gameplay = new ChessGameplay(game.game().getBoard()); //pass in game id to inGame
             gameplay.main(false); //idk
             this.ws = new WebsocketClient(port);
-            ws.connect(this.authToken.authToken(), game.gameID()); //need to figure out how to get the actual gameID game
+            ws.connect(this.authToken.authToken(), game.gameID(), null); //need to figure out how to get the actual gameID game
             inGame(game);
             /*out.print("Hit the \'a\' key to go back to the menu:\n");
             String line = scanner.next();
@@ -247,20 +252,26 @@ public class Client {
         out.print("4. Highlight legal moves\n");
         out.print("5. Make move\n");
         //String line = scanner.nextLine();
-        String line = "1";
+        String line = "2";
         switch (line) {
             case "1":
                 redrawBoard(game);
+                break;
             case "2":
-                leave(game);;
+                leave(game);
+                break;
             case "3":
                 listGames();
+                break;
             case "4":
                 playGame();
+                break;
             case "5":
                 observeGame();
+                break;
             default:
                 inGame(game);
+                break;
         }
     }
     private void redrawBoard(GameData game) 
@@ -276,7 +287,7 @@ public class Client {
     private void leave(GameData game) throws Exception {
         try {
             this.ws.leave(authToken.authToken(), game.gameID());
-            postLogin();
+            //postLogin();
             
         }catch (IOException e) {
             throw new IOException("unable to leave");

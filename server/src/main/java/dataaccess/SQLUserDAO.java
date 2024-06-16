@@ -23,6 +23,7 @@ public class SQLUserDAO
     
     public UserData getUser(String username) throws DataAccessException
     {
+        System.out.print("In get user");
         try (var conn = DatabaseManager.getConnection()) {
             String statement = "SELECT * FROM userData WHERE username=?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {

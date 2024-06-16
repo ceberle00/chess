@@ -26,8 +26,8 @@ public class HttpHandler {
         URI uri = new URI(url + "/user");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("POST");
-        http.setConnectTimeout(10000); //setting connection time longer
-        http.setReadTimeout(10000);
+        //http.setConnectTimeout(10000); //setting connection time longer
+        //http.setReadTimeout(10000);
         http.setDoOutput(true);
 
         http.connect();
@@ -58,7 +58,7 @@ public class HttpHandler {
             InputStream respBody = http.getErrorStream();
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             AuthData responseBody = new Gson().fromJson(inputStreamReader, AuthData.class);
-            return responseBody;
+            throw new Exception("Error reading response");
         }
     }
     public AuthData login(LoginRequest request) throws Exception{

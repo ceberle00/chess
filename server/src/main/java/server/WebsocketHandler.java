@@ -3,8 +3,10 @@ package server;
 import java.io.IOException;
 import com.google.gson.Gson;
 
-import dataaccess.DataAccessException;
+import chess.ChessGame;
 import dataaccess.SQLAuthDAO;
+import dataaccess.SQLGameDAO;
+import websocket.commands.Connect;
 import websocket.commands.Leave;
 import websocket.commands.UserGameCommand;
 import websocket.messages.*;
@@ -19,11 +21,13 @@ public class WebsocketHandler
     private final ConnectionManager connections = new ConnectionManager();
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws IOException { 
+    public void onMessage(Session session, String message) throws Exception { 
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT:
-                System.out.print("tee hee");
+                Connect con = new Gson().fromJson(message, Connect.class);
+                connect(con, session);
+                break;
                 //LoadGameMessage val = new LoadGameMessage("% just joined the game", null);
             case LEAVE:
                 Leave leave = new Gson().fromJson(message, Leave.class);
@@ -32,11 +36,12 @@ public class WebsocketHandler
                 } catch (Exception e) {
 
                 }
+                break;
             case RESIGN:
             case MAKE_MOVE:
         }
-     }
-     public void leave(Leave l, Session session) throws Exception{
+    }
+    public void leave(Leave l, Session session) throws Exception{
         Integer gameID = l.getGameID();
         String username = new SQLAuthDAO().getAuth(l.getAuthString()).getUser();
         String message = String.format("%s left the game", username);
@@ -47,5 +52,34 @@ public class WebsocketHandler
         }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
-     }
+    }
+    public void connect(Connect con, Session session) throws Exception
+    {
+        String auth = con.getAuthString();
+        Integer id = con.getGameID();
+        String username = new SQLAuthDAO().getAuth(auth).getUser();
+        connections.addSession(auth, id, session); //just add to the game later
+        var message = "";
+        if (con.gTeamColor().equals(null)) {
+            message = String.format("%s is watching the game", username);
+            LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id).game());
+            NotificationMessage notificationMessage = new NotificationMessage(message);
+            connections.broadcast(auth, id, notificationMessage);
+            connections.sendMessage(auth, id, load);
+        }
+        else {
+            String color = "";
+            if (con.gTeamColor() == ChessGame.TeamColor.WHITE) {
+                color = "WHITE";
+            }
+            else {
+                color = "BLACK";
+            }
+            message = String.format("%s has joined game as %s", username, color);
+            LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id).game());
+            NotificationMessage notificationMessage = new NotificationMessage(message);
+            connections.broadcast(auth, id, notificationMessage);
+            connections.sendMessage(auth, id, load);
+        }
+    }
 }

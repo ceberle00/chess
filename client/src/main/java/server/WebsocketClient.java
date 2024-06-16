@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import com.google.gson.Gson;
+import chess.ChessGame.TeamColor;
+
 import java.util.Set;
 
 import javax.management.Notification;
@@ -72,13 +74,11 @@ public class WebsocketClient extends Endpoint
     @Override
     public void onOpen(Session session, EndpointConfig config) {
         this.sesh = session;
-        System.out.println("Connected to " + this.url);
     }
-    public void connect(String authToken, Integer game) throws IOException{
+    public void connect(String authToken, Integer game, TeamColor color) throws IOException{
         try {
-            Connect con = new Connect(authToken, game);
+            Connect con = new Connect(authToken, game, color);
             this.sesh.getBasicRemote().sendText(new Gson().toJson(con));
-            //this.sesh.close();
         }catch (IOException ex) {
             throw new IOException(ex.getMessage());
         }

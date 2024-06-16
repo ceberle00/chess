@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jetty.websocket.api.Session;
+
+import com.google.gson.Gson;
+
 import websocket.messages.*;
 
 
@@ -20,12 +23,15 @@ public class ConnectionManager {
             sessions.get(id).put(auth, session);
         }
     }
+     public void sendMessage(String authToken, int gameID, ServerMessage message) throws IOException {
+        String toSend = new Gson().toJson(message);
+        sessions.get(gameID).get(authToken).getRemote().sendString(toSend);
+    }
     public void remove(String auth, Integer id, Session session) {
         sessions.get(id).remove(auth, session);
     }
     public void broadcast(String excludeVisitorName, Integer id, NotificationMessage notification) throws IOException {
         var removeList = new ArrayList<String>();
-        
         for (var c : sessions.get(id).entrySet()) {
             if (c.getValue().isOpen()) {
                 if (!c.getKey().equals(excludeVisitorName)) {
