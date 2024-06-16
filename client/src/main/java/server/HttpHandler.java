@@ -74,6 +74,7 @@ public class HttpHandler {
             System.out.println(e.getMessage());
             throw new Exception("error at getOutputStream");
         }
+        int responseCode = http.getResponseCode();
         try (InputStream respBody = http.getInputStream()) {
             InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             AuthData responseBody = new Gson().fromJson(inputStreamReader, AuthData.class);

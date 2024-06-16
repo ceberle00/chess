@@ -51,5 +51,4 @@ public class ServerFacade {
         JoinGameRequest request = new JoinGameRequest(teamColor, gameID);
         handler.joinGame(authToken, request);
     }
-
 }

@@ -22,6 +22,7 @@ public class Server
     private UserHandler userHandler = new UserHandler(userService);
     private GameHandler gameHandler = new GameHandler(gameService);
     private DatabaseManager manager = new DatabaseManager();
+    private WebsocketHandler websocketHandler = new WebsocketHandler();
     
     public Server() {
         this.userService = new SQLUserService(user, auth);
@@ -40,7 +41,7 @@ public class Server
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        
+        Spark.webSocket("/ws", websocketHandler);
         Spark.delete("/db", (req, res) ->(clearHandler.clear(req,  res)));
         Spark.post("/user", (req, res) ->(userHandler.registerUser(req,  res)));
         Spark.post("/session", (req, res) ->(userHandler.loginUser(req,  res)));
