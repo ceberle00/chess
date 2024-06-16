@@ -1,4 +1,5 @@
 package ui;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import server.ServerFacade;
@@ -16,6 +17,7 @@ public class Client {
     private Scanner scanner = new Scanner(System.in);
     private ServerFacade facade;
     private ChessGameplay gameplay;
+    WebsocketClient ws;
     private AuthData authToken;
     private int port;
 
@@ -182,6 +184,7 @@ public class Client {
             if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
                 Integer actualID= games.get(gameID-1).gameID();
                 facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
+                GameData currGame = games.get(gameID);
                 gameplay = new ChessGameplay(games.get(gameID).game().getBoard());
                 gameplay.main(false); //idk
                 out.print("Hit the \'a\' key to go back to the menu:\n");
@@ -222,21 +225,61 @@ public class Client {
             }
             out.print("before game");
             GameData game = games.get((gameID-1));
-            gameplay = new ChessGameplay(game.game().getBoard());
-            out.print("before creating websocket");
+            gameplay = new ChessGameplay(game.game().getBoard()); //pass in game id to inGame
             gameplay.main(false); //idk
-            WebsocketClient ws = new WebsocketClient(port);
+            this.ws = new WebsocketClient(port);
             ws.connect(this.authToken.authToken(), game.gameID()); //need to figure out how to get the actual gameID game
-            out.print("Hit the \'a\' key to go back to the menu:\n");
+            inGame(game);
+            /*out.print("Hit the \'a\' key to go back to the menu:\n");
             String line = scanner.next();
             if (line != null) {
                 postLogin();
-            }
+            }*/
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
     }
-    private void inGame() {
-        
+    private void inGame(GameData game) throws Exception {
+        out.print("Type a number to see menu options\n");
+        out.print("1. Redraw Board\n");
+        out.print("2. Leave\n");
+        out.print("3. Resign\n");
+        out.print("4. Highlight legal moves\n");
+        out.print("5. Make move\n");
+        //String line = scanner.nextLine();
+        String line = "1";
+        switch (line) {
+            case "1":
+                redrawBoard(game);
+            case "2":
+                leave(game);;
+            case "3":
+                listGames();
+            case "4":
+                playGame();
+            case "5":
+                observeGame();
+            default:
+                inGame(game);
+        }
+    }
+    private void redrawBoard(GameData game) 
+    {
+        gameplay = new ChessGameplay(game.game().getBoard());
+        if (authToken.getUser().equals(game.blackUsername())) {
+            gameplay.main(true);
+        }
+        else {
+            gameplay.main(false);
+        }
+    }
+    private void leave(GameData game) throws Exception {
+        try {
+            this.ws.leave(authToken.authToken(), game.gameID());
+            postLogin();
+            
+        }catch (IOException e) {
+            throw new IOException("unable to leave");
+        }
     }
 }

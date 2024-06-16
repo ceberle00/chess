@@ -27,7 +27,22 @@ public class SQLGameDAO {
     public void setID(Integer value) {
         this.gameID = value;
     }
-    
+    public void leaveGame(String auth, Integer gameID) throws Exception{
+        try {
+            GameData game = checkGame(gameID);
+            String username = new SQLAuthDAO().getAuth(auth).getUser();
+            if (username.equals(game.blackUsername())) {
+                var statement = "UPDATE gameData SET blackUsername = null WHERE gameID = ?";
+                executeUpdate(statement, gameID);
+            }else {
+                var statement = "UPDATE gameData SET whiteUsername = null WHERE gameID = ?";
+                executeUpdate(statement, gameID);
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
+    }
     public Collection<GameData> getGames() throws DataAccessException{
         ArrayList<GameData> result = new ArrayList<>();
         try (var conn = DatabaseManager.getConnection()) {

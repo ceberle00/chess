@@ -83,4 +83,12 @@ public class WebsocketClient extends Endpoint
             throw new IOException(ex.getMessage());
         }
     }
+    public void leave(String authToken, Integer game) throws IOException {
+        try {
+            Leave leave = new Leave(authToken, game);
+            this.sesh.getBasicRemote().sendText(new Gson().toJson(leave));
+        }catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 }
