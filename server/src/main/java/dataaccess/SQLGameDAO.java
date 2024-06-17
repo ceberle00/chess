@@ -162,10 +162,11 @@ public class SQLGameDAO {
 
     }
     public void updateGame(Integer gameID, ChessGame game) throws Exception{
-        GameData oldGame = checkGame(gameID);
-        GameData newGame = new GameData(gameID, oldGame.whiteUsername(), oldGame.blackUsername(), oldGame.gameName(), game);
+        GameData oldGame = checkGame((int)gameID);
+        //GameData newGame = new GameData(gameID, oldGame.whiteUsername(), oldGame.blackUsername(), oldGame.gameName(), game);
         var statement = "UPDATE gameData SET games = ? WHERE gameID = ?";
-        executeUpdate(statement, new Gson().toJson(newGame), gameID);
+        executeUpdate(statement, new Gson().toJson(game), gameID);
+        //ChessGame newnew = checkGame((int)gameID).game();
     }
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {

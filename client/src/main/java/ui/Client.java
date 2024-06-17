@@ -31,12 +31,6 @@ public class Client {
         this.port = port;
     }
     public void run() {
-        try {
-            facade.quit();
-        }
-        catch (Exception e) {
-            out.print(e.getMessage());
-        }
         initial();
     }
     private void initial()

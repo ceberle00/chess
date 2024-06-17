@@ -2,12 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 
-import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessGame.TeamColor;
 import chess.model.GameData;
 
-import javax.management.Notification;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
@@ -38,8 +36,7 @@ public class WebsocketClient extends Endpoint
             this.url = urlString;
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.sesh = container.connectToServer(this, new URI(this.url));
-             this.sesh.addMessageHandler(new MessageHandler.Whole<String>() {
-                @Override
+            this.sesh.addMessageHandler(new MessageHandler.Whole<String>() {
                 public void onMessage(String message) {
                     ServerMessage mess = new Gson().fromJson(message, ServerMessage.class);
                     switch(mess.getServerMessageType()) {
@@ -52,9 +49,13 @@ public class WebsocketClient extends Endpoint
                             notificationHandler.notify(not);
                             break;
                         case LOAD_GAME:
-                            LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
-                            setGame(loadGame.getGame());
-                            notificationHandler.loadGame(loadGame);
+                            try {
+                                LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+                                setGame(loadGame.getGame());
+                                notificationHandler.loadGame(loadGame);
+                            } catch (Exception e) {
+                                System.out.println("Error:" + e.getMessage());
+                            }
                             break;
                     }
                     
