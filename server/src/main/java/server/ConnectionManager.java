@@ -14,6 +14,7 @@ public class ConnectionManager {
     ConcurrentHashMap<Integer, ConcurrentHashMap<String, Session>> sessions = new ConcurrentHashMap<>();
     //multiple sessions by name
     public void addSession(String auth, Integer id, Session session) {
+
         if (sessions.get(id) == null) {
             ConcurrentHashMap<String, Session> newGroup = new ConcurrentHashMap<>();
             newGroup.put(auth, session);

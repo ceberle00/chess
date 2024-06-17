@@ -18,7 +18,8 @@ public class Client {
     private Scanner scanner = new Scanner(System.in);
     private ServerFacade facade;
     private ChessGameplay gameplay;
-    WebsocketClient ws;
+    private ArrayList<ChessMove> validMoves = new ArrayList<>();
+    private WebsocketClient ws;
     private AuthData authToken;
     private int port;
 
@@ -205,11 +206,6 @@ public class Client {
                 ws.connect(authToken.authToken(), actualID, webColor);
                 out.print("Join game worked :)");
                 inGame(currGame);
-                /*out.print("Hit the \'a\' key to go back to the menu:\n");
-                String line = scanner.next();
-                if (line != null) {
-                    postLogin();
-                }*/
             }
             else {
                 out.print("Invalid color :(\n");
@@ -234,15 +230,14 @@ public class Client {
                 out.print("Game: " + game.game() + "}\n");
             }
             out.print("Type in the number of the game you'd like to observe\n");
-            int gameID = 1;
-            //int gameID = Integer.parseInt(scanner.next());
+            //int gameID = 1;
+            int gameID = Integer.parseInt(scanner.next());
             if (gameID < 0 || gameID > games.size()) {
                 out.print("Invalid number, please select a number that was shown\n");
-                //playGame();
                 observeGame();
             }
             GameData game = games.get((gameID-1));
-            gameplay = new ChessGameplay(game.game().getBoard()); //pass in game id to inGame
+            gameplay = new ChessGameplay(game.game().getBoard()); 
             gameplay.main(false); //idk
             this.ws = new WebsocketClient(port);
             ws.connect(this.authToken.authToken(), game.gameID(), null); //need to figure out how to get the actual gameID game
@@ -251,15 +246,16 @@ public class Client {
             out.println("Error:" + e.getMessage());
         }
     }
-    private void inGame(GameData game) throws Exception {
+    private void inGame(GameData game) throws Exception 
+    {
         out.print("Type a number to see menu options\n");
         out.print("1. Redraw Board\n");
         out.print("2. Leave\n");
         out.print("3. Resign\n");
         out.print("4. Highlight legal moves\n");
         out.print("5. Make move\n");
-        //String line = scanner.nextLine();
-        String line = "2";
+        String line = scanner.nextLine();
+        //String line = "2";
         switch (line) {
             case "1":
                 redrawBoard(game);
@@ -271,7 +267,7 @@ public class Client {
                 listGames();
                 break;
             case "4":
-                getValidMoves(game);
+                getValidMoves(game, false);
                 break;
             case "5":
                 observeGame();
@@ -294,19 +290,20 @@ public class Client {
     private void leave(GameData game) throws Exception {
         try {
             if (authToken.getUser().equals(game.blackUsername())) {
+                out.print("black user");
                 //gameplay.main(true);
             }
             else if (authToken.getUser().equals(game.blackUsername())){
-                
+                out.print("white user");
             }
             this.ws.leave(authToken.authToken(), game.gameID());
-            //postLogin();
+            postLogin();
             
         }catch (IOException e) {
             throw new IOException("unable to leave");
         }
     }
-    private void getValidMoves(GameData game) throws Exception {
+    private void getValidMoves(GameData game, Boolean isMakingMove) throws Exception {
         ChessBoard board = game.game().getBoard();
         gameplay = new ChessGameplay(board);
         gameplay.main(false); //run the board first
@@ -318,15 +315,16 @@ public class Client {
         for (int i = 0; i < headers.length; i++) {
             if (line.charAt(0) == (headers[i]).charAt(0)) {
                 column = (i+1);
+                break;
             }
         }
         if (column == null || row > 8 || row < 1) {
             out.print("Invalid piece, try again\n");
-            getValidMoves(game);
+            getValidMoves(game, isMakingMove);
         }
         else if(board.getPiece(new ChessPosition(row, column)) == null) {
             out.print("There's no piece there :(\n");
-            getValidMoves(game);
+            getValidMoves(game, isMakingMove);
         }
         else {
             ChessPosition pos = new ChessPosition(row, column);
@@ -334,7 +332,17 @@ public class Client {
             Collection<ChessMove> moves = thisChessPiece.pieceMoves(board, pos);
             gameplay = new ChessGameplay(board);
             gameplay.highlightMoves(moves);
-            inGame(game);
+            if (isMakingMove == false) {
+                inGame(game);
+            }
+            this.validMoves = new ArrayList<>(moves);
+        }
+    }
+    private void makeMove(GameData data) throws Exception {
+        try {
+            getValidMoves(data, true);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 }

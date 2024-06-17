@@ -283,7 +283,7 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-    public boolean isInCheck(TeamColor teamColor) 
+    public boolean isInCheck(TeamColor teamColor)
     {
         //iterate through board??
         ChessPiece piece = findPiece(PieceType.KING, teamColor);

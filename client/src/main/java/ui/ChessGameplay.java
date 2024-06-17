@@ -146,8 +146,16 @@ public class ChessGameplay
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
     }
+    private void setDarkGreen() {
+        out.print(SET_BG_COLOR_DARK_GREEN);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
     private void setGreen() { //use for highlight
         out.print(SET_BG_COLOR_GREEN);
+        out.print(SET_TEXT_COLOR_BLACK);
+    }
+    private void setYellow() { //use for highlight
+        out.print(SET_BG_COLOR_YELLOW);
         out.print(SET_TEXT_COLOR_BLACK);
     }
     public void highlightMoves(Collection<ChessMove> moves) {
@@ -157,9 +165,8 @@ public class ChessGameplay
         for (ChessMove move : moves) 
         {
             starting = move.getStartPosition();
-            //save to list of booleans?
             ChessPosition pos =move.getEndPosition();
-            isValid[pos.getRow()][pos.getColumn()] = true;
+            isValid[pos.getRow()-1][pos.getColumn()-1] = true;
             //might just need to reset the whole board lmao
         }
         setHeader(false);
@@ -170,8 +177,15 @@ public class ChessGameplay
             out.print(SET_TEXT_COLOR_BLACK);
             out.print(headers[i]);
             for (int j =0; j < 8; j++) {
-                if (isValid[i][j]) {
-                    setGreen();
+                Boolean val = isValid[i][j];
+                if (isValid[i][j] != null) 
+                {
+                    if ((i+j) % 2 == 0) {
+                        setGreen();
+                    }
+                    else {
+                        setDarkGreen();
+                    }
                     if (this.board[i][j] != null) {
                         setPiece(this.board[i][j]);
                     }
@@ -179,8 +193,9 @@ public class ChessGameplay
                         out.print("   ");
                     }
                 }
-                else if (i+1 == starting.getRow() && j+1 == starting.getColumn()) {
-
+                else if (i == (starting.getRow()-1) && j == (starting.getColumn()-1)) {
+                    setYellow();
+                    setPiece(this.board[i][j]);
                 }
                 else {
                     setBlock(i, j);
@@ -189,6 +204,7 @@ public class ChessGameplay
             out.print(SET_BG_COLOR_LIGHT_GREY);
             out.print(SET_TEXT_COLOR_BLACK);
             out.print(headers[i]);
+            out.print(SET_BG_COLOR_BLACK);
             out.print("\n");
         }
         setHeader(false);

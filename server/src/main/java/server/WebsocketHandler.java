@@ -60,7 +60,7 @@ public class WebsocketHandler
         String username = new SQLAuthDAO().getAuth(auth).getUser();
         connections.addSession(auth, id, session); //just add to the game later
         var message = "";
-        if (con.gTeamColor().equals(null)) {
+        if (con.gTeamColor() == null) {
             message = String.format("%s is watching the game", username);
             LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id).game());
             NotificationMessage notificationMessage = new NotificationMessage(message);
