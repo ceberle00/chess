@@ -345,4 +345,14 @@ public class Client {
             throw new Exception(e.getMessage());
         }
     }
+    private void resign(GameData game) throws Exception {
+        out.print("Are you sure you want to resign? Type yes to forfit the game");
+        String line = scanner.nextLine();
+        switch(line) {
+            case "yes":
+                //forfit
+            default:
+                inGame(game);
+        }
+    }
 }

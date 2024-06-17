@@ -92,4 +92,12 @@ public class WebsocketClient extends Endpoint
             throw new IOException(e.getMessage());
         }
     }
+    public void resign(String authToken, Integer game) throws IOException {
+        try {
+            Resign resign = new Resign(authToken, game);
+            this.sesh.getBasicRemote().sendText(new Gson().toJson(resign));
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
 }

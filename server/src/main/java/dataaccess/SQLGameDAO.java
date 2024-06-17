@@ -161,6 +161,12 @@ public class SQLGameDAO {
         }
 
     }
+    private void updateGame(Integer gameID, ChessGame game) throws Exception{
+        GameData oldGame = checkGame(gameID);
+        GameData newGame = new GameData(gameID, oldGame.whiteUsername(), oldGame.blackUsername(), oldGame.gameName(), game);
+        var statement = "UPDATE gameData SET game = ? WHERE gameID = ?";
+        executeUpdate(statement, newGame, gameID);
+    }
     private void executeUpdate(String statement, Object... params) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
@@ -182,4 +188,5 @@ public class SQLGameDAO {
             throw new DataAccessException(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
+    
 }

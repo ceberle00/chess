@@ -3,9 +3,10 @@ package server;
 import com.google.gson.Gson;
 
 import chess.ChessGame;
+import chess.model.*;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
-import websocket.commands.Connect;
+import websocket.commands.*;
 import websocket.commands.Leave;
 import websocket.commands.UserGameCommand;
 import websocket.messages.*;
@@ -33,10 +34,11 @@ public class WebsocketHandler
                 try {
                     leave(leave, session);
                 } catch (Exception e) {
-
+                    throw new Exception(e.getMessage());
                 }
                 break;
             case RESIGN:
+                Resign resign = new Gson().fromJson(message, Resign.class);
             case MAKE_MOVE:
         }
     }
@@ -46,6 +48,27 @@ public class WebsocketHandler
         String message = String.format("%s left the game", username);
         try {
             new SQLGameDAO().leaveGame(l.getAuthString(), gameID);
+            var notification = new NotificationMessage(message);
+            connections.broadcast(l.getAuthString(), gameID, notification); //this should broadcast what we need
+            connections.remove(l.getAuthString(), gameID, session);
+        }catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+    public void resign(Resign l, Session session) throws Exception{
+        Integer gameID = l.getGameID();
+        String username = new SQLAuthDAO().getAuth(l.getAuthString()).getUser();
+        GameData game = new SQLGameDAO().checkGame(gameID);
+        if (!(username.equals(game.blackUsername()) && !(username.equals(game.whiteUsername())))) {
+            String message = "You can't resign from a game you aren't in";
+            ErrorMessage error = new ErrorMessage(message);
+            connections.sendMessage(message,gameID, error);
+        }
+        String message = String.format("%s has resigned", username);
+        try {
+            SQLGameDAO games = new SQLGameDAO();
+            ChessGame game2 = game.game();
+            game2.setIsDone(true);
             var notification = new NotificationMessage(message);
             connections.broadcast(l.getAuthString(), gameID, notification); //this should broadcast what we need
             connections.remove(l.getAuthString(), gameID, session);

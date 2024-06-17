@@ -23,6 +23,13 @@ public class ChessGame {
     private ChessBoard board;
     private ChessMove castleMove;
 
+    private Boolean isDone = false;
+    public void setIsDone(Boolean val) {
+        this.isDone = val;
+    }
+    public Boolean getIsDone() {
+        return this.isDone;
+    }
     @SerializedName("blackKing")
     private ChessPosition blackKing;
     @SerializedName("whiteKing")
