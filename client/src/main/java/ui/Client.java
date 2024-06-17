@@ -196,7 +196,18 @@ public class Client {
                 TeamColor webColor = TeamColor.BLACK;
                 if (color.toLowerCase().equals("white") ) {
                     webColor = TeamColor.WHITE;
+                    if (games.get(gameID-1).whiteUsername() != null) {
+                        out.print("Color already taken");
+                        playGame();
+                    }
                 }
+                else {
+                    if (games.get(gameID-1).blackUsername() != null) {
+                        out.print("Color already taken");
+                        playGame();
+                    }
+                }
+                
                 Integer actualID= games.get((gameID-1)).gameID();
                 facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
                 GameData currGame = games.get((gameID-1));
@@ -264,7 +275,7 @@ public class Client {
                 leave(game);
                 break;
             case "3":
-                listGames();
+                resign(game);
                 break;
             case "4":
                 getValidMoves(game, false);
@@ -350,7 +361,8 @@ public class Client {
         String line = scanner.nextLine();
         switch(line) {
             case "yes":
-                //forfit
+                ws.resign(authToken.authToken(), game.gameID());
+                inGame(game);
             default:
                 inGame(game);
         }

@@ -1,14 +1,12 @@
 package server;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import com.google.gson.Gson;
 import chess.ChessGame.TeamColor;
 
 import java.util.Set;
 
-import javax.management.Notification;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
@@ -20,6 +18,7 @@ public class WebsocketClient extends Endpoint
     private String url = "";
     private String authToken;
     private Session sesh;
+    private NotificationHandler notificationHandler;
     private Map<Integer, Set<Session>> games = new HashMap<>();
 
     public WebsocketClient(Integer url) throws Exception {
@@ -34,7 +33,7 @@ public class WebsocketClient extends Endpoint
                 @Override
                 public void onMessage(String message) {
                     ServerMessage mess = new Gson().fromJson(message, ServerMessage.class);
-                    
+                    notificationHandler.notify(mess);
                 }
             });
         }catch (Exception e) {

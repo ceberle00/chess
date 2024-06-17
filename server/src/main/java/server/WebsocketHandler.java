@@ -39,6 +39,8 @@ public class WebsocketHandler
                 break;
             case RESIGN:
                 Resign resign = new Gson().fromJson(message, Resign.class);
+                resign(resign, session);
+                break;
             case MAKE_MOVE:
         }
     }
@@ -69,9 +71,9 @@ public class WebsocketHandler
             SQLGameDAO games = new SQLGameDAO();
             ChessGame game2 = game.game();
             game2.setIsDone(true);
+            games.updateGame(gameID, game2);
             var notification = new NotificationMessage(message);
             connections.broadcast(l.getAuthString(), gameID, notification); //this should broadcast what we need
-            connections.remove(l.getAuthString(), gameID, session);
         }catch (Exception e) {
             throw new Exception(e.getMessage());
         }
