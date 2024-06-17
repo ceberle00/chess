@@ -3,12 +3,12 @@ package server;
 import com.google.gson.Gson;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import chess.model.*;
 import dataaccess.SQLAuthDAO;
 import dataaccess.SQLGameDAO;
 import websocket.commands.*;
-import websocket.commands.Leave;
-import websocket.commands.UserGameCommand;
 import websocket.messages.*;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -42,6 +42,9 @@ public class WebsocketHandler
                 resign(resign, session);
                 break;
             case MAKE_MOVE:
+                MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
+                makeMove(makeMoveCommand, session);
+                break;
         }
     }
     public void leave(Leave l, Session session) throws Exception{
@@ -106,5 +109,33 @@ public class WebsocketHandler
             connections.broadcast(auth, id, notificationMessage);
             connections.sendMessage(auth, id, load);
         }
+    }
+    public void makeMove(MakeMoveCommand make, Session session) throws Exception {
+        Integer gameID = make.getGameID();
+        String username = new SQLAuthDAO().getAuth(make.getAuthString()).getUser();
+        GameData game = new SQLGameDAO().checkGame(gameID);
+        ChessMove move = make.getMove();
+        String start = convertPositionToString(move.getStartPosition());
+        String end = convertPositionToString(move.getEndPosition());
+        ChessGame newGame = game.game();
+        newGame.makeMove(move);
+        String message = String.format("%s has moved from %s to %s", username, start, end);
+        LoadGameMessage load = new LoadGameMessage(message, newGame);
+        connections.sendMessage(make.getAuthString(), gameID, load);
+        //connections.broadcast(make.getAuthString(), gameID, load);
+        new SQLGameDAO().updateGame(gameID, newGame);
+    }
+    public String convertPositionToString(ChessPosition pos) {
+        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        String column = "";
+        for (int i = 0; i < headers.length; i++) {
+            if ((i+1) == pos.getColumn()) {
+                column = headers[i];
+                break;
+            }
+        }
+        column += pos.getRow();
+        return column;
+
     }
 }

@@ -24,7 +24,7 @@ public class ConnectionManager {
             sessions.get(id).put(auth, session);
         }
     }
-     public void sendMessage(String authToken, int gameID, ServerMessage message) throws IOException {
+    public void sendMessage(String authToken, int gameID, ServerMessage message) throws IOException {
         String toSend = new Gson().toJson(message);
         sessions.get(gameID).get(authToken).getRemote().sendString(toSend);
     }

@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.Collection;
 import chess.*;
 import chess.ChessGame.TeamColor;
+import chess.ChessPiece.PieceType;
 import chess.model.*;
 import java.util.ArrayList;
 
@@ -22,6 +23,7 @@ public class Client {
     private WebsocketClient ws;
     private AuthData authToken;
     private int port;
+    private ChessPiece pieceMoves;
 
     public Client(int port) {
         this.facade = new ServerFacade(port);
@@ -78,6 +80,7 @@ public class Client {
             postLogin();
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
+            prelogin();
         }
     }
     private void login()
@@ -94,6 +97,7 @@ public class Client {
             postLogin();
         }catch (Exception e ) {
             out.println("Error:" + e.getMessage());
+            prelogin();
         }
     }
     private void postLogin() {
@@ -194,29 +198,31 @@ public class Client {
             }
             if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
                 TeamColor webColor = TeamColor.BLACK;
-                if (color.toLowerCase().equals("white") ) {
+                if (color.toLowerCase().equals("white")) {
                     webColor = TeamColor.WHITE;
-                    if (games.get(gameID-1).whiteUsername() != null) {
-                        out.print("Color already taken");
-                        playGame();
-                    }
+                }
+                if (color.toLowerCase().equals("white") && (games.get(gameID-1).whiteUsername() != null )) {
+                    webColor = TeamColor.WHITE;
+                    out.print("Color already taken");
+                    playGame();
+                    
+                }
+                else if ((games.get(gameID-1).blackUsername() != null)){
+                    out.print("Color already taken");
+                    playGame();
                 }
                 else {
-                    if (games.get(gameID-1).blackUsername() != null) {
-                        out.print("Color already taken");
-                        playGame();
-                    }
+                    Integer actualID= games.get((gameID-1)).gameID();
+                    facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
+                    GameData currGame = games.get((gameID-1));
+                    gameplay = new ChessGameplay(games.get((gameID-1)).game().getBoard());
+                    gameplay.main(false); //idk
+                    ws = new WebsocketClient(port);
+                    ws.connect(authToken.authToken(), actualID, webColor);
+                    out.print("Join game worked :)");
+                    inGame(currGame);
                 }
                 
-                Integer actualID= games.get((gameID-1)).gameID();
-                facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
-                GameData currGame = games.get((gameID-1));
-                gameplay = new ChessGameplay(games.get((gameID-1)).game().getBoard());
-                gameplay.main(false); //idk
-                ws = new WebsocketClient(port);
-                ws.connect(authToken.authToken(), actualID, webColor);
-                out.print("Join game worked :)");
-                inGame(currGame);
             }
             else {
                 out.print("Invalid color :(\n");
@@ -281,7 +287,7 @@ public class Client {
                 getValidMoves(game, false);
                 break;
             case "5":
-                observeGame();
+                makeMove(game);
                 break;
             default:
                 inGame(game);
@@ -339,8 +345,8 @@ public class Client {
         }
         else {
             ChessPosition pos = new ChessPosition(row, column);
-            ChessPiece thisChessPiece = board.getPiece(pos);
-            Collection<ChessMove> moves = thisChessPiece.pieceMoves(board, pos);
+            this.pieceMoves = board.getPiece(pos);
+            Collection<ChessMove> moves = pieceMoves.pieceMoves(board, pos);
             gameplay = new ChessGameplay(board);
             gameplay.highlightMoves(moves);
             if (isMakingMove == false) {
@@ -352,6 +358,57 @@ public class Client {
     private void makeMove(GameData data) throws Exception {
         try {
             getValidMoves(data, true);
+            if (!(authToken.getUser().equals(data.blackUsername())) && !(authToken.getUser().equals(data.whiteUsername()))) {
+                out.print("You are not a player, and cannot make a move");
+                inGame(data);
+            }
+            else if (authToken.getUser().equals(data.blackUsername()) && data.game().getTeamTurn() != TeamColor.BLACK) {
+                out.print("It is not your turn, wait for your opponent to move first");
+                inGame(data);
+            }
+            else if (authToken.getUser().equals(data.whiteUsername()) && data.game().getTeamTurn() != TeamColor.WHITE) {
+                out.print("It is not your turn, wait for your opponent to move first");
+                inGame(data);
+            }
+            else {
+                out.print("Where would you like to move to? Input the space in the form of a-h space 1-8");
+                String line = scanner.next();
+                Integer row = scanner.nextInt();
+                String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
+                Integer column = null;
+                for (int i = 0; i < headers.length; i++) {
+                    if (line.charAt(0) == (headers[i]).charAt(0)) {
+                        column = (i+1);
+                        break;
+                    }
+                }
+                if (column == null || row > 8 || row < 1) {
+                    out.print("Invalid space, try again\n");
+                    makeMove(data);
+                }
+                else {
+                    ChessPosition pos = new ChessPosition(row, column);
+                    PieceType promotionType = null;
+                    if (this.pieceMoves.getPieceType() == PieceType.PAWN) {
+                        if ((authToken.getUser().equals(data.whiteUsername())) && (this.pieceMoves.getChessPosition().getRow() == 7)) {
+                            promotionType = getPromotionType(data);
+                        }
+                        else if((authToken.getUser().equals(data.blackUsername())) && (this.pieceMoves.getChessPosition().getRow() == 1)) {
+                            promotionType = getPromotionType(data);
+                        }
+                    }
+                    ChessMove move = new ChessMove(this.pieceMoves.getChessPosition(), pos, promotionType);
+                    //check if move is valid
+                    if (this.validMoves.contains(move)) {
+                        ws.makeMove(this.authToken.authToken(), data.gameID(), move);
+                        inGame(data);
+                    }
+                    else {
+                        out.print("Move is not valid, please suggest a valid move");
+                        inGame(data);
+                    }
+                }
+            }
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -366,5 +423,30 @@ public class Client {
             default:
                 inGame(game);
         }
+    }
+    private PieceType getPromotionType(GameData data) 
+    {
+        PieceType piece = PieceType.PAWN;
+        out.println("Enter a piece type to promote to (EX: QUEEN, ROOK, etc)");
+        String type = scanner.next();
+        switch (type) {
+            case "QUEEN":
+                piece = PieceType.QUEEN;
+                return piece;
+            case "ROOK":
+                piece = PieceType.ROOK;
+                return piece;
+            case "BISHOP":
+                piece = PieceType.BISHOP;
+                return piece;
+            case "KNIGHT":
+                piece = PieceType.KNIGHT;
+                return piece;
+            default:
+                out.println("Invalid type");
+                getPromotionType(data);
+                return null;
+        }
+        
     }
 }

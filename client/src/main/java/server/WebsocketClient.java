@@ -3,6 +3,8 @@ package server;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.Gson;
+
+import chess.ChessMove;
 import chess.ChessGame.TeamColor;
 
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import websocket.commands.*;
+import websocket.messages.LoadGameMessage;
 import websocket.messages.ServerMessage;
 public class WebsocketClient extends Endpoint
 {
@@ -33,7 +36,19 @@ public class WebsocketClient extends Endpoint
                 @Override
                 public void onMessage(String message) {
                     ServerMessage mess = new Gson().fromJson(message, ServerMessage.class);
-                    notificationHandler.notify(mess);
+                    switch(mess.getServerMessageType()) {
+                        case ERROR:
+                            notificationHandler.notify(mess);
+                            break;
+                        case NOTIFICATION:
+                            notificationHandler.notify(mess);
+                            break;
+                        case LOAD_GAME:
+                            LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+                            notificationHandler.notify(loadGame);
+                            break;
+                    }
+                    
                 }
             });
         }catch (Exception e) {
@@ -95,6 +110,14 @@ public class WebsocketClient extends Endpoint
         try {
             Resign resign = new Resign(authToken, game);
             this.sesh.getBasicRemote().sendText(new Gson().toJson(resign));
+        } catch (IOException e) {
+            throw new IOException(e.getMessage());
+        }
+    }
+    public void makeMove(String authToke, Integer game, ChessMove move) throws IOException {
+        try {
+            MakeMoveCommand makeMove = new MakeMoveCommand(authToke, game, move);
+            this.sesh.getBasicRemote().sendText(new Gson().toJson(makeMove));
         } catch (IOException e) {
             throw new IOException(e.getMessage());
         }
