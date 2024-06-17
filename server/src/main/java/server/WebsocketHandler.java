@@ -63,31 +63,40 @@ public class WebsocketHandler
     }
     public void resign(Resign l, Session session) throws Exception{
         Integer gameID = l.getGameID();
-        String username = new SQLAuthDAO().getAuth(l.getAuthString()).getUser();
-        GameData game = new SQLGameDAO().checkGame(gameID);
-        if (!(username.equals(game.blackUsername()) && !(username.equals(game.whiteUsername())))) {
-            String message = "You can't resign from a game you aren't in";
+        connections.addSession(l.getAuthString(), gameID, session);
+        if (new SQLAuthDAO().getAuth(l.getAuthString()) == null) {
+            String message = "Invalid Auth";
             ErrorMessage error = new ErrorMessage(message);
-            connections.sendMessage(message,gameID, error);
-        }
-        else if (game.game().getIsDone()) {
-            String message = "Game is already over";
-            ErrorMessage error = new ErrorMessage(message);
-            connections.sendMessage(message,gameID, error);
+            connections.sendMessage(l.getAuthString(),gameID, error);
         }
         else {
-            String message = String.format("%s has resigned", username);
-            try {
-                SQLGameDAO games = new SQLGameDAO();
-                ChessGame game2 = game.game();
-                game2.setIsDone(true);
-                games.updateGame(gameID, game2);
-                var notification = new NotificationMessage(message);
-                connections.sendMessageToEveryone(l.getAuthString(), gameID, notification); //this should broadcast what we need
-            }catch (Exception e) {
-                throw new Exception(e.getMessage());
+            String username = new SQLAuthDAO().getAuth(l.getAuthString()).getUser();
+            GameData game = new SQLGameDAO().checkGame(gameID);
+            if (!(username.equals(game.blackUsername())) && !(username.equals(game.whiteUsername()))) {
+                String message = "You can't resign from a game you aren't in";
+                ErrorMessage error = new ErrorMessage(message);
+                connections.sendMessage(l.getAuthString(),gameID, error);
+            }
+            else if (game.game().getIsDone()) {
+                String message = "Game is already over";
+                ErrorMessage error = new ErrorMessage(message);
+                connections.sendMessage(l.getAuthString(),gameID, error);
+            }
+            else {
+                String message = String.format("%s has resigned", username);
+                try {
+                    SQLGameDAO games = new SQLGameDAO();
+                    ChessGame game2 = game.game();
+                    game2.setIsDone(true);
+                    games.updateGame(gameID, game2);
+                    var notification = new NotificationMessage(message);
+                    connections.sendMessageToEveryone(l.getAuthString(), gameID, notification); //this should broadcast what we need
+                }catch (Exception e) {
+                    throw new Exception(e.getMessage());
+                }
             }
         }
+        
         
     }
     public void connect(Connect con, Session session) throws Exception
@@ -170,6 +179,11 @@ public class WebsocketHandler
         }
         else if (!isTurn(new SQLAuthDAO().getAuth(make.getAuthString()).getUser(), game)) {
             String message = "It is not your turn";
+            ErrorMessage error = new ErrorMessage(message);
+            connections.sendError(make.getAuthString(), gameID, error);
+        }
+        else if (game.game().getIsDone()) {
+            String message = "The game is over";
             ErrorMessage error = new ErrorMessage(message);
             connections.sendError(make.getAuthString(), gameID, error);
         }

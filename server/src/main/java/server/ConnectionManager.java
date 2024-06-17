@@ -33,6 +33,9 @@ public class ConnectionManager {
     }
     public void sendMessage(String authToken, int gameID, ServerMessage message) throws IOException {
             String toSend = new Gson().toJson(message);
+            if (sessions.get(gameID).get(authToken) == null) {
+                //hehe
+            }
             if (sessions.get(gameID).get(authToken).isOpen()) {
                 try {
                     sessions.get(gameID).get(authToken).getRemote().sendString(toSend);
