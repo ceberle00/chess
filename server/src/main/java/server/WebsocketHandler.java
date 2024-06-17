@@ -90,7 +90,7 @@ public class WebsocketHandler
         var message = "";
         if (con.gTeamColor() == null) {
             message = String.format("%s is watching the game", username);
-            LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id).game());
+            LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id));
             NotificationMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(auth, id, notificationMessage);
             connections.sendMessage(auth, id, load);
@@ -104,26 +104,33 @@ public class WebsocketHandler
                 color = "BLACK";
             }
             message = String.format("%s has joined game as %s", username, color);
-            LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id).game());
+            LoadGameMessage load = new LoadGameMessage(message, new SQLGameDAO().checkGame(id));
             NotificationMessage notificationMessage = new NotificationMessage(message);
             connections.broadcast(auth, id, notificationMessage);
             connections.sendMessage(auth, id, load);
         }
     }
     public void makeMove(MakeMoveCommand make, Session session) throws Exception {
-        Integer gameID = make.getGameID();
-        String username = new SQLAuthDAO().getAuth(make.getAuthString()).getUser();
-        GameData game = new SQLGameDAO().checkGame(gameID);
-        ChessMove move = make.getMove();
-        String start = convertPositionToString(move.getStartPosition());
-        String end = convertPositionToString(move.getEndPosition());
-        ChessGame newGame = game.game();
-        newGame.makeMove(move);
-        String message = String.format("%s has moved from %s to %s", username, start, end);
-        LoadGameMessage load = new LoadGameMessage(message, newGame);
-        connections.sendMessage(make.getAuthString(), gameID, load);
-        //connections.broadcast(make.getAuthString(), gameID, load);
-        new SQLGameDAO().updateGame(gameID, newGame);
+        try {
+            Integer gameID = make.getGameID();
+            String username = new SQLAuthDAO().getAuth(make.getAuthString()).getUser();
+            GameData game = new SQLGameDAO().checkGame(gameID);
+            ChessMove move = make.getMove();
+            String start = convertPositionToString(move.getStartPosition());
+            String end = convertPositionToString(move.getEndPosition());
+            ChessGame newGame = game.game();
+            newGame.makeMove(move);
+            GameData value = new GameData(gameID, game.blackUsername(), game.whiteUsername(), game.gameName(), newGame);
+            String message = String.format("%s has moved from %s to %s", username, start, end);
+            LoadGameMessage load = new LoadGameMessage(message, value);
+            new SQLGameDAO().updateGame(gameID, newGame);
+            connections.sendMessage(make.getAuthString(), gameID, load);
+            connections.broadcast(make.getAuthString(), gameID, load);
+        }catch (Exception e) {
+            ErrorMessage message = new ErrorMessage(e.getMessage());
+            connections.sendMessage(make.getAuthString(), make.getGameID(), message);
+        }
+        
     }
     public String convertPositionToString(ChessPosition pos) {
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};

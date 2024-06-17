@@ -21,6 +21,7 @@ public class Client {
     private ChessGameplay gameplay;
     private ArrayList<ChessMove> validMoves = new ArrayList<>();
     private WebsocketClient ws;
+    private TeamColor color = TeamColor.WHITE;
     private AuthData authToken;
     private int port;
     private ChessPiece pieceMoves;
@@ -30,6 +31,12 @@ public class Client {
         this.port = port;
     }
     public void run() {
+        try {
+            facade.quit();
+        }
+        catch (Exception e) {
+            out.print(e.getMessage());
+        }
         initial();
     }
     private void initial()
@@ -86,10 +93,10 @@ public class Client {
     private void login()
     {
         out.println("Enter username and password seperated by space");
-        //String user = scanner.next();
-        //String pass = scanner.next();
-        String user = "aleberle";
-        String pass = "9lucy9";
+        String user = scanner.next();
+        String pass = scanner.next();
+        //String user = "aleberle";
+        //String pass = "9lucy9";
         try {
             authToken = facade.login(user, pass);
             out.print(authToken.authToken());
@@ -183,43 +190,41 @@ public class Client {
             {
                 GameData game = games.get(i);
                 out.print("Game " + (i+1) + " {");
-                out.print("Game name: " + game.gameName() + ",");
-                out.print(" Black username: " + game.blackUsername());
-                out.print(" White username:" + game.whiteUsername());
+                out.print("Game name: " + game.gameName() + ", ");
+                out.print(" Black username: " + game.blackUsername() + ", ");
+                out.print(" White username:" + game.whiteUsername() + ", ");
                 out.print(" Game: " + game.game() + "}\n");
             }
             out.print("Type in the number of the game you'd like to join followed by the color you'd like to be (seperated by spaces)\n");
             int gameID = Integer.parseInt(scanner.next());
             String color = scanner.next();
-            System.out.print(color);
             if (gameID < 0 || gameID > games.size()) {
                 out.print("Invalid number, please select a number that was shown\n");
-                //playGame();
+                playGame();
             }
-            if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
-                TeamColor webColor = TeamColor.BLACK;
+            else if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
+                this.color = TeamColor.BLACK;
                 if (color.toLowerCase().equals("white")) {
-                    webColor = TeamColor.WHITE;
+                    this.color = TeamColor.WHITE;
                 }
                 if (color.toLowerCase().equals("white") && (games.get(gameID-1).whiteUsername() != null )) {
-                    webColor = TeamColor.WHITE;
-                    out.print("Color already taken");
+                    this.color = TeamColor.WHITE;
+                    out.print("Color already taken\n");
                     playGame();
-                    
                 }
                 else if ((games.get(gameID-1).blackUsername() != null)){
-                    out.print("Color already taken");
+                    out.print("Color already taken\n");
                     playGame();
                 }
                 else {
                     Integer actualID= games.get((gameID-1)).gameID();
                     facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
+                    games = (ArrayList<GameData>) facade.listGames(authToken.authToken());
                     GameData currGame = games.get((gameID-1));
                     gameplay = new ChessGameplay(games.get((gameID-1)).game().getBoard());
                     gameplay.main(false); //idk
                     ws = new WebsocketClient(port);
-                    ws.connect(authToken.authToken(), actualID, webColor);
-                    out.print("Join game worked :)");
+                    ws.connect(authToken.authToken(), actualID, this.color);
                     inGame(currGame);
                 }
                 
@@ -307,12 +312,12 @@ public class Client {
     private void leave(GameData game) throws Exception {
         try {
             if (authToken.getUser().equals(game.blackUsername())) {
-                out.print("black user");
+                
                 //gameplay.main(true);
             }
             else if (authToken.getUser().equals(game.blackUsername())){
-                out.print("white user");
             }
+
             this.ws.leave(authToken.authToken(), game.gameID());
             postLogin();
             
@@ -323,7 +328,12 @@ public class Client {
     private void getValidMoves(GameData game, Boolean isMakingMove) throws Exception {
         ChessBoard board = game.game().getBoard();
         gameplay = new ChessGameplay(board);
-        gameplay.main(false); //run the board first
+        if (this.color == TeamColor.WHITE) {
+            gameplay.main(true);
+        }
+        else {
+            gameplay.main(false);
+        } //run the board first
         out.print("Select what piece you wish to move in the form of a-h space 1-8\n");
         String line = scanner.next();
         Integer row = scanner.nextInt();
@@ -343,9 +353,14 @@ public class Client {
             out.print("There's no piece there :(\n");
             getValidMoves(game, isMakingMove);
         }
+        else if (board.getPiece(new ChessPosition(row, column)).getTeamColor() != this.color) {
+            out.print("That's not your piece!\n");
+            getValidMoves(game, isMakingMove);
+        }
         else {
             ChessPosition pos = new ChessPosition(row, column);
             this.pieceMoves = board.getPiece(pos);
+            this.pieceMoves.setPosition(pos);
             Collection<ChessMove> moves = pieceMoves.pieceMoves(board, pos);
             gameplay = new ChessGameplay(board);
             gameplay.highlightMoves(moves);
@@ -359,19 +374,19 @@ public class Client {
         try {
             getValidMoves(data, true);
             if (!(authToken.getUser().equals(data.blackUsername())) && !(authToken.getUser().equals(data.whiteUsername()))) {
-                out.print("You are not a player, and cannot make a move");
+                out.print("You are not a player, and cannot make a move\n");
                 inGame(data);
             }
             else if (authToken.getUser().equals(data.blackUsername()) && data.game().getTeamTurn() != TeamColor.BLACK) {
-                out.print("It is not your turn, wait for your opponent to move first");
+                out.print("It is not your turn, wait for your opponent to move first\n");
                 inGame(data);
             }
             else if (authToken.getUser().equals(data.whiteUsername()) && data.game().getTeamTurn() != TeamColor.WHITE) {
-                out.print("It is not your turn, wait for your opponent to move first");
+                out.print("It is not your turn, wait for your opponent to move first\n");
                 inGame(data);
             }
             else {
-                out.print("Where would you like to move to? Input the space in the form of a-h space 1-8");
+                out.print("Where would you like to move to? Input the space in the form of a-h space 1-8\n");
                 String line = scanner.next();
                 Integer row = scanner.nextInt();
                 String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
@@ -390,7 +405,7 @@ public class Client {
                     ChessPosition pos = new ChessPosition(row, column);
                     PieceType promotionType = null;
                     if (this.pieceMoves.getPieceType() == PieceType.PAWN) {
-                        if ((authToken.getUser().equals(data.whiteUsername())) && (this.pieceMoves.getChessPosition().getRow() == 7)) {
+                        if ((authToken.getUser().equals(data.whiteUsername())) && (this.pieceMoves.getChessPosition().getRow() == 1)) {
                             promotionType = getPromotionType(data);
                         }
                         else if((authToken.getUser().equals(data.blackUsername())) && (this.pieceMoves.getChessPosition().getRow() == 1)) {
@@ -398,9 +413,9 @@ public class Client {
                         }
                     }
                     ChessMove move = new ChessMove(this.pieceMoves.getChessPosition(), pos, promotionType);
-                    //check if move is valid
                     if (this.validMoves.contains(move)) {
                         ws.makeMove(this.authToken.authToken(), data.gameID(), move);
+                        data = ws.getGame();
                         inGame(data);
                     }
                     else {

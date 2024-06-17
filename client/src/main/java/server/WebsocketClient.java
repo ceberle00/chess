@@ -1,29 +1,35 @@
 package server;
 
-import java.util.HashMap;
-import java.util.Map;
 import com.google.gson.Gson;
 
+import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessGame.TeamColor;
+import chess.model.GameData;
 
-import java.util.Set;
-
+import javax.management.Notification;
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 
 import websocket.commands.*;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 public class WebsocketClient extends Endpoint
 {
     private String url = "";
-    private String authToken;
+    private GameData game;
     private Session sesh;
     private NotificationHandler notificationHandler;
-    private Map<Integer, Set<Session>> games = new HashMap<>();
 
+    public void setGame(GameData g) {
+        this.game = g;
+    }
+    public GameData getGame() {
+        return this.game;
+    }
     public WebsocketClient(Integer url) throws Exception {
         try {
             String urlString = "ws://localhost:";
@@ -38,14 +44,17 @@ public class WebsocketClient extends Endpoint
                     ServerMessage mess = new Gson().fromJson(message, ServerMessage.class);
                     switch(mess.getServerMessageType()) {
                         case ERROR:
-                            notificationHandler.notify(mess);
+                            ErrorMessage err = new Gson().fromJson(message, ErrorMessage.class);
+                            notificationHandler.sendError(err);
                             break;
                         case NOTIFICATION:
-                            notificationHandler.notify(mess);
+                            NotificationMessage not = new Gson().fromJson(message, NotificationMessage.class);
+                            notificationHandler.notify(not);
                             break;
                         case LOAD_GAME:
                             LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
-                            notificationHandler.notify(loadGame);
+                            setGame(loadGame.getGame());
+                            notificationHandler.loadGame(loadGame);
                             break;
                     }
                     
@@ -58,34 +67,6 @@ public class WebsocketClient extends Endpoint
         
     }
     
-    /*public void onMessage(String msg) {
-        try {
-            UserGameCommand command = new Gson().fromJson(msg, UserGameCommand.class);
-            authToken = command.getAuthString();
-            Integer gameId = command.getGameID();
-            if (games.containsKey(gameId)) {
-                games.get(gameId).add(this.sesh);
-            } else {
-                Set<Session> sessions = new HashSet<>();
-                sessions.add(this.sesh);
-                games.put(gameId, sessions);
-            }
-            switch (command.getCommandType()) {
-                case CONNECT:
-                    Connect con = new Connect(authToken, gameId);
-                    connect(msg, con);
-                case MAKE_MOVE:
-                    //MakeMoveCommand move = new MakeMoveCommand(authToken, gam)
-                case LEAVE:
-
-                case RESIGN:
-            }
-        }catch (Exception e) 
-        {
-
-        }
-
-    }*/
     @Override
     public void onOpen(Session session, EndpointConfig config) {
         this.sesh = session;

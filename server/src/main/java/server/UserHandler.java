@@ -19,7 +19,6 @@ public class UserHandler {
 
     public Object registerUser(Request request, Response result) 
     {
-        System.out.println("In userhandler");
         try {
             RegisterRequest reg = new Gson().fromJson(request.body(), RegisterRequest.class);
             if (reg.getEmail() == null || reg.getPassword() == null || reg.getUsername() == null) {
@@ -34,7 +33,6 @@ public class UserHandler {
                 RegisterResult res = new RegisterResult("Error: already taken");
                 return new Gson().toJson(res);
             }
-            System.out.println("After ifs");
             String auth = service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail()).getAuth();
             System.out.println(auth);
             result.status(200);

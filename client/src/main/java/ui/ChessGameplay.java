@@ -39,8 +39,9 @@ public class ChessGameplay
             for (int j =0; j < 8; j++) {
                 setBlock(i, j);
             }
+            out.print(SET_BG_COLOR_LIGHT_GREY);
+            out.print(SET_TEXT_COLOR_BLACK);
             out.print("\n");
-            out.print("\n"); // try two? 
         }
         setHeader(true);
         out.print(SET_BG_COLOR_WHITE);

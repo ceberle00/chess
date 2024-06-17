@@ -20,7 +20,7 @@ public class GameHandler {
     public Object listGames(Request request, Response response) throws Exception{
         boolean failedAuth = false;
         try {
-            String authString = request.headers("authorization");
+            String authString = request.headers("Authorization");
             failedAuth = true;
             service.valiAuthData(authString);
             Collection<GameData> listGames = service.listGames(authString);
@@ -44,7 +44,7 @@ public class GameHandler {
         boolean failedPast = false;
         try {
             AddGameRequest req = new Gson().fromJson(request.body(), AddGameRequest.class);
-            String authString = request.headers("authorization");
+            String authString = request.headers("Authorization");
             failedAuth = true;
             service.valiAuthData(authString);
             failedPast = true;

@@ -89,6 +89,12 @@ public class HttpHandler {
         URI uri = new URI(url + "/db");
         HttpURLConnection http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod("DELETE");
+        if (http.getResponseCode() != HttpURLConnection.HTTP_OK) { //handle input
+            InputStream responseBody = http.getErrorStream();
+            InputStreamReader reader = new InputStreamReader(responseBody);
+            String error = reader.toString();
+            throw new Exception(error);
+        }
     }
     public void logout(String authToken) throws Exception {
         URI uri = new URI(url + "/session");
@@ -170,7 +176,7 @@ public class HttpHandler {
             System.out.print(ioException.getMessage());
             throw new Exception("RequestBody failed");
         }
-        //var statusCode = http.getResponseCode();
+        var statusCode = http.getResponseCode();
         try (InputStream respBody = http.getInputStream()) {
             //InputStreamReader inputStreamReader = new InputStreamReader(respBody);
             //do nothing? Should just be fine idk

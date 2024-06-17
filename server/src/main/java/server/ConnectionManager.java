@@ -31,7 +31,7 @@ public class ConnectionManager {
     public void remove(String auth, Integer id, Session session) {
         sessions.get(id).remove(auth, session);
     }
-    public void broadcast(String excludeVisitorName, Integer id, NotificationMessage notification) throws IOException {
+    public void broadcast(String excludeVisitorName, Integer id, ServerMessage notification) throws IOException {
         var removeList = new ArrayList<String>();
         for (var c : sessions.get(id).entrySet()) {
             if (c.getValue().isOpen()) {
