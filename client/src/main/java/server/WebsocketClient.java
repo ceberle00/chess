@@ -34,6 +34,7 @@ public class WebsocketClient extends Endpoint
                 @Override
                 public void onMessage(String message) {
                     ServerMessage mess = new Gson().fromJson(message, ServerMessage.class);
+                    
                 }
             });
         }catch (Exception e) {

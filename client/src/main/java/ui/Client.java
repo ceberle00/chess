@@ -6,8 +6,9 @@ import server.ServerFacade;
 import server.WebsocketClient;
 
 import java.util.Scanner;
+import java.util.Collection;
 import chess.*;
-import chess.model.AuthData;
+import chess.ChessGame.TeamColor;
 import chess.model.*;
 import java.util.ArrayList;
 
@@ -47,19 +48,20 @@ public class Client {
         out.print("Login:\n");
         out.print("Help\n");
         out.print("Quit\n");
-        //String line = scanner.next();
-        String line = "Login";
+        String line = scanner.next();
+        //String line = "Login";
         switch (line) {
             case "Register":
                 register();
-                postLogin();
+                break;
             case "Login":
                 login();
-                postLogin();
+                break;
             case "Quit":
                 break;
             case "Help":
                 prelogin();
+                break;
             default:
                 //initial();
         }
@@ -72,6 +74,7 @@ public class Client {
         try {
             out.println("In register try");
             authToken = facade.register(username, password, email);
+            postLogin();
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
@@ -87,6 +90,7 @@ public class Client {
             authToken = facade.login(user, pass);
             out.print(authToken.authToken());
             out.print(authToken.getUser());
+            postLogin();
         }catch (Exception e ) {
             out.println("Error:" + e.getMessage());
         }
@@ -99,8 +103,8 @@ public class Client {
         out.print("List Games\n");
         out.print("Play Game\n");
         out.print("Observe Game\n");
-        //String line = scanner.nextLine();
-        String line = "Observe Game";
+        String line = scanner.nextLine();
+        //String line = "Observe Game";
         switch (line) {
             case "Logout":
                 logout();
@@ -188,16 +192,24 @@ public class Client {
                 //playGame();
             }
             if (color.toLowerCase().equals("white") || color.toLowerCase().equals("black")) {
-                Integer actualID= games.get(gameID-1).gameID();
+                TeamColor webColor = TeamColor.BLACK;
+                if (color.toLowerCase().equals("white") ) {
+                    webColor = TeamColor.WHITE;
+                }
+                Integer actualID= games.get((gameID-1)).gameID();
                 facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
-                GameData currGame = games.get(gameID);
-                gameplay = new ChessGameplay(games.get(gameID).game().getBoard());
+                GameData currGame = games.get((gameID-1));
+                gameplay = new ChessGameplay(games.get((gameID-1)).game().getBoard());
                 gameplay.main(false); //idk
-                out.print("Hit the \'a\' key to go back to the menu:\n");
+                ws = new WebsocketClient(port);
+                ws.connect(authToken.authToken(), actualID, webColor);
+                out.print("Join game worked :)");
+                inGame(currGame);
+                /*out.print("Hit the \'a\' key to go back to the menu:\n");
                 String line = scanner.next();
                 if (line != null) {
                     postLogin();
-                }
+                }*/
             }
             else {
                 out.print("Invalid color :(\n");
@@ -235,11 +247,6 @@ public class Client {
             this.ws = new WebsocketClient(port);
             ws.connect(this.authToken.authToken(), game.gameID(), null); //need to figure out how to get the actual gameID game
             inGame(game);
-            /*out.print("Hit the \'a\' key to go back to the menu:\n");
-            String line = scanner.next();
-            if (line != null) {
-                postLogin();
-            }*/
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
@@ -264,7 +271,7 @@ public class Client {
                 listGames();
                 break;
             case "4":
-                playGame();
+                getValidMoves(game);
                 break;
             case "5":
                 observeGame();
@@ -286,11 +293,48 @@ public class Client {
     }
     private void leave(GameData game) throws Exception {
         try {
+            if (authToken.getUser().equals(game.blackUsername())) {
+                //gameplay.main(true);
+            }
+            else if (authToken.getUser().equals(game.blackUsername())){
+                
+            }
             this.ws.leave(authToken.authToken(), game.gameID());
             //postLogin();
             
         }catch (IOException e) {
             throw new IOException("unable to leave");
+        }
+    }
+    private void getValidMoves(GameData game) throws Exception {
+        ChessBoard board = game.game().getBoard();
+        gameplay = new ChessGameplay(board);
+        gameplay.main(false); //run the board first
+        out.print("Select what piece you wish to move in the form of a-h space 1-8\n");
+        String line = scanner.next();
+        Integer row = scanner.nextInt();
+        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
+        Integer column = null;
+        for (int i = 0; i < headers.length; i++) {
+            if (line.charAt(0) == (headers[i]).charAt(0)) {
+                column = (i+1);
+            }
+        }
+        if (column == null || row > 8 || row < 1) {
+            out.print("Invalid piece, try again\n");
+            getValidMoves(game);
+        }
+        else if(board.getPiece(new ChessPosition(row, column)) == null) {
+            out.print("There's no piece there :(\n");
+            getValidMoves(game);
+        }
+        else {
+            ChessPosition pos = new ChessPosition(row, column);
+            ChessPiece thisChessPiece = board.getPiece(pos);
+            Collection<ChessMove> moves = thisChessPiece.pieceMoves(board, pos);
+            gameplay = new ChessGameplay(board);
+            gameplay.highlightMoves(moves);
+            inGame(game);
         }
     }
 }

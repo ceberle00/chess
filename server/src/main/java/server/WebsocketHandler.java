@@ -1,6 +1,5 @@
 package server;
 
-import java.io.IOException;
 import com.google.gson.Gson;
 
 import chess.ChessGame;
@@ -46,6 +45,7 @@ public class WebsocketHandler
         String username = new SQLAuthDAO().getAuth(l.getAuthString()).getUser();
         String message = String.format("%s left the game", username);
         try {
+            new SQLGameDAO().leaveGame(l.getAuthString(), gameID);
             var notification = new NotificationMessage(message);
             connections.broadcast(l.getAuthString(), gameID, notification); //this should broadcast what we need
             connections.remove(l.getAuthString(), gameID, session);

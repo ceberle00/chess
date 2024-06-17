@@ -150,7 +150,7 @@ public class ChessGameplay
         out.print(SET_BG_COLOR_GREEN);
         out.print(SET_TEXT_COLOR_BLACK);
     }
-    private void highlightMoves(Collection<ChessMove> moves) {
+    public void highlightMoves(Collection<ChessMove> moves) {
         //maybe works, who knows
         ChessPosition starting = new ChessPosition(0, 0);
         Boolean isValid[][] = new Boolean[8][8];
