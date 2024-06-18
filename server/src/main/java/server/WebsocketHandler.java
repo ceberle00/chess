@@ -54,8 +54,8 @@ public class WebsocketHandler
         String message = String.format("%s left the game", username);
         try {
             new SQLGameDAO().leaveGame(l.getAuthString(), gameID);
-            var notification = new NotificationMessage(message);
-            connections.broadcast(l.getAuthString(), gameID, notification); //this should broadcast what we need
+            NotificationMessage notification = new NotificationMessage(message);
+            connections.sendMessageToEveryone(l.getAuthString(), gameID, notification); //this should broadcast what we need
             connections.remove(l.getAuthString(), gameID, session);
         }catch (Exception e) {
             throw new Exception(e.getMessage());

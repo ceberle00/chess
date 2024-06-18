@@ -39,10 +39,14 @@ public class Client {
         //out.print(SET_BG_COLOR_WHITE);
         out.print("Welcome to 240 Chess, type \'help\' to get started :)");
         String input = scanner.nextLine();
+        //try {this.facade.quit();} catch(Exception e) {}
         //String input = "help";
         if (input.toLowerCase().equals("help")) 
         {
             prelogin();
+        }
+        else {
+            initial();
         }
         
     }
@@ -75,6 +79,7 @@ public class Client {
         String username = scanner.next();
         String password = scanner.next();
         String email = scanner.next();
+        scanner.nextLine();
         try {
             authToken = facade.register(username, password, email);
             postLogin();
@@ -88,6 +93,7 @@ public class Client {
         out.println("Enter username and password seperated by space");
         String user = scanner.next();
         String pass = scanner.next();
+        scanner.nextLine();
         //String user = "aleberle";
         //String pass = "9lucy9";
         try {
@@ -130,7 +136,7 @@ public class Client {
         }
     }
     private void logout() {
-        out.print("Logging out");
+        out.print("Logging out\n");
         try {
             facade.logout(authToken.authToken());
             this.authToken = null;
@@ -164,7 +170,7 @@ public class Client {
                 out.print("Game: " + game.game() + "}\n");
             }
             out.print("Type \'a\' to go back to the menu");
-            String line = scanner.next();
+            String line = scanner.nextLine();
             if (line.equals("a")) {
                 postLogin();
             }
@@ -189,6 +195,7 @@ public class Client {
             out.print("Type in the number of the game you'd like to join followed by the color you'd like to be (seperated by spaces)\n");
             int gameID = Integer.parseInt(scanner.next());
             String color = scanner.next();
+            scanner.nextLine();
             if (gameID < 0 || gameID > games.size()) {
                 out.print("Invalid number, please select a number that was shown\n");
                 playGame();
@@ -209,13 +216,14 @@ public class Client {
                 }
                 else {
                     Integer actualID= games.get((gameID-1)).gameID();
-                    facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
-                    games = (ArrayList<GameData>) facade.listGames(authToken.authToken());
-                    GameData currGame = games.get((gameID-1));
-                    gameplay = new ChessGameplay(games.get((gameID-1)).game().getBoard());
-                    gameplay.main(false); //idk
+                    Integer yte = games.get((gameID-1)).gameID();
+                    GameData currGame = games.get((gameID-1)); //deleted the minus ones
                     ws = new WebsocketClient(port);
                     ws.connect(authToken.authToken(), actualID, this.color);
+                    facade.joinGame(color, actualID, authToken.authToken()); //not sure what to do from here? Maybe just show game
+                    games = (ArrayList<GameData>) facade.listGames(authToken.authToken());
+                    gameplay = new ChessGameplay(games.get((gameID-1)).game().getBoard());
+                    gameplay.main(false); //idk
                     inGame(currGame);
                 }
                 
@@ -237,23 +245,26 @@ public class Client {
             {
                 GameData game = games.get(i);
                 out.print("Game " + (i+1) + "{");
-                out.print("Game name: " + game.gameName() + ",");
-                out.print("Black username: " + game.blackUsername());
-                out.print("White username:" + game.whiteUsername());
+                out.print("Game name: " + game.gameName() + ", ");
+                out.print("Black username: " + game.blackUsername()+ ", ");
+                out.print("White username:" + game.whiteUsername()+ ", ");
                 out.print("Game: " + game.game() + "}\n");
             }
             out.print("Type in the number of the game you'd like to observe\n");
-            int gameID = Integer.parseInt(scanner.next());
+            int gameID = Integer.parseInt(scanner.nextLine());
             if (gameID < 0 || gameID > games.size()) {
                 out.print("Invalid number, please select a number that was shown\n");
                 observeGame();
             }
-            GameData game = games.get((gameID-1));
-            gameplay = new ChessGameplay(game.game().getBoard()); 
-            gameplay.main(false); //idk
-            this.ws = new WebsocketClient(port);
-            ws.connect(this.authToken.authToken(), game.gameID(), null); //need to figure out how to get the actual gameID game
-            inGame(game);
+            else {
+                GameData game = games.get((gameID-1));
+                gameplay = new ChessGameplay(game.game().getBoard()); 
+                gameplay.main(false); //idk
+                this.ws = new WebsocketClient(port);
+                ws.connect(this.authToken.authToken(), game.gameID(), null); //need to figure out how to get the actual gameID game
+                inGame(game);
+            }
+            
         } catch (Exception e) {
             out.println("Error:" + e.getMessage());
         }
@@ -300,6 +311,7 @@ public class Client {
         }
         out.print("Type \'a\' to go back to the menu");
         String line = scanner.next();
+        scanner.nextLine();
         if (line.equals("a")) {
             try {
                 inGame(game);
@@ -338,6 +350,7 @@ public class Client {
         out.print("Select what piece you wish to move in the form of a-h space 1-8\n");
         String line = scanner.next();
         Integer row = scanner.nextInt();
+        scanner.nextLine();
         String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
         Integer column = null;
         for (int i = 0; i < headers.length; i++) {

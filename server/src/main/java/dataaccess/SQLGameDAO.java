@@ -2,9 +2,12 @@ package dataaccess;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random.*;
 
 import com.google.gson.Gson;
 import java.util.Collection;
+import java.util.Random;
+
 import chess.ChessGame;
 import chess.ChessGame.TeamColor;
 import chess.model.AuthData;
@@ -107,9 +110,9 @@ public class SQLGameDAO {
     }
     public Integer createGame(String gameName) throws DataAccessException
     {
-
+        Random rand = new Random();
         if (this.gameID == null) {
-            this.gameID = 0;
+            this.gameID = rand.nextInt(1000);;
         }
         this.gameID += 1;
         Integer newValue = this.gameID;
