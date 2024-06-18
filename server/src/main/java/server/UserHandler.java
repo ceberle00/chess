@@ -34,7 +34,6 @@ public class UserHandler {
                 return new Gson().toJson(res);
             }
             String auth = service.createUser(reg.getUsername(), reg.getPassword(), reg.getEmail()).getAuth();
-            System.out.println(auth);
             result.status(200);
             return new Gson().toJson(new RegisterResult(reg.getUsername(), auth));
         }
@@ -59,7 +58,7 @@ public class UserHandler {
     public Object logoutUser(Request request, Response response) throws Exception 
     {
         try {
-            String authToken = request.headers("authorization");
+            String authToken = request.headers("Authorization");
             service.logoutUser(authToken);
             response.status(200);
             return new Gson().toJson(null);

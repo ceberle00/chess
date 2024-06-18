@@ -16,7 +16,6 @@ public class SQLGameService{
     public SQLGameService() {
     }
     public SQLGameDAO getGame() {
-        System.out.println("In get Game");
         return this.game;
     }
     public SQLGameService(SQLGameDAO game, SQLAuthDAO auth) {

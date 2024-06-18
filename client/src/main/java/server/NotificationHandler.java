@@ -5,6 +5,7 @@ import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 
 public class NotificationHandler {
+    public NotificationHandler() {};
     public void notify(NotificationMessage notification) {
         System.out.println("Notification: " + notification.getMessage());
     }

@@ -38,8 +38,8 @@ public class Client {
         //out.print(SET_TEXT_COLOR_BLACK);
         //out.print(SET_BG_COLOR_WHITE);
         out.print("Welcome to 240 Chess, type \'help\' to get started :)");
-        //String input = scanner.nextLine();
-        String input = "help";
+        String input = scanner.nextLine();
+        //String input = "help";
         if (input.toLowerCase().equals("help")) 
         {
             prelogin();
@@ -76,7 +76,6 @@ public class Client {
         String password = scanner.next();
         String email = scanner.next();
         try {
-            out.println("In register try");
             authToken = facade.register(username, password, email);
             postLogin();
         } catch (Exception e) {
@@ -93,8 +92,6 @@ public class Client {
         //String pass = "9lucy9";
         try {
             authToken = facade.login(user, pass);
-            out.print(authToken.authToken());
-            out.print(authToken.getUser());
             postLogin();
         }catch (Exception e ) {
             out.println("Error:" + e.getMessage());
@@ -246,7 +243,6 @@ public class Client {
                 out.print("Game: " + game.game() + "}\n");
             }
             out.print("Type in the number of the game you'd like to observe\n");
-            //int gameID = 1;
             int gameID = Integer.parseInt(scanner.next());
             if (gameID < 0 || gameID > games.size()) {
                 out.print("Invalid number, please select a number that was shown\n");
@@ -301,6 +297,17 @@ public class Client {
         }
         else {
             gameplay.main(false);
+        }
+        out.print("Type \'a\' to go back to the menu");
+        String line = scanner.next();
+        if (line.equals("a")) {
+            try {
+                inGame(game);
+            }
+            catch(Exception e) {
+                out.print("what");
+            }
+            
         }
     }
     private void leave(GameData game) throws Exception {

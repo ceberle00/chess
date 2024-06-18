@@ -20,7 +20,7 @@ public class WebsocketClient extends Endpoint
     private String url = "";
     private GameData game;
     private Session sesh;
-    private NotificationHandler notificationHandler;
+    private NotificationHandler notificationHandler = new NotificationHandler();
 
     public void setGame(GameData g) {
         this.game = g;
